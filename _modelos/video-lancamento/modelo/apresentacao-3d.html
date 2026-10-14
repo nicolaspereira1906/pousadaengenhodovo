@@ -508,7 +508,7 @@ const rearTree = araucaria(OX + L - 1.6, 6.2, 11, .55);
 const rearTree2 = tree(OX + L - 1.0, .9, 1.0);
 late.push({ obj: leis, a: 29.8, b: 31, kind: 'pop' }, { obj: rearTree, a: 30, b: 31.2, kind: 'pop' },
   { obj: rearTree2, a: 30.1, b: 31.3, kind: 'pop' });
-const frontTree = tree(OX + 2.6, 2.8, 1.1);
+const frontTree = tree(OX + 4.4, .9, 1.0);
 late.push({ obj: frontTree, a: 29.8, b: 30.8, kind: 'pop' });
 
 // ---------------- Cotas do terreno ----------------
@@ -547,18 +547,21 @@ const keys = [
   [19,   [8, 34, 62],   [-2, 4.5, 3]],
   [25.5, [-26, 26, 50], [-2, 5, 3]],
   [31,   [-52, 15, 26], [-8, 5, 3]],
-  [33.5, [-37.5, 2.3, 3.2], [-24, 2.6, 3.4]],
-  [41,   [15, 3.0, 4.9], [30, 1.0, 4.0]],
+  [33.5, [-38, 2.4, 3.55], [-24, 2.5, 3.4], true],
+  [35.5, [-27, 2.4, 3.5], [-12, 2.3, 3.6], true],
+  [41,   [15, 3.0, 4.9], [30, 1.0, 4.0], true],
   [45.5, [22.0, 5.6, 6.6], [29.8, .5, 3.4]],
   [47,   [7, 21, 8.5], [6, 6, 1.3]],
   [52.5, [4.5, 15.5, 5.5], [6, 6, 1.2]],
   [55,   [-55, 42, 66], [-2, 3, 3]],
   [60,   [-82, 56, 88], [-2, 3, 3]],
-].map(([t, p, l]) => ({ t, p: new THREE.Vector3(...p), l: new THREE.Vector3(...l) }));
+].map(([t, p, l, flat]) => ({ t, p: new THREE.Vector3(...p), l: new THREE.Vector3(...l), flat }));
 function tangents(prop) {
   return keys.map((k, i) => {
     if (i === 0 || i === keys.length - 1) return new THREE.Vector3();
-    return keys[i + 1][prop].clone().sub(keys[i - 1][prop]).divideScalar(keys[i + 1].t - keys[i - 1].t);
+    const v = keys[i + 1][prop].clone().sub(keys[i - 1][prop]).divideScalar(keys[i + 1].t - keys[i - 1].t);
+    if (keys[i].flat) v.y = v.z = 0;   // trechos ao nivel dos olhos: sem desvio lateral/vertical
+    return v;
   });
 }
 const tp = tangents('p'), tl = tangents('l');
