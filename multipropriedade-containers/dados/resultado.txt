@@ -1,0 +1,31 @@
+Terreno: 391.0 m2 | Unidades: 12 | Cotas: 156
+Area por unidade: 29.7 m2 | Area construida: 500 m2
+Projecao: 186 m2 -> TO 48% | CA 1.28
+      R$ 264.000  Containers 40' HC (12 un. x R$ 22 mil)
+    R$ 1.056.000  Conversao completa (estrutura, isolamento, instalacoes, acabamento) 12 x R$ 88 mil
+      R$ 300.000  Mobiliario e enxoval padrao hoteleiro 12 x R$ 25 mil
+       R$ 90.000  Fundacoes (blocos/estacas nos apoios)
+      R$ 235.000  Escada metalica central + passarelas + guarda-corpos e brises
+       R$ 70.000  Cobertura termoacustica, calhas e drenagem
+      R$ 120.000  Infraestrutura (agua, esgoto, entrada eletrica, SPDA, PPCI)
+      R$ 150.000  Area de lazer (deck, ofuro, fogo de chao, paisagismo)
+       R$ 80.000  Energia solar (~20 kWp)
+       R$ 60.000  Transporte e icamento (guindaste)
+      R$ 120.000  Projetos, aprovacoes, incorporacao, registro e juridico
+Subtotal R$ 2.545.000 | Contingencia R$ 254.500 | Obra R$ 2.799.500 | por unidade R$ 233.292
+Pessimista  preco R$ 29.900 VGV R$ 4.664.400 vendido 80% receita R$ 3.731.520 liquida R$ 2.574.749 custo R$ 3.469.425 lucro R$ -894.676 margem -24.0% ROI -25.8%
+Base        preco R$ 36.900 VGV R$ 5.756.400 vendido 90% receita R$ 5.180.760 liquida R$ 3.574.724 custo R$ 3.049.500 lucro R$ 525.224 margem 10.1% ROI 17.2%
+Otimista    preco R$ 44.900 VGV R$ 7.004.400 vendido 100% receita R$ 7.004.400 liquida R$ 4.833.036 custo R$ 2.909.525 lucro R$ 1.923.511 margem 27.5% ROI 66.1%
+Preco de equilibrio (100% vendido): R$ 28.331 | Cotas de equilibrio a R$ 36.900: 120 de 156
+Pousada: receita R$ 915.420/ano lucro R$ 320.397/ano payback 9.5 anos
+Condominio multipropriedade: R$ 280.800/ano | taxa adm 20%: R$ 56.160/ano
+Sensibilidade lucro (R$ mil): [0.7, 0.8, 0.9, 1.0]
+[29900, -797, -475, -153, 169]
+[34900, -420, -44, 331, 707]
+[39900, -43, 386, 816, 1245]
+[44900, 334, 817, 1300, 1784]
+[49900, 710, 1247, 1785, 2322]
+Preco p/ margem 20% a 90% vendido: R$ 44.327
+Fluxo base: exposicao maxima R$ -2.654.870 no mes 12; caixa volta a zero no mes 44
+Fluxo 30% entrada + 24x: exposicao R$ -2.402.713 mes 12; zera mes 34
+Fluxo vendas na planta antes da obra (obra inicia mes 8): exposicao R$ -2.299.605 mes 17; zera mes 42
