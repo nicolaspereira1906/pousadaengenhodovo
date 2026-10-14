@@ -1,0 +1,13 @@
+{
+  "name": "video-lancamento-3d",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "previas": "node stills.mjs 2 8 15 24 30 37 43 49 57",
+    "video": "node render-video.mjs ../video/apresentacao-3d.mp4 30 0 60 4"
+  },
+  "dependencies": {
+    "playwright": "1.56.1",
+    "three": "0.160.0"
+  }
+}
