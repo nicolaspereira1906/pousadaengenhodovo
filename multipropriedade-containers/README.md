@@ -1,6 +1,6 @@
 # Estudo de viabilidade: multipropriedade em containers
 
-Terreno de 391 m² (frente 4 m, fundo 7,5 m, divisa maior de 68 m) · 3 pavimentos · 12 unidades · Camanducaia/MG
+Terreno de 391 m² (frente de 7,5 m para a rua, fundo de 4 m, divisa maior de 68 m) · 3 pavimentos · 12 unidades · Camanducaia/MG
 
 > Estudo preliminar para decisão de "seguir ou não seguir". Custos e preços são estimativas de mercado (out/2026) e precisam ser validados com orçamentos, consulta à prefeitura e pesquisa de preço local antes de qualquer compromisso.
 
@@ -10,7 +10,7 @@ Terreno de 391 m² (frente 4 m, fundo 7,5 m, divisa maior de 68 m) · 3 paviment
 |---|---|
 | `video/apresentacao-3d.mp4` | Vídeo 3D de apresentação (60 s, 1080p) |
 | `modelo/apresentacao-3d.html` | Modelo 3D interativo (abre no navegador; botão "Explorar livre" para girar e dar zoom) |
-| `planta-implantacao.svg` | Planta de implantação do térreo |
+| `planta-implantacao.svg` | Planta de implantação do térreo (gerada por `dados/planta.py`) |
 | `dados/viabilidade.py` | Modelo financeiro (todas as contas deste documento) |
 | `dados/resultado.txt` | Saída do modelo financeiro |
 | `modelo/render-video.mjs` | Script que gera o vídeo a partir do modelo 3D |
@@ -46,15 +46,15 @@ Terreno de 391 m² (frente 4 m, fundo 7,5 m, divisa maior de 68 m) · 3 paviment
 
 | Item | Valor |
 |---|---|
-| Frente (testada menor) | 4,00 m |
-| Fundo | 7,50 m |
+| Frente para a rua (testada maior) | 7,50 m |
+| Fundo | 4,00 m |
 | Divisa maior (reta, perpendicular à frente e ao fundo) | 68,00 m |
 | Área | (4 + 7,5) / 2 × 68 = **391 m²** |
-| Largura do lote em qualquer ponto | 4 + 3,5 × (distância da frente / 68) |
+| Largura do lote em qualquer ponto | 7,5 − 3,5 × (distância da frente / 68) |
 
 Premissas assumidas (confirmar):
 
-- A rua está no lado de **4 m**. Se a rua for no lado de 7,5 m, o projeto apenas se espelha: o lazer vai para a frente e o acesso para o fundo.
+- A rua está no lado de **7,5 m** (confirmado). O lote estreita para 4 m nos fundos.
 - Terreno plano. Declive muda fundação e custo.
 - Terreno já pertence ao empreendedor. Entra no estudo como custo de oportunidade de R$ 250 mil.
 - Localização: Camanducaia/MG, com apelo turístico de Monte Verde e da Serra da Mantiqueira.
@@ -72,15 +72,16 @@ Premissas assumidas (confirmar):
 - **Passarela lateral de 1,20 m** nos pavimentos 1 e 2, voltada para o jardim. No térreo, a projeção da passarela vira caminho coberto.
 - **Cobertura termoacústica única** sobre todo o conjunto, com testeira de madeira e **≈ 20 kWp de energia solar**.
 - **Fachada com brises de madeira** nos guarda-corpos (privacidade e conforto térmico).
-- **Lazer nos fundos**, onde o lote alarga: deck, ofurô aquecido, fogo de chão e espreguiçadeiras.
+- **Frente larga (7,5 m) para acesso e 2 vagas** (embarque, desembarque e vaga PNE).
+- **Lazer compacto nos fundos**, longe da rua e com mais privacidade: deck, ofurô aquecido e fogo de chão.
 
 | Faixa do lote (a partir da frente) | Uso |
 |---|---|
-| 0 a 6,0 m | Acesso, portão, lixeiras, medidores, bicicletário |
-| 6,0 a 30,4 m | Bloco A: 2 containers por pavimento |
-| 30,4 a 33,9 m | Núcleo de escada |
-| 33,9 a 58,3 m | Bloco B: 2 containers por pavimento |
-| 58,3 a 68,0 m | Lazer (≈ 70 m²) |
+| 0 a 8,0 m | Acesso, portão, 2 vagas, lixeiras, medidores, bicicletário |
+| 8,0 a 32,4 m | Bloco A: 2 containers por pavimento |
+| 32,4 a 35,9 m | Núcleo de escada |
+| 35,9 a 60,3 m | Bloco B: 2 containers por pavimento |
+| 60,3 a 68,0 m | Lazer (≈ 32 m², largura de 4,0 a 4,4 m) |
 
 ### 3.2 Quadro de áreas
 
@@ -109,7 +110,7 @@ Banheiro completo · kitchenette com frigobar, cooktop e mesa para 2 · estar co
 | Empilhamento de 3 níveis | Containers suportam bem nos cantos. Fundação em blocos sob os 4 cantos de cada coluna. |
 | Ruído entre unidades | Forro e piso com manta acústica; containers do mesmo pavimento separados por junta. |
 | Privacidade na passarela | Todos passam em frente às portas de vidro dos pavimentos superiores. Usar película, cortinas blackout e brises. |
-| Janelas a menos de 1,5 m do vizinho (CC art. 1.301) | Nenhuma abertura na divisa maior. No trecho estreito da frente, a passarela fica a menos de 1,5 m da divisa oposta: usar brise opaco de 1,80 m nesse trecho. |
+| Janelas a menos de 1,5 m do vizinho (CC art. 1.301) | Nenhuma abertura na divisa maior. Nos últimos ≈ 20 m (fundos, onde o lote estreita), a passarela fica a menos de 1,5 m da divisa oposta: usar brise opaco de 1,80 m nesse trecho. |
 | Segurança contra incêndio | Escada única atende o porte, mas o projeto precisa ser aprovado no Corpo de Bombeiros de MG. |
 | Acessibilidade | As 4 unidades do térreo podem ser adaptadas (NBR 9050). |
 
@@ -147,7 +148,7 @@ A Pousada Engenho do Vô já tem marca, recepção, equipe e clientes na cidade.
 | Conversão completa (estrutura, isolamento, instalações, acabamento) 12 × R$ 88 mil | R$ 1.056.000 |
 | Mobiliário e enxoval padrão hoteleiro 12 × R$ 25 mil | R$ 300.000 |
 | Escada metálica, passarelas, guarda-corpos e brises | R$ 235.000 |
-| Área de lazer (deck, ofurô, fogo de chão, paisagismo) | R$ 150.000 |
+| Área de lazer (deck, ofurô, fogo de chão), 2 vagas e paisagismo | R$ 150.000 |
 | Infraestrutura (água, esgoto, entrada elétrica, SPDA, PPCI) | R$ 120.000 |
 | Projetos, aprovações, incorporação, registro e jurídico | R$ 120.000 |
 | Fundações | R$ 90.000 |
@@ -224,7 +225,7 @@ A comissão consome praticamente toda a entrada. Na prática, **a obra é paga c
 | Risco | Impacto | Mitigação |
 |---|---|---|
 | Lei municipal não permitir CA 1,28, 3 pavimentos ou construção na divisa | Inviabiliza o projeto como desenhado | Consulta prévia à prefeitura antes de qualquer gasto. Plano B: 2 pavimentos (8 unidades). |
-| Exigência de vagas de garagem | O lote não comporta 12 vagas | Convênio com estacionamento próximo ou uso da estrutura da pousada. Confirmar se a lei aceita. |
+| Exigência de vagas de garagem | O lote comporta só 2 vagas na frente | Convênio com estacionamento próximo ou uso da estrutura da pousada para as demais. Confirmar se a lei aceita. |
 | Preço da cota abaixo de R$ 35 mil | Prejuízo | Pré-venda com sinal antes da obra (seção 10). |
 | Venda lenta (cidade pequena, produto novo) | Caixa travado | Vender primeiro para a base de hóspedes; fases; canal de corretores especializados em multipropriedade. |
 | Obra em container estourar custo | Margem some | Contratar fornecedor de container modular com preço fechado (turnkey) e 10% de contingência. |
@@ -254,5 +255,5 @@ A comissão consome praticamente toda a entrada. Na prática, **a obra é paga c
 
 - **Vídeo:** `video/apresentacao-3d.mp4`.
 - **Modelo 3D interativo:** abra `modelo/apresentacao-3d.html` no navegador (precisa de internet para carregar a biblioteca 3D). A linha do tempo roda sozinha; "Explorar livre" libera o giro e o zoom com o mouse.
-- **Modelo financeiro:** `python3 dados/viabilidade.py`. Altere as premissas no topo do arquivo para simular outros cenários.
+- **Modelo financeiro:** `python3 dados/viabilidade.py`. **Planta:** `python3 dados/planta.py`. Altere as premissas no topo do arquivo para simular outros cenários.
 - **Gerar o vídeo de novo:** em uma pasta com `three@0.160.0` e `playwright` instalados, rode `HTML=<caminho>/apresentacao-3d.html node render-video.mjs saida.mp4 30 0 60 4`.

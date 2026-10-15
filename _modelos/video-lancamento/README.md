@@ -17,6 +17,7 @@ Isso copia este modelo para `nome-do-projeto/`, preenche o nome no briefing e in
 | `BRIEFING.md` | Terreno, produto, números e roteiro de cenas. Preencher primeiro. |
 | `README.md` | Estudo de viabilidade do projeto (substituir este texto). |
 | `dados/viabilidade.py` | Modelo financeiro: premissas no topo, cenários, sensibilidade e fluxo de caixa. |
+| `dados/planta.py` | Gera `planta-implantacao.svg` a partir das medidas do lote (frente, fundo, profundidade). |
 | `modelo/apresentacao-3d.html` | Cena 3D (three.js) com linha do tempo, legendas e modo interativo. |
 | `modelo/stills.mjs` | Gera quadros de prévia em `previas/` para revisar enquadramentos. |
 | `modelo/render-video.mjs` | Renderiza o vídeo final (1080p, 30 fps) com Playwright + ffmpeg. |

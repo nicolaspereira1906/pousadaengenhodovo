@@ -83,13 +83,13 @@ if (RENDER) document.body.classList.add('render');
 const DUR = 60;
 
 // ---------------- Geometria do lote ----------------
-// X: profundidade (0 = frente de 4 m, 68 = fundo de 7,5 m). Z: 0 = divisa maior (parede reta).
-const L = 68, WF = 4, WB = 7.5;
+// X: profundidade (0 = frente de 7,5 m para a rua, 68 = fundo de 4 m). Z: 0 = divisa maior (parede reta).
+const L = 68, WF = 7.5, WB = 4;
 const wAt = X => WF + (WB - WF) * X / L;
 const OX = -L / 2;                      // centraliza o lote na origem
 const C_LEN = 12.19, C_W = 2.44, C_H = 2.90;   // container 40' HC
 const PASS = 1.20;                       // largura da passarela
-const X_A = 6.0;                         // recuo frontal
+const X_A = 8.0;                         // recuo frontal (acesso + 2 vagas)
 const CORE = 3.5;                        // nucleo de escada
 const X_CORE = X_A + 2 * C_LEN;          // 30.38
 const X_B = X_CORE + CORE;               // 33.88
@@ -479,36 +479,36 @@ for (let X = X_A + 1; X < X_END; X += 2.2 + rnd() * 1.5) {
 // lazer nos fundos
 const leis = new THREE.Group(); leis.position.set(OX, 0, 0); scene.add(leis);
 const deckM = mat.deck.clone(); deckM.map = texDeck.clone(); deckM.map.repeat.set(1, 6);
-box(7.8, .22, 6.0, deckM, X_END + 4.6, .11, 3.2, leis);
+box(L - X_END - .5, .22, 3.7, deckM, (X_END + L) / 2, .11, 2.0, leis);
 const ofuro = new THREE.Mesh(new THREE.CylinderGeometry(1.05, 1.05, .85, 28), mat.wood);
-ofuro.position.set(X_END + 3.4, .62, 2.0); ofuro.castShadow = true; leis.add(ofuro);
+ofuro.position.set(X_END + 1.7, .62, 1.6); ofuro.castShadow = true; leis.add(ofuro);
 const water = new THREE.Mesh(new THREE.CylinderGeometry(.9, .9, .02, 28), mat.water);
-water.position.set(X_END + 3.4, 1.055, 2.0); leis.add(water);
+water.position.set(X_END + 1.7, 1.055, 1.6); leis.add(water);
 const pit = new THREE.Mesh(new THREE.TorusGeometry(.75, .22, 8, 20), mat.stone);
-pit.rotation.x = Math.PI / 2; pit.position.set(X_END + 6.6, .32, 4.6); pit.castShadow = true; leis.add(pit);
+pit.rotation.x = Math.PI / 2; pit.position.set(X_END + 5.0, .32, 2.0); pit.castShadow = true; leis.add(pit);
 const flames = [];
 for (let i = 0; i < 5; i++) {
   const fl = new THREE.Mesh(new THREE.ConeGeometry(.16, .7, 6), mat.fire);
-  fl.position.set(X_END + 6.6 + Math.cos(i * 1.3) * .28, .6, 4.6 + Math.sin(i * 1.3) * .28);
+  fl.position.set(X_END + 5.0 + Math.cos(i * 1.3) * .28, .6, 2.0 + Math.sin(i * 1.3) * .28);
   leis.add(fl); flames.push(fl);
 }
 const fireLight = new THREE.PointLight(0xff9a40, 0, 9, 1.8);
-fireLight.position.set(X_END + 6.6, 1.2, 4.6); leis.add(fireLight);
+fireLight.position.set(X_END + 5.0, 1.2, 2.0); leis.add(fireLight);
 for (let k = 0; k < 3; k++) {
-  const a = Math.PI * .6 + k * 1.2;
-  const b = box(1.4, .42, .4, mat.wood, X_END + 6.6 + Math.cos(a) * 1.8, .43, 4.6 + Math.sin(a) * 1.8, leis);
+  const a = k * Math.PI * 2 / 3;
+  const b = box(1.1, .42, .4, mat.wood, X_END + 5.0 + Math.cos(a) * 1.45, .43, 2.0 + Math.sin(a) * 1.45, leis);
   b.rotation.y = -a + Math.PI / 2;
 }
-for (let k = 0; k < 2; k++) {
-  const sb = box(.7, .3, 1.9, M({ color: 0xece4d6 }), X_END + 1.5 + k * .95, .37, 5.2, leis);
-  const back = box(.7, .45, .1, M({ color: 0xece4d6 }), X_END + 1.5 + k * .95, .62, 6.1, leis);
-  back.rotation.x = -.5;
-}
-const rearTree = araucaria(OX + L - 1.6, 6.2, 11, .55);
-const rearTree2 = tree(OX + L - 1.0, .9, 1.0);
-late.push({ obj: leis, a: 29.8, b: 31, kind: 'pop' }, { obj: rearTree, a: 30, b: 31.2, kind: 'pop' },
+// estacionamento frontal: 2 vagas na testada de 7,5 m
+const cars = new THREE.Group(); cars.position.set(OX, 0, 0); scene.add(cars);
+[2.9, 5.1].forEach(z => box(5.0, .02, .1, mat.white, 3.4, .1, z, cars));      // faixas das vagas
+box(4.3, .75, 1.8, M({ color: 0xb5643c, roughness: .35, metalness: .5 }), 3.4, .55, 6.25, cars);
+box(2.3, .6, 1.6, mat.hglass, 3.2, 1.2, 6.25, cars);
+const rearTree = araucaria(OX + L - 1.0, 3.2, 11, .5);
+const rearTree2 = tree(OX + L - .9, .8, .8);
+late.push({ obj: leis, a: 29.8, b: 31, kind: 'pop' }, { obj: cars, a: 29.6, b: 30.8, kind: 'pop' }, { obj: rearTree, a: 30, b: 31.2, kind: 'pop' },
   { obj: rearTree2, a: 30.1, b: 31.3, kind: 'pop' });
-const frontTree = tree(OX + 4.4, .9, 1.0);
+const frontTree = tree(OX + 7.0, 6.4, 1.0);
 late.push({ obj: frontTree, a: 29.8, b: 30.8, kind: 'pop' });
 
 // ---------------- Cotas do terreno ----------------
@@ -533,8 +533,8 @@ function label(text, pos, size = 4) {
   s.scale.set(size, size * 160 / 512, 1); s.position.copy(pos); s.renderOrder = 10; dims.add(s); return s;
 }
 label('68 m', W(L / 2, 1.5, -5), 9);
-label('4 m', W(-6, 1.5, WF / 2), 6);
-label('7,5 m', W(L + 6.5, 1.5, WB / 2), 7);
+label('7,5 m (rua)', W(-7, 1.5, WF / 2), 9);
+label('4 m', W(L + 5.5, 1.5, WB / 2), 6);
 label('391 m²', W(L / 2, 1.5, 4.2), 8);
 const dimObjs = []; dims.traverse(o => { if (o.material) dimObjs.push(o); });
 
@@ -547,12 +547,12 @@ const keys = [
   [19,   [8, 34, 62],   [-2, 4.5, 3]],
   [25.5, [-26, 26, 50], [-2, 5, 3]],
   [31,   [-52, 15, 26], [-8, 5, 3]],
-  [33.5, [-38, 2.4, 3.55], [-24, 2.5, 3.4], true],
-  [35.5, [-27, 2.4, 3.5], [-12, 2.3, 3.6], true],
-  [41,   [15, 3.0, 4.9], [30, 1.0, 4.0], true],
-  [45.5, [22.0, 5.6, 6.6], [29.8, .5, 3.4]],
-  [47,   [7, 21, 8.5], [6, 6, 1.3]],
-  [52.5, [4.5, 15.5, 5.5], [6, 6, 1.2]],
+  [33.5, [-38, 2.4, 3.1], [-24, 2.5, 3.3], true],
+  [35.5, [-26, 2.4, 3.3], [-10, 2.3, 3.6], true],
+  [41,   [17, 3.0, 4.3], [31, 1.0, 2.8], true],
+  [45.5, [24.6, 5.8, 4.6], [31.2, .4, 1.8]],
+  [47,   [9, 21, 8.5], [8, 6, 1.3]],
+  [52.5, [6.5, 15.5, 5.5], [8, 6, 1.2]],
   [55,   [-55, 42, 66], [-2, 3, 3]],
   [60,   [-82, 56, 88], [-2, 3, 3]],
 ].map(([t, p, l, flat]) => ({ t, p: new THREE.Vector3(...p), l: new THREE.Vector3(...l), flat }));
@@ -578,11 +578,11 @@ function herm(t, prop, tg) {
 // ---------------- Overlays ----------------
 const $ = id => document.getElementById(id);
 const caps = [
-  [5.5, 11.8, 'O TERRENO', 'Lote de 391 m² com 68 m de profundidade, frente de 4 m e fundo de 7,5 m'],
+  [5.5, 11.8, 'O TERRENO', 'Lote de 391 m² com 68 m de profundidade, frente de 7,5 m para a rua e fundo de 4 m'],
   [12.4, 25.6, 'IMPLANTAÇÃO', '12 containers 40\' HC encostados na divisa maior, empilhados em 3 pavimentos', ['Térreo', '1º pavimento', '2º pavimento']],
-  [26, 31.2, 'APOIO', 'Escada central, passarelas laterais de 1,20 m, cobertura termoacústica e energia solar'],
+  [26, 31.2, 'APOIO', 'Escada central, passarelas de 1,20 m, cobertura com energia solar e 2 vagas na frente'],
   [32.2, 40.8, 'CIRCULAÇÃO', 'Jardim lateral sob as passarelas, com brises de madeira para privacidade'],
-  [41.4, 45.8, 'LAZER', 'Deck, ofurô aquecido e fogo de chão nos fundos, onde o lote alarga para 7,5 m'],
+  [41.4, 45.8, 'LAZER', 'Deck, ofurô aquecido e fogo de chão nos fundos, longe da rua'],
   [46.6, 53, 'UNIDADE TIPO', '≈ 28 m² úteis · suíte, estar com sofá-cama e kitchenette · até 4 pessoas'],
 ];
 function overlays(t) {

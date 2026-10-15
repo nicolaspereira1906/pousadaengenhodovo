@@ -3,9 +3,9 @@
 Preencha antes de abrir o modelo 3D. Cada campo vira uma decisão no vídeo ou no estudo.
 
 ## 1. Terreno
-- Medidas (frente, fundo, laterais): 4 m / 7,5 m / divisa maior reta de 68 m
+- Medidas (frente, fundo, laterais): frente 7,5 m (rua) / fundo 4 m / divisa maior reta de 68 m
 - Área: 391 m²
-- Lado da rua: frente de 4 m (premissa)
+- Lado da rua: frente de 7,5 m (confirmado)
 - Topografia (plano / declive): plano (premissa)
 - Cidade e zona urbana: Camanducaia/MG
 

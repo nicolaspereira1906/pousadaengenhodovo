@@ -1,40 +1,44 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1168 308.0" font-family="Inter, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1168 308" font-family="Inter, Arial, sans-serif">
 <rect width="100%" height="100%" fill="#faf8f4"/>
 <defs><pattern id="h" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="#2b2f33" stroke-width="2"/></pattern></defs>
 <text x="40" y="28" font-size="18" font-weight="700" fill="#1d2226">Implantação: térreo (pavimentos 1 e 2 repetem os containers, com passarela de 1,20 m)</text>
-<text x="40" y="50" font-size="13" fill="#555">Escala gráfica aproximada · divisa maior (reta, 68 m) na parte de cima do desenho · frente para a rua à esquerda</text>
-<polygon points="40,78 1128,78 1128,198.0 40,142" fill="#dfe9d2" stroke="#1d2226" stroke-width="2"/>
-<rect x="40" y="81.2" width="96.0" height="57.599999999999994" fill="#e7e1d4" stroke="#1d2226" stroke-width="1.2" />
-<text x="88.0" y="114.8" font-size="11" fill="#1d2226" text-anchor="middle" font-weight="600">Acesso</text>
-<rect x="136.0" y="117.03999999999999" width="836.1599999999999" height="19.200000000000003" fill="#ece6d8" stroke="#1d2226" stroke-width="1.2" stroke-dasharray="4 3"/>
-<rect x="136.0" y="78" width="195.03999999999996" height="39.04" fill="#3b4045" stroke="#1d2226" stroke-width="1.2" />
-<text x="233.51999999999998" y="101.2" font-size="11" fill="#fff" text-anchor="middle" font-weight="600">Unidade tipo · 40' HC</text>
-<rect x="331.03999999999996" y="78" width="195.03999999999996" height="39.04" fill="#3b4045" stroke="#1d2226" stroke-width="1.2" />
-<text x="428.55999999999995" y="101.2" font-size="11" fill="#fff" text-anchor="middle" font-weight="600">Unidade tipo · 40' HC</text>
-<rect x="582.0799999999999" y="78" width="195.03999999999996" height="39.04" fill="#3b4045" stroke="#1d2226" stroke-width="1.2" />
-<text x="679.5999999999999" y="101.2" font-size="11" fill="#fff" text-anchor="middle" font-weight="600">Unidade tipo · 40' HC</text>
-<rect x="777.1199999999999" y="78" width="195.03999999999996" height="39.04" fill="#3b4045" stroke="#1d2226" stroke-width="1.2" />
-<text x="874.6399999999999" y="101.2" font-size="11" fill="#fff" text-anchor="middle" font-weight="600">Unidade tipo · 40' HC</text>
-<rect x="526.0799999999999" y="78" width="55.99999999999994" height="39.04" fill="url(#h)" stroke="#1d2226" stroke-width="1.2" />
-<text x="554.0799999999999" y="72.4" font-size="11" fill="#1d2226" text-anchor="middle" font-weight="600">Escada</text>
-<rect x="976.9599999999998" y="84.4" width="144.6400000000001" height="104.0" fill="#d9b48a" stroke="#1d2226" stroke-width="1.2" />
-<text x="1046.8799999999999" y="130.8" font-size="12" fill="#1d2226" text-anchor="middle" font-weight="600">Lazer</text>
-<text x="1046.8799999999999" y="146.8" font-size="10" fill="#4a3a28" text-anchor="middle" font-weight="500">deck · ofurô · fogo de chão</text>
-<text x="554.0799999999999" y="130.0" font-size="10" fill="#6b5a3d" text-anchor="middle" font-weight="600">Passarela 1,20 m (pav. 1 e 2) · caminho coberto no térreo</text>
-<text x="744" y="158.0" font-size="11" fill="#3d5a2a" text-anchor="middle" font-weight="600">Jardim lateral (faixa livre de 1,6 m na frente a 4,6 m nos fundos)</text>
-<line x1="40" y1="242.0" x2="1128" y2="242.0" stroke="#b5643c" stroke-width="1.2"/>
+<text x="40" y="50" font-size="13" fill="#555">Escala gráfica aproximada · divisa maior (reta, 68 m) na parte de cima · frente para a rua à esquerda</text>
+<polygon points="40,78 1128.0,78 1128.0,142.0 40,198.0" fill="#dfe9d2" stroke="#1d2226" stroke-width="2"/>
+<rect x="40" y="81.2" width="128.0" height="107.01176470588234" fill="#e7e1d4" stroke="#1d2226" stroke-width="1.2" />
+<text x="104.0" y="103.6" font-size="11" fill="#1d2226" text-anchor="middle" font-weight="600">Acesso</text>
+<line x1="54.4" y1="124.4" x2="134.4" y2="124.4" stroke="#fff" stroke-width="2"/>
+<line x1="54.4" y1="159.6" x2="134.4" y2="159.6" stroke="#fff" stroke-width="2"/>
+<text x="94.4" y="146.8" font-size="10" fill="#555" text-anchor="middle" font-weight="500">Vaga 1</text>
+<text x="94.4" y="182.0" font-size="10" fill="#555" text-anchor="middle" font-weight="500">Vaga 2</text>
+<rect x="168.0" y="117.03999999999999" width="836.1599999999999" height="19.199999999999996" fill="#ece6d8" stroke="#1d2226" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="168.0" y="78" width="195.03999999999996" height="39.04" fill="#3b4045" stroke="#1d2226" stroke-width="1.2" />
+<text x="265.52" y="101.2" font-size="11" fill="#fff" text-anchor="middle" font-weight="600">Unidade tipo · 40' HC</text>
+<rect x="363.03999999999996" y="78" width="195.03999999999996" height="39.04" fill="#3b4045" stroke="#1d2226" stroke-width="1.2" />
+<text x="460.55999999999995" y="101.2" font-size="11" fill="#fff" text-anchor="middle" font-weight="600">Unidade tipo · 40' HC</text>
+<rect x="614.0799999999999" y="78" width="195.03999999999996" height="39.04" fill="#3b4045" stroke="#1d2226" stroke-width="1.2" />
+<text x="711.5999999999999" y="101.2" font-size="11" fill="#fff" text-anchor="middle" font-weight="600">Unidade tipo · 40' HC</text>
+<rect x="809.1199999999999" y="78" width="195.03999999999996" height="39.04" fill="#3b4045" stroke="#1d2226" stroke-width="1.2" />
+<text x="906.6399999999999" y="101.2" font-size="11" fill="#fff" text-anchor="middle" font-weight="600">Unidade tipo · 40' HC</text>
+<rect x="558.0799999999999" y="78" width="56.0" height="39.04" fill="url(#h)" stroke="#1d2226" stroke-width="1.2" />
+<text x="586.0799999999999" y="72.4" font-size="11" fill="#1d2226" text-anchor="middle" font-weight="600">Escada</text>
+<rect x="1008.1599999999999" y="81.2" width="115.84000000000015" height="57.80588235294117" fill="#d9b48a" stroke="#1d2226" stroke-width="1.2" />
+<text x="1066.08" y="108.4" font-size="12" fill="#1d2226" text-anchor="middle" font-weight="600">Lazer</text>
+<text x="1066.08" y="124.4" font-size="10" fill="#4a3a28" text-anchor="middle" font-weight="500">deck · ofurô · fogo</text>
+<text x="586.0799999999999" y="130.0" font-size="10" fill="#6b5a3d" text-anchor="middle" font-weight="600">Passarela 1,20 m (pav. 1 e 2) · caminho coberto no térreo</text>
+<text x="424" y="161.2" font-size="11" fill="#3d5a2a" text-anchor="middle" font-weight="600">Jardim lateral (faixa livre de 4,65 m na frente a 1,96 m nos fundos)</text>
+<line x1="40" y1="242.0" x2="1128.0" y2="242.0" stroke="#b5643c" stroke-width="1.2"/>
 <line x1="40" y1="236.0" x2="40" y2="248.0" stroke="#b5643c" stroke-width="1.5"/>
-<line x1="1128" y1="236.0" x2="1128" y2="248.0" stroke="#b5643c" stroke-width="1.5"/>
-<text x="584" y="260.0" font-size="13" fill="#b5643c" text-anchor="middle" font-weight="700">68,00 m</text>
-<text x="40" y="70" font-size="12" fill="#b5643c" font-weight="700">Frente 4,00 m (rua)</text>
-<text x="1128" y="70" font-size="12" fill="#b5643c" text-anchor="end" font-weight="700">Fundo 7,50 m</text>
-<line x1="136.0" y1="149.94117647058823" x2="136.0" y2="228.0" stroke="#bbb" stroke-dasharray="2 2"/>
-<text x="136.0" y="224.0" font-size="10" fill="#777" text-anchor="middle">6,0 m</text>
-<line x1="526.0799999999999" y1="170.01882352941175" x2="526.0799999999999" y2="228.0" stroke="#bbb" stroke-dasharray="2 2"/>
-<text x="526.0799999999999" y="224.0" font-size="10" fill="#777" text-anchor="middle">30,4 m</text>
-<line x1="582.0799999999999" y1="172.90117647058824" x2="582.0799999999999" y2="228.0" stroke="#bbb" stroke-dasharray="2 2"/>
-<text x="582.0799999999999" y="224.0" font-size="10" fill="#777" text-anchor="middle">33,9 m</text>
-<line x1="972.1599999999999" y1="192.97882352941176" x2="972.1599999999999" y2="228.0" stroke="#bbb" stroke-dasharray="2 2"/>
-<text x="972.1599999999999" y="224.0" font-size="10" fill="#777" text-anchor="middle">58,3 m</text>
+<line x1="1128.0" y1="236.0" x2="1128.0" y2="248.0" stroke="#b5643c" stroke-width="1.5"/>
+<text x="584.0" y="260.0" font-size="13" fill="#b5643c" text-anchor="middle" font-weight="700">68,00 m</text>
+<text x="40" y="70" font-size="12" fill="#b5643c" font-weight="700">Frente 7,50 m (rua)</text>
+<text x="1128.0" y="70" font-size="12" fill="#b5643c" text-anchor="end" font-weight="700">Fundo 4,00 m</text>
+<line x1="168.0" y1="194.41176470588235" x2="168.0" y2="228.0" stroke="#bbb" stroke-dasharray="2 2"/>
+<text x="168.0" y="224.0" font-size="10" fill="#777" text-anchor="middle">8,0 m</text>
+<line x1="558.0799999999999" y1="174.33411764705883" x2="558.0799999999999" y2="228.0" stroke="#bbb" stroke-dasharray="2 2"/>
+<text x="558.0799999999999" y="224.0" font-size="10" fill="#777" text-anchor="middle">32,4 m</text>
+<line x1="614.0799999999999" y1="171.45176470588234" x2="614.0799999999999" y2="228.0" stroke="#bbb" stroke-dasharray="2 2"/>
+<text x="614.0799999999999" y="224.0" font-size="10" fill="#777" text-anchor="middle">35,9 m</text>
+<line x1="1004.1599999999999" y1="151.37411764705882" x2="1004.1599999999999" y2="228.0" stroke="#bbb" stroke-dasharray="2 2"/>
+<text x="1004.1599999999999" y="224.0" font-size="10" fill="#777" text-anchor="middle">60,3 m</text>
 <text x="40" y="294.0" font-size="12" fill="#555">12 unidades (4 por pavimento x 3). Containers encostados na divisa maior, sem aberturas para o vizinho (CC art. 1.301); portas e janelas voltadas para o jardim lateral.</text>
 </svg>
