@@ -27,7 +27,7 @@ custos = {
     "Escada metalica central + passarelas + guarda-corpos e brises": 235_000,
     "Cobertura termoacustica, calhas e drenagem": 70_000,
     "Infraestrutura (agua, esgoto, entrada eletrica, SPDA, PPCI)": 120_000,
-    "Area de lazer (deck, ofuro, fogo de chao, paisagismo)": 150_000,
+    "Estacionamento (4 vagas, piso drenante, portao) e paisagismo": 70_000,
     "Energia solar (~20 kWp)": 80_000,
     "Transporte e icamento (guindaste)": 60_000,
     "Projetos, aprovacoes, incorporacao, registro e juridico": 120_000,

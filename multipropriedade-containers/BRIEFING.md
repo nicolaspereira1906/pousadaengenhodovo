@@ -14,13 +14,13 @@ Preencha antes de abrir o modelo 3D. Cada campo vira uma decisão no vídeo ou n
 - Nº de unidades e pavimentos: 12 unidades, 3 pavimentos
 - Módulo construtivo (container 40' HC, 20', alvenaria, madeira): container 40' HC
 - Área por unidade: ≈ 28 m² úteis
-- Diferenciais (lazer, vista, energia solar):
+- Diferenciais (lazer, vista, energia solar): energia solar; prédio encostado no fundo; estacionamento com 4 vagas na frente; sem lazer próprio (usa a pousada)
 
 ## 3. Números para o vídeo (saem de dados/viabilidade.py)
 - Unidades: 12
 - Cotas / unidades à venda: 156 cotas de 4 semanas
 - VGV base: R$ 5,8 mi
-- Investimento: R$ 2,8 mi (obra)
+- Investimento: R$ 2,7 mi (obra)
 
 ## 4. Roteiro de cenas (60 s)
 | Tempo | Cena | Legenda |
@@ -29,8 +29,9 @@ Preencha antes de abrir o modelo 3D. Cada campo vira uma decisão no vídeo ou n
 | 5 a 12 s | Terreno com cotas | |
 | 12 a 26 s | Montagem por pavimento | |
 | 26 a 31 s | Estrutura de apoio (escada, passarelas, cobertura) | |
-| 31 a 41 s | Passeio no nível dos olhos | |
-| 41 a 46 s | Lazer | |
+| 31 a 36 s | Estacionamento na frente | 4 vagas e bicicletário |
+| 36 a 44 s | Passeio no nível dos olhos | Caminho coberto sob as passarelas |
+| 44 a 46 s | Vista aérea dos fundos | Prédio encostado no muro do fundo |
 | 46 a 53 s | Unidade tipo em corte | |
 | 53 a 60 s | Números + encerramento | |
 

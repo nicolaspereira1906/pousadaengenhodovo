@@ -25,16 +25,16 @@ Terreno de 391 m² (frente de 7,5 m para a rua, fundo de 4 m, divisa maior de 68
 |---|---|
 | Unidades | 12 studios em containers 40' HC (≈ 28 m² úteis cada) |
 | Cotas | 156 (13 por unidade, 4 semanas/ano cada) |
-| Investimento total de obra (chave na mão, com 10% de contingência) | **R$ 2,80 mi** (R$ 233 mil por unidade) |
+| Investimento total de obra (chave na mão, com 10% de contingência) | **R$ 2,71 mi** (R$ 226 mil por unidade) |
 | VGV no cenário base (R$ 36.900 por cota) | **R$ 5,76 mi** |
-| Lucro no cenário base (90% vendido) | **R$ 525 mil** (margem de 10% sobre a receita) |
-| Ponto de equilíbrio | 120 de 156 cotas vendidas a R$ 36.900, ou preço mínimo de R$ 28.300 com 100% vendido |
-| Exposição máxima de caixa | **≈ R$ 2,3 a 2,7 mi** (o dinheiro das vendas entra parcelado, a obra é paga à vista) |
-| Retorno do caixa investido | entre o mês 34 e o mês 44 |
+| Lucro no cenário base (90% vendido) | **R$ 613 mil** (margem de 12% sobre a receita) |
+| Ponto de equilíbrio | 116 de 156 cotas vendidas a R$ 36.900, ou preço mínimo de R$ 27.500 com 100% vendido |
+| Exposição máxima de caixa | **≈ R$ 2,2 a 2,6 mi** (o dinheiro das vendas entra parcelado, a obra é paga à vista) |
+| Retorno do caixa investido | entre o mês 33 e o mês 43 |
 
 **O que decide o projeto (em ordem):**
 
-1. **Preço da cota.** Abaixo de R$ 35 mil o projeto não para de pé. Para margem saudável (20%), a cota precisa sair por **≈ R$ 44 mil**. Isso tem que ser testado no mercado antes de investir.
+1. **Preço da cota.** Abaixo de R$ 35 mil o projeto não para de pé. Para margem saudável (20%), a cota precisa sair por **≈ R$ 43 mil**. Isso tem que ser testado no mercado antes de investir.
 2. **Funding.** Multipropriedade é vendida parcelada. Sem capital próprio ou financiamento de ≈ R$ 2,5 mi, não há obra. Construir em fases reduz a exposição pela metade.
 3. **Aprovação na prefeitura.** Coeficiente de aproveitamento (CA 1,28), gabarito de 3 pavimentos, construção encostada na divisa e vagas de garagem precisam ser confirmados na lei de uso do solo de Camanducaia.
 
@@ -72,16 +72,16 @@ Premissas assumidas (confirmar):
 - **Passarela lateral de 1,20 m** nos pavimentos 1 e 2, voltada para o jardim. No térreo, a projeção da passarela vira caminho coberto.
 - **Cobertura termoacústica única** sobre todo o conjunto, com testeira de madeira e **≈ 20 kWp de energia solar**.
 - **Fachada com brises de madeira** nos guarda-corpos (privacidade e conforto térmico).
-- **Frente larga (7,5 m) para acesso e 2 vagas** (embarque, desembarque e vaga PNE).
-- **Lazer compacto nos fundos**, longe da rua e com mais privacidade: deck, ofurô aquecido e fogo de chão.
+- **Prédio empurrado até o muro do fundo.** Toda a frente (15,7 m de profundidade) fica livre para acesso e estacionamento.
+- **Estacionamento com 4 vagas** longitudinais (2 de cada lado de um corredor central de 2,5 m) + bicicletário/motos. Cada vaga sai sem manobrar as outras.
+- **Sem área de lazer própria.** Os cotistas usam a estrutura da pousada (ver risco na seção 9).
 
 | Faixa do lote (a partir da frente) | Uso |
 |---|---|
-| 0 a 8,0 m | Acesso, portão, 2 vagas, lixeiras, medidores, bicicletário |
-| 8,0 a 32,4 m | Bloco A: 2 containers por pavimento |
-| 32,4 a 35,9 m | Núcleo de escada |
-| 35,9 a 60,3 m | Bloco B: 2 containers por pavimento |
-| 60,3 a 68,0 m | Lazer (≈ 32 m², largura de 4,0 a 4,4 m) |
+| 0 a 15,7 m | Acesso, portão, 4 vagas, bicicletário, lixeiras, medidores (≈ 112 m²) |
+| 15,7 a 40,1 m | Bloco A: 2 containers por pavimento |
+| 40,1 a 43,6 m | Núcleo de escada |
+| 43,6 a 68,0 m | Bloco B: 2 containers por pavimento, encostado no muro do fundo |
 
 ### 3.2 Quadro de áreas
 
@@ -110,7 +110,7 @@ Banheiro completo · kitchenette com frigobar, cooktop e mesa para 2 · estar co
 | Empilhamento de 3 níveis | Containers suportam bem nos cantos. Fundação em blocos sob os 4 cantos de cada coluna. |
 | Ruído entre unidades | Forro e piso com manta acústica; containers do mesmo pavimento separados por junta. |
 | Privacidade na passarela | Todos passam em frente às portas de vidro dos pavimentos superiores. Usar película, cortinas blackout e brises. |
-| Janelas a menos de 1,5 m do vizinho (CC art. 1.301) | Nenhuma abertura na divisa maior. Nos últimos ≈ 20 m (fundos, onde o lote estreita), a passarela fica a menos de 1,5 m da divisa oposta: usar brise opaco de 1,80 m nesse trecho. |
+| Janelas a menos de 1,5 m do vizinho (CC art. 1.301) | Nenhuma abertura na divisa maior. Nos últimos ≈ 20 m (fundos, onde o lote estreita), a passarela fica a menos de 1,5 m da divisa oposta (só 0,36 m no muro do fundo): usar brise opaco de 1,80 m nesse trecho. |
 | Segurança contra incêndio | Escada única atende o porte, mas o projeto precisa ser aprovado no Corpo de Bombeiros de MG. |
 | Acessibilidade | As 4 unidades do térreo podem ser adaptadas (NBR 9050). |
 
@@ -148,20 +148,20 @@ A Pousada Engenho do Vô já tem marca, recepção, equipe e clientes na cidade.
 | Conversão completa (estrutura, isolamento, instalações, acabamento) 12 × R$ 88 mil | R$ 1.056.000 |
 | Mobiliário e enxoval padrão hoteleiro 12 × R$ 25 mil | R$ 300.000 |
 | Escada metálica, passarelas, guarda-corpos e brises | R$ 235.000 |
-| Área de lazer (deck, ofurô, fogo de chão), 2 vagas e paisagismo | R$ 150.000 |
+| Estacionamento (4 vagas, piso drenante, portão) e paisagismo | R$ 70.000 |
 | Infraestrutura (água, esgoto, entrada elétrica, SPDA, PPCI) | R$ 120.000 |
 | Projetos, aprovações, incorporação, registro e jurídico | R$ 120.000 |
 | Fundações | R$ 90.000 |
 | Energia solar (≈ 20 kWp) | R$ 80.000 |
 | Cobertura termoacústica, calhas e drenagem | R$ 70.000 |
 | Transporte e içamento com guindaste | R$ 60.000 |
-| **Subtotal** | **R$ 2.545.000** |
-| Contingência (10%) | R$ 254.500 |
-| **Total de obra** | **R$ 2.799.500** |
+| **Subtotal** | **R$ 2.465.000** |
+| Contingência (10%) | R$ 246.500 |
+| **Total de obra** | **R$ 2.711.500** |
 | Terreno (custo de oportunidade) | R$ 250.000 |
-| **Investimento total considerado** | **R$ 3.049.500** |
+| **Investimento total considerado** | **R$ 2.961.500** |
 
-Ponto de atenção: o custo por unidade (R$ 233 mil) parece alto para "container", mas inclui a parte que ninguém coloca no anúncio de container pronto: escada, passarelas, cobertura, lazer, mobília hoteleira, legalização e incorporação.
+Ponto de atenção: o custo por unidade (R$ 226 mil) parece alto para "container", mas inclui a parte que ninguém coloca no anúncio de container pronto: escada, passarelas, cobertura, estacionamento, mobília hoteleira, legalização e incorporação.
 
 ---
 
@@ -171,19 +171,19 @@ Deduções aplicadas sobre a receita: comissão e marketing 20% (vendas de multi
 
 | Cenário | Preço da cota | % vendido | Receita | Custo total | **Lucro** | Margem | ROI |
 |---|---|---|---|---|---|---|---|
-| Pessimista (custo +15%) | R$ 29.900 | 80% | R$ 3,73 mi | R$ 3,47 mi | **R$ -895 mil** | -24% | -26% |
-| **Base** | R$ 36.900 | 90% | R$ 5,18 mi | R$ 3,05 mi | **R$ 525 mil** | 10% | 17% |
-| Otimista (custo -5%) | R$ 44.900 | 100% | R$ 7,00 mi | R$ 2,91 mi | **R$ 1,92 mi** | 27% | 66% |
+| Pessimista (custo +15%) | R$ 29.900 | 80% | R$ 3,73 mi | R$ 3,37 mi | **R$ -793 mil** | -21% | -24% |
+| **Base** | R$ 36.900 | 90% | R$ 5,18 mi | R$ 2,96 mi | **R$ 613 mil** | 12% | 21% |
+| Otimista (custo -5%) | R$ 44.900 | 100% | R$ 7,00 mi | R$ 2,83 mi | **R$ 2,01 mi** | 29% | 71% |
 
 ### Sensibilidade do lucro (R$ mil, custo base)
 
 | Preço da cota \ % vendido | 70% | 80% | 90% | 100% |
 |---|---|---|---|---|
-| R$ 29.900 | -797 | -475 | -153 | 169 |
-| R$ 34.900 | -420 | -44 | 331 | 707 |
-| R$ 39.900 | -43 | 386 | **816** | 1.245 |
-| R$ 44.900 | 334 | 817 | **1.300** | 1.784 |
-| R$ 49.900 | 710 | 1.247 | 1.785 | 2.322 |
+| R$ 29.900 | -709 | -387 | -65 | 257 |
+| R$ 34.900 | -332 | 44 | 419 | 795 |
+| R$ 39.900 | 45 | 474 | **904** | 1.333 |
+| R$ 44.900 | 422 | 905 | **1.388** | 1.872 |
+| R$ 49.900 | 798 | 1.335 | 1.873 | 2.410 |
 
 Leitura: **cada R$ 5 mil no preço da cota vale ≈ R$ 485 mil de lucro**. O preço pesa mais que a velocidade de venda. Por isso a validação de preço é o primeiro passo.
 
@@ -195,15 +195,15 @@ Premissas: vendas de 90% das cotas ao longo de 24 meses, 20% de entrada e saldo 
 
 | Estratégia | Exposição máxima de caixa | Caixa volta a zero |
 |---|---|---|
-| Base (20% entrada + 36x, obra no mês 3) | R$ 2,65 mi | mês 44 |
-| Entrada de 30% + 24x | R$ 2,40 mi | mês 34 |
-| Pré-venda por 7 meses antes de iniciar a obra | R$ 2,30 mi | mês 42 |
+| Base (20% entrada + 36x, obra no mês 3) | R$ 2,57 mi | mês 43 |
+| Entrada de 30% + 24x | R$ 2,31 mi | mês 33 |
+| Pré-venda por 7 meses antes de iniciar a obra | R$ 2,21 mi | mês 41 |
 
 A comissão consome praticamente toda a entrada. Na prática, **a obra é paga com capital próprio ou financiamento**, e o lucro só aparece no caixa a partir do 3º ou 4º ano.
 
 **Como reduzir a exposição:**
 
-1. **Construir em 2 fases.** Fase 1: Bloco B (6 unidades, nos fundos) + escada + lazer, ≈ R$ 1,5 a 1,6 mi. Fase 2 (Bloco A, perto da rua) só depois de vender 60% das cotas da Fase 1. A ordem é obrigatória: depois que o Bloco A estiver pronto, não há como levar containers até os fundos.
+1. **Construir em 2 fases.** Fase 1: Bloco B (6 unidades, nos fundos) + escada + estacionamento, ≈ R$ 1,4 a 1,5 mi. Fase 2 (Bloco A, perto da rua) só depois de vender 60% das cotas da Fase 1. A ordem é obrigatória: depois que o Bloco A estiver pronto, não há como levar containers até os fundos.
 2. **Antecipação de recebíveis:** a carteira de parcelas das cotas pode ser descontada em securitizadora ou fintech de crédito imobiliário (custo de 1,2% a 1,8% ao mês).
 3. **Entrada maior com desconto:** oferecer 5% a 8% de desconto para pagamento com 50% de entrada.
 4. **Sócio investidor** entrando com o capital da obra e remunerado na carteira de recebíveis.
@@ -214,8 +214,8 @@ A comissão consome praticamente toda a entrada. Na prática, **a obra é paga c
 
 | Modelo | Retorno | Risco | Quando faz sentido |
 |---|---|---|---|
-| **Multipropriedade (100%)** | Lucro de R$ 0,5 a 1,9 mi em 3 a 4 anos + taxa de gestão recorrente | Alto: depende de preço e velocidade de venda | Se a pré-venda provar demanda a ≥ R$ 40 mil por cota |
-| **Pousada própria (sem vender)** | ≈ R$ 320 mil/ano de lucro operacional (diária R$ 380, ocupação 55%, margem 35%); payback ≈ 9,5 anos | Médio: risco operacional, sem risco de venda | Se houver capital paciente e a pousada já opera com boa ocupação |
+| **Multipropriedade (100%)** | Lucro de R$ 0,6 a 2,0 mi em 3 a 4 anos + taxa de gestão recorrente | Alto: depende de preço e velocidade de venda | Se a pré-venda provar demanda a ≥ R$ 40 mil por cota |
+| **Pousada própria (sem vender)** | ≈ R$ 320 mil/ano de lucro operacional (diária R$ 380, ocupação 55%, margem 35%); payback ≈ 9,2 anos | Médio: risco operacional, sem risco de venda | Se houver capital paciente e a pousada já opera com boa ocupação |
 | **Híbrido** (6 unidades em multipropriedade + 6 na pousada) | Venda paga boa parte da obra e a pousada fica com receita recorrente | Médio | **Opção mais equilibrada para o perfil de PME** |
 
 ---
@@ -225,11 +225,12 @@ A comissão consome praticamente toda a entrada. Na prática, **a obra é paga c
 | Risco | Impacto | Mitigação |
 |---|---|---|
 | Lei municipal não permitir CA 1,28, 3 pavimentos ou construção na divisa | Inviabiliza o projeto como desenhado | Consulta prévia à prefeitura antes de qualquer gasto. Plano B: 2 pavimentos (8 unidades). |
-| Exigência de vagas de garagem | O lote comporta só 2 vagas na frente | Convênio com estacionamento próximo ou uso da estrutura da pousada para as demais. Confirmar se a lei aceita. |
+| Exigência de vagas de garagem | O lote comporta 4 vagas para 12 unidades | Convênio com estacionamento próximo ou uso da estrutura da pousada para as demais. Confirmar se a lei aceita. |
+| Produto sem área de lazer própria | Cota perde valor percebido frente a concorrentes com piscina/ofurô em Monte Verde | Incluir no contrato o uso da estrutura da pousada (café, lazer). Alternativa barata: deck com ofurô no topo do núcleo de escada (≈ R$ 40 a 60 mil). |
 | Preço da cota abaixo de R$ 35 mil | Prejuízo | Pré-venda com sinal antes da obra (seção 10). |
 | Venda lenta (cidade pequena, produto novo) | Caixa travado | Vender primeiro para a base de hóspedes; fases; canal de corretores especializados em multipropriedade. |
 | Obra em container estourar custo | Margem some | Contratar fornecedor de container modular com preço fechado (turnkey) e 10% de contingência. |
-| Içamento dos containers dos fundos (até 60 m da rua, faixa lateral de só 2 m nos fundos) | Guindaste maior ou impossibilidade de montar o Bloco B depois do A | Montar do fundo para a frente; orçar guindaste com alcance de 60 m ou guindaste menor posicionado dentro do lote na faixa larga da frente. Validar com a empresa de içamento antes de fechar o projeto. |
+| Içamento dos containers dos fundos (até 68 m da rua, faixa lateral de só 1,6 m nos fundos) | Guindaste maior ou impossibilidade de montar o Bloco B depois do A | Montar do fundo para a frente; orçar guindaste com alcance de 68 m ou guindaste menor posicionado dentro do lote, no pátio do estacionamento (15,7 m livres na frente). Validar com a empresa de içamento antes de fechar o projeto. |
 | Conforto térmico ruim | Reclamações, desvalorização | Isolamento bem especificado e cobertura ventilada. Visitar um projeto de container na serra antes de contratar. |
 | Insegurança jurídica do produto | Distratos e processos | Contrato e convenção feitos por advogado com experiência em Lei 13.777/2018; registro da incorporação antes de vender. |
 | Corrosão do aço | Manutenção alta no longo prazo | Pintura epóxi + PU, cobertura que protege o topo dos containers, fundo de reserva. |
@@ -245,7 +246,7 @@ A comissão consome praticamente toda a entrada. Na prática, **a obra é paga c
 | 3 | 3 orçamentos turnkey de containers modulares (por unidade e conjunto) | Empreendedor | 30 dias | ≤ R$ 120 mil por unidade (container + conversão) |
 | 4 | Pesquisa de preço: multipropriedades e chalés em Monte Verde e região | Empreendedor | 20 dias | Cota equivalente ≥ R$ 40 mil |
 | 5 | Pré-venda: lista de interesse com a base de hóspedes, usando o vídeo 3D, com sinal reembolsável | Pousada | 45 dias | ≥ 30 reservas com sinal |
-| 6 | Definir funding (capital próprio, sócio, antecipação de recebíveis) | Empreendedor | 60 dias | R$ 1,6 mi garantidos para a Fase 1 |
+| 6 | Definir funding (capital próprio, sócio, antecipação de recebíveis) | Empreendedor | 60 dias | R$ 1,5 mi garantidos para a Fase 1 |
 | 7 | Advogado para estrutura de incorporação e multipropriedade | Jurídico | 60 dias | Minuta de convenção e contrato |
 
 **Regra de decisão:** itens 1, 4 e 5 aprovados = seguir com a Fase 1. Qualquer um reprovado = reavaliar como pousada própria ou modelo híbrido.

@@ -63,7 +63,7 @@
   <div class="kpi"><div class="v">12</div><div class="l">unidades de ~28 m² úteis</div></div>
   <div class="kpi"><div class="v">156</div><div class="l">cotas de 4 semanas/ano</div></div>
   <div class="kpi"><div class="v">R$ 5,8 mi</div><div class="l">VGV no cenário base</div></div>
-  <div class="kpi"><div class="v">R$ 2,8 mi</div><div class="l">obra estimada, chave na mão</div></div>
+  <div class="kpi"><div class="v">R$ 2,7 mi</div><div class="l">obra estimada, chave na mão</div></div>
 </div>
 <div id="endnote" class="ov">Estudo preliminar. Valores estimados, sujeitos a projeto executivo e à legislação municipal.</div>
 <div id="prog" class="ov"></div>
@@ -89,11 +89,11 @@ const wAt = X => WF + (WB - WF) * X / L;
 const OX = -L / 2;                      // centraliza o lote na origem
 const C_LEN = 12.19, C_W = 2.44, C_H = 2.90;   // container 40' HC
 const PASS = 1.20;                       // largura da passarela
-const X_A = 8.0;                         // recuo frontal (acesso + 2 vagas)
 const CORE = 3.5;                        // nucleo de escada
-const X_CORE = X_A + 2 * C_LEN;          // 30.38
-const X_B = X_CORE + CORE;               // 33.88
-const X_END = X_B + 2 * C_LEN;           // 58.26
+const X_A = L - 4 * C_LEN - CORE;        // 15.74: predio encostado no fundo; frente livre para estacionamento
+const X_CORE = X_A + 2 * C_LEN;          // 40.12
+const X_B = X_CORE + CORE;               // 43.62
+const X_END = X_B + 2 * C_LEN;           // 68.00 (muro do fundo)
 const ROOF_Y = 3 * C_H + 0.3;
 
 // ---------------- Utilidades ----------------
@@ -240,7 +240,7 @@ function wallBetween(x1, z1, x2, z2, h, m = mat.wall, t = .15) {
 }
 wallBetween(0, WF + .08, L, WB + .08, 1.9);          // divisa direita (inclinada)
 wallBetween(0, -.08, X_A, -.08, 1.9);               // divisa maior, trecho frontal
-wallBetween(X_END, -.08, L, -.08, 1.9);             // divisa maior, fundos
+if (L - X_END > .1) wallBetween(X_END, -.08, L, -.08, 1.9);   // divisa maior, fundos
 wallBetween(L + .08, 0, L + .08, WB, 1.9);          // fundo
 wallBetween(-.05, 0, -.05, 1.1, 1.9);               // frente (muro + portao)
 const gate = box(.08, 1.9, WF - 1.1, mat.wood, OX - .05, .95, 1.1 + (WF - 1.1) / 2, scene);
@@ -446,7 +446,7 @@ for (let X = X_A + .3; X <= X_END; X += 6.1) {
 const roofSegs = [];
 function roofSeg(X0, len) {
   const g = new THREE.Group();
-  const depth = C_W + PASS + .45;
+  const depth = C_W + PASS + .25;        // 3,89 m: cabe no fundo de 4 m
   box(len, .16, depth, mat.roof, len / 2, 0, depth / 2 - .1, g);
   box(len, .3, .06, mat.wood, len / 2, -.05, depth - .1, g);            // testeira em madeira
   const cols = Math.floor((len - .2) / 1.15), rows = 2;
@@ -460,7 +460,7 @@ function roofSeg(X0, len) {
   return g;
 }
 roofSeg(X_A - .3, C_LEN + .3); roofSeg(X_A + C_LEN, C_LEN); roofSeg(X_CORE, CORE);
-const featuredRoof = roofSeg(X_B, C_LEN); roofSeg(X_B + C_LEN, C_LEN + .3);
+const featuredRoof = roofSeg(X_B, C_LEN); roofSeg(X_B + C_LEN, C_LEN);
 
 // ---------------- Paisagismo, acesso e lazer ----------------
 // caminho sob as passarelas + acesso frontal
@@ -476,40 +476,22 @@ for (let X = X_A + 1; X < X_END; X += 2.2 + rnd() * 1.5) {
   s.position.set(OX + X, .3, C_W + PASS + .2 + rnd() * (free - .6)); s.castShadow = true; scene.add(s);
   late.push({ obj: s, a: 29.4 + rnd() * .8, b: 30.6 + rnd() * .8, kind: 'pop' });
 }
-// lazer nos fundos
-const leis = new THREE.Group(); leis.position.set(OX, 0, 0); scene.add(leis);
-const deckM = mat.deck.clone(); deckM.map = texDeck.clone(); deckM.map.repeat.set(1, 6);
-box(L - X_END - .5, .22, 3.7, deckM, (X_END + L) / 2, .11, 2.0, leis);
-const ofuro = new THREE.Mesh(new THREE.CylinderGeometry(1.05, 1.05, .85, 28), mat.wood);
-ofuro.position.set(X_END + 1.7, .62, 1.6); ofuro.castShadow = true; leis.add(ofuro);
-const water = new THREE.Mesh(new THREE.CylinderGeometry(.9, .9, .02, 28), mat.water);
-water.position.set(X_END + 1.7, 1.055, 1.6); leis.add(water);
-const pit = new THREE.Mesh(new THREE.TorusGeometry(.75, .22, 8, 20), mat.stone);
-pit.rotation.x = Math.PI / 2; pit.position.set(X_END + 5.0, .32, 2.0); pit.castShadow = true; leis.add(pit);
-const flames = [];
-for (let i = 0; i < 5; i++) {
-  const fl = new THREE.Mesh(new THREE.ConeGeometry(.16, .7, 6), mat.fire);
-  fl.position.set(X_END + 5.0 + Math.cos(i * 1.3) * .28, .6, 2.0 + Math.sin(i * 1.3) * .28);
-  leis.add(fl); flames.push(fl);
-}
-const fireLight = new THREE.PointLight(0xff9a40, 0, 9, 1.8);
-fireLight.position.set(X_END + 5.0, 1.2, 2.0); leis.add(fireLight);
-for (let k = 0; k < 3; k++) {
-  const a = k * Math.PI * 2 / 3;
-  const b = box(1.1, .42, .4, mat.wood, X_END + 5.0 + Math.cos(a) * 1.45, .43, 2.0 + Math.sin(a) * 1.45, leis);
-  b.rotation.y = -a + Math.PI / 2;
-}
-// estacionamento frontal: 2 vagas na testada de 7,5 m
+// estacionamento frontal: 4 vagas longitudinais (2 por lado) + corredor central de manobra
 const cars = new THREE.Group(); cars.position.set(OX, 0, 0); scene.add(cars);
-[2.9, 5.1].forEach(z => box(5.0, .02, .1, mat.white, 3.4, .1, z, cars));      // faixas das vagas
-box(4.3, .75, 1.8, M({ color: 0xb5643c, roughness: .35, metalness: .5 }), 3.4, .55, 6.25, cars);
-box(2.3, .6, 1.6, mat.hglass, 3.2, 1.2, 6.25, cars);
-const rearTree = araucaria(OX + L - 1.0, 3.2, 11, .5);
-const rearTree2 = tree(OX + L - .9, .8, .8);
-late.push({ obj: leis, a: 29.8, b: 31, kind: 'pop' }, { obj: cars, a: 29.6, b: 30.8, kind: 'pop' }, { obj: rearTree, a: 30, b: 31.2, kind: 'pop' },
-  { obj: rearTree2, a: 30.1, b: 31.3, kind: 'pop' });
-const frontTree = tree(OX + 7.0, 6.4, 1.0);
-late.push({ obj: frontTree, a: 29.8, b: 30.8, kind: 'pop' });
+const VAGA = 5.5, PARK_X0 = .8;
+for (let i = 0; i <= 2; i++) {                                   // faixas transversais
+  for (const [z0, z1] of [[.2, 2.5], [5.0, 6.9]]) box(.1, .02, z1 - z0, mat.white, PARK_X0 + i * VAGA, .1, (z0 + z1) / 2, cars);
+}
+box(2 * VAGA, .02, .1, mat.white, PARK_X0 + VAGA, .1, 2.5, cars);
+box(2 * VAGA, .02, .1, mat.white, PARK_X0 + VAGA, .1, 5.0, cars);
+function car(x, z, color) {
+  box(4.3, .75, 1.8, M({ color, roughness: .35, metalness: .5 }), x, .55, z, cars);
+  box(2.3, .6, 1.6, mat.hglass, x - .2, 1.2, z, cars);
+}
+car(PARK_X0 + VAGA / 2, 1.35, 0x8e9aa3); car(PARK_X0 + 1.5 * VAGA, 1.35, 0xe9e5dc);
+car(PARK_X0 + VAGA / 2, 5.95, 0xb5643c);                         // 1 vaga livre para mostrar a marcacao
+for (let k = 0; k < 3; k++) box(.6, .9, .25, mat.steel, 13.0 + k * .8, .45, 6.1, cars);   // motos/bicicletario
+late.push({ obj: cars, a: 29.6, b: 30.8, kind: 'pop' });
 
 // ---------------- Cotas do terreno ----------------
 const dims = new THREE.Group(); scene.add(dims);
@@ -543,24 +525,29 @@ const keys = [
   [0,    [-75, 85, 100], [-4, 0, 6]],
   [5,    [-25, 92, 46], [0, 0, 3]],
   [9.5,  [2, 104, 10],  [1, 0, 3]],
-  [12.5, [34, 58, 58],  [-2, 3, 3]],
-  [19,   [8, 34, 62],   [-2, 4.5, 3]],
-  [25.5, [-26, 26, 50], [-2, 5, 3]],
-  [31,   [-52, 15, 26], [-8, 5, 3]],
-  [33.5, [-38, 2.4, 3.1], [-24, 2.5, 3.3], true],
-  [35.5, [-26, 2.2, 3.0], [-10, 2.0, 3.0], true],
-  [41,   [15, 2.0, 3.0], [31, 1.2, 2.6], true],
-  [43,   [24.5, 2.1, 3.0], [32, .8, 2.2], true],
-  [45.5, [29.0, 5.0, 3.6], [33.0, .3, 1.6]],
-  [47,   [9, 21, 8.5], [8, 6, 1.3]],
-  [52.5, [6.5, 15.5, 5.5], [8, 6, 1.2]],
-  [55,   [-55, 42, 66], [-2, 3, 3]],
-  [60,   [-82, 56, 88], [-2, 3, 3]],
-].map(([t, p, l, flat]) => ({ t, p: new THREE.Vector3(...p), l: new THREE.Vector3(...l), flat }));
+  [12.5, [40, 58, 58],  [4, 3, 3]],
+  [19,   [14, 34, 62],  [4, 4.5, 3]],
+  [25.5, [-20, 26, 50], [4, 5, 3]],
+  [31,   [-50, 16, 26], [-14, 3, 3]],
+  [33.5, [-44, 12, 13], [-28, 0, 3.6]],
+  [35.5, [-38, 2.4, 3.7], [-24, 2.0, 3.6], true],
+  [37.5, [-24, 2.2, 3.7], [-8, 2.0, 3.2], true],
+  [43.8, [24, 2.0, 3.0], [36, 1.6, 2.8], true],
+  [44.0, [26, 2.0, 3.0], [38, 1.6, 2.8], true],
+  [44.01, [44, 17, 13], [14, 4, 2], false, true],
+  [46.2, [36, 19, 11], [16, 5, 2]],
+  [47.2, [17, 21, 8.5], [15.7, 6, 1.3]],
+  [52.5, [14.2, 15.5, 5.5], [15.7, 6, 1.2]],
+  [55,   [-55, 42, 66], [2, 3, 3]],
+  [60,   [-82, 56, 88], [2, 3, 3]],
+].map(([t, p, l, flat, cut]) => ({ t, p: new THREE.Vector3(...p), l: new THREE.Vector3(...l), flat, cut }));
 function tangents(prop) {
   return keys.map((k, i) => {
     if (i === 0 || i === keys.length - 1) return new THREE.Vector3();
-    const v = keys[i + 1][prop].clone().sub(keys[i - 1][prop]).divideScalar(keys[i + 1].t - keys[i - 1].t);
+    // corte de camera: cada tomada usa so os quadros-chave do proprio lado
+    const a = keys[i].cut ? i : i - 1, b = keys[i + 1].cut ? i : i + 1;
+    if (a === b) return new THREE.Vector3();
+    const v = keys[b][prop].clone().sub(keys[a][prop]).divideScalar(keys[b].t - keys[a].t);
     if (keys[i].flat) v.y = v.z = 0;   // trechos ao nivel dos olhos: sem desvio lateral/vertical
     return v;
   });
@@ -581,9 +568,10 @@ const $ = id => document.getElementById(id);
 const caps = [
   [5.5, 11.8, 'O TERRENO', 'Lote de 391 m² com 68 m de profundidade, frente de 7,5 m para a rua e fundo de 4 m'],
   [12.4, 25.6, 'IMPLANTAÇÃO', '12 containers 40\' HC encostados na divisa maior, empilhados em 3 pavimentos', ['Térreo', '1º pavimento', '2º pavimento']],
-  [26, 31.2, 'APOIO', 'Escada central, passarelas de 1,20 m, cobertura com energia solar e 2 vagas na frente'],
-  [32.2, 40.8, 'CIRCULAÇÃO', 'Jardim lateral sob as passarelas, com brises de madeira para privacidade'],
-  [41.4, 45.8, 'LAZER', 'Deck, ofurô aquecido e fogo de chão nos fundos, longe da rua'],
+  [26, 31.2, 'APOIO', 'Escada central, passarelas de 1,20 m e cobertura termoacústica com energia solar'],
+  [31.6, 35.6, 'ESTACIONAMENTO', '4 vagas e bicicletário na frente de 7,5 m, com o prédio recuado até o fundo do lote'],
+  [36.2, 43.9, 'CIRCULAÇÃO', 'Caminho coberto sob as passarelas, com brises de madeira para privacidade'],
+  [44.3, 46.4, 'IMPLANTAÇÃO', 'Prédio encostado no muro do fundo: a frente fica toda livre para o acesso'],
   [46.6, 53, 'UNIDADE TIPO', '≈ 28 m² úteis · suíte, estar com sofá-cama e kitchenette · até 4 pessoas'],
 ];
 function overlays(t) {
@@ -646,8 +634,6 @@ function update(t) {
   sun.intensity = 2.6 - .5 * g;
   sun.position.set(-30 - 40 * g, 70 - 34 * g, 55 - 10 * g);
   mat.glass.emissiveIntensity = .28 * g;
-  fireLight.intensity = 4 + Math.sin(t * 13) * 1.2 + Math.sin(t * 7.3) * .8;
-  flames.forEach((f, i) => { f.scale.y = .8 + .35 * Math.sin(t * 9 + i * 2.1); });
   // camera
   camera.position.copy(herm(t, 'p', tp));
   camera.lookAt(herm(t, 'l', tl));

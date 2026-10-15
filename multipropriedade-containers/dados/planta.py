@@ -4,7 +4,7 @@ from pathlib import Path
 
 L, WF, WB = 68.0, 7.5, 4.0          # profundidade, frente (rua), fundo
 C, CORE, PASS = 12.19, 3.5, 1.20    # container 40' HC, nucleo de escada, passarela
-X_A = 8.0                           # recuo frontal (acesso + 2 vagas)
+X_A = L - 4 * C - CORE              # predio encostado no fundo; frente livre para estacionamento
 XC = X_A + 2 * C; XB = XC + CORE; XE = XB + 2 * C
 w = lambda X: WF + (WB - WF) * X / L
 fmt = lambda v: f"{v:.2f}".replace(".", ",")
@@ -29,18 +29,19 @@ def text(X, Z, t, size=12, fill="#1d2226", weight=600, anchor="middle"):
     o.append(f'<text x="{x}" y="{y}" font-size="{size}" fill="{fill}" text-anchor="{anchor}" font-weight="{weight}">{t}</text>')
 
 rect(0, X_A, .2, w(X_A) - .2, "#e7e1d4")
-text(X_A / 2, 1.6, "Acesso", 11)
-for z in (2.9, 5.1):
-    o.append(f'<line x1="{P(.9,z)[0]}" y1="{P(.9,z)[1]}" x2="{P(5.9,z)[0]}" y2="{P(5.9,z)[1]}" stroke="#fff" stroke-width="2"/>')
-text(3.4, 4.3, "Vaga 1", 10, "#555", 500); text(3.4, 6.5, "Vaga 2", 10, "#555", 500)
+VAGA, X0 = 5.5, .8
+for i, (z0, z1) in enumerate([(.2, 2.5), (5.0, 6.9)]):
+    for k in range(2):
+        rect(X0 + k * VAGA, X0 + (k + 1) * VAGA, z0, z1, "#d6d0c2")
+        text(X0 + (k + .5) * VAGA, (z0 + z1) / 2 + .3, f"Vaga {i * 2 + k + 1}", 10, "#555", 500)
+text(X0 + VAGA, 3.95, "Corredor de manobra 2,5 m", 10, "#6b5a3d", 500)
+text(13.6, 6.2, "Motos", 9, "#555", 500)
 rect(X_A, XE, 2.44, 2.44 + PASS, "#ece6d8", 'stroke-dasharray="4 3"')
 for X in (X_A, X_A + C, XB, XB + C):
     rect(X, X + C, 0, 2.44, "#3b4045"); text(X + C / 2, 1.45, "Unidade tipo · 40' HC", 11, "#fff")
 rect(XC, XB, 0, 2.44, "url(#h)"); text(XC + CORE / 2, -.35, "Escada", 11)
-rect(XE + .25, L - .25, .2, w(L - .25) - .2, "#d9b48a")
-text((XE + L) / 2, 1.9, "Lazer", 12); text((XE + L) / 2, 2.9, "deck · ofurô · fogo", 10, "#4a3a28", 500)
 text((X_A + XE) / 2, 3.25, "Passarela 1,20 m (pav. 1 e 2) · caminho coberto no térreo", 10, "#6b5a3d")
-text(24, 5.2, f"Jardim lateral (faixa livre de {fmt(w(X_A)-2.44)} m na frente a {fmt(w(XE)-2.44)} m nos fundos)", 11, "#3d5a2a")
+text(30, 4.7, f"Jardim lateral (faixa livre de {fmt(w(X_A)-2.44)} m na frente a {fmt(w(XE)-2.44)} m nos fundos)", 11, "#3d5a2a")
 
 yb = my + 7.5 * S + 44
 o.append(f'<line x1="{mx}" y1="{yb}" x2="{mx+L*S}" y2="{yb}" stroke="#b5643c" stroke-width="1.2"/>')
