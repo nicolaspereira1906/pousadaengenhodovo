@@ -203,7 +203,7 @@ A comissão consome praticamente toda a entrada. Na prática, **a obra é paga c
 
 **Como reduzir a exposição:**
 
-1. **Construir em 2 fases.** Fase 1: Bloco B (6 unidades) + escada + lazer, ≈ R$ 1,5 a 1,6 mi. Fase 2 (Bloco A) só depois de vender 60% das cotas da Fase 1.
+1. **Construir em 2 fases.** Fase 1: Bloco B (6 unidades, nos fundos) + escada + lazer, ≈ R$ 1,5 a 1,6 mi. Fase 2 (Bloco A, perto da rua) só depois de vender 60% das cotas da Fase 1. A ordem é obrigatória: depois que o Bloco A estiver pronto, não há como levar containers até os fundos.
 2. **Antecipação de recebíveis:** a carteira de parcelas das cotas pode ser descontada em securitizadora ou fintech de crédito imobiliário (custo de 1,2% a 1,8% ao mês).
 3. **Entrada maior com desconto:** oferecer 5% a 8% de desconto para pagamento com 50% de entrada.
 4. **Sócio investidor** entrando com o capital da obra e remunerado na carteira de recebíveis.
@@ -229,6 +229,7 @@ A comissão consome praticamente toda a entrada. Na prática, **a obra é paga c
 | Preço da cota abaixo de R$ 35 mil | Prejuízo | Pré-venda com sinal antes da obra (seção 10). |
 | Venda lenta (cidade pequena, produto novo) | Caixa travado | Vender primeiro para a base de hóspedes; fases; canal de corretores especializados em multipropriedade. |
 | Obra em container estourar custo | Margem some | Contratar fornecedor de container modular com preço fechado (turnkey) e 10% de contingência. |
+| Içamento dos containers dos fundos (até 60 m da rua, faixa lateral de só 2 m nos fundos) | Guindaste maior ou impossibilidade de montar o Bloco B depois do A | Montar do fundo para a frente; orçar guindaste com alcance de 60 m ou guindaste menor posicionado dentro do lote na faixa larga da frente. Validar com a empresa de içamento antes de fechar o projeto. |
 | Conforto térmico ruim | Reclamações, desvalorização | Isolamento bem especificado e cobertura ventilada. Visitar um projeto de container na serra antes de contratar. |
 | Insegurança jurídica do produto | Distratos e processos | Contrato e convenção feitos por advogado com experiência em Lei 13.777/2018; registro da incorporação antes de vender. |
 | Corrosão do aço | Manutenção alta no longo prazo | Pintura epóxi + PU, cobertura que protege o topo dos containers, fundo de reserva. |
