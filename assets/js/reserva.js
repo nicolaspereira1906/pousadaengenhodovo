@@ -23,7 +23,8 @@ export function textoHospedes({ adultos, criancas }) {
 
 export function mensagem({ entrada, saida, adultos, criancas, pets }) {
   const linhas = [
-    "Olá! Quero alugar na Pousada Engenho do Vô 😊",
+    // "Quero fazer uma reserva!" é o texto que o gatilho de conversão do Tag Manager procura no link
+    "Olá! Quero fazer uma reserva! 😊",
     "",
     `📅 Entrada: ${dataCurta(entrada)}`,
     `📅 Saída: ${dataCurta(saida)}`,
