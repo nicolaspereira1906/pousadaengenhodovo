@@ -27,6 +27,7 @@ FOTOS_ORIGINAIS = PASTA_POUSADA / "Editadas-20251103T211832Z-1-001" / "Editadas"
 LOGO_ORIGINAL = PASTA_POUSADA / "LOGO ATUALIZADO.png"
 REGIAO_ORIGINAIS = RAIZ / "fontes" / "regiao"
 
+SITE = "https://www.pousadaengenhodovo.com.br"
 WHATSAPP = "5535988773223"
 ENDERECO = "Rua Artur Silva Bernardes, 14, Centro, Camanducaia - MG"
 BOOKING = "https://www.booking.com/hotel/br/hostel-engenho-do-vo-camanducaia.pt-br.html"
@@ -247,7 +248,12 @@ def gerar_html(noticias):
     modelo = (RAIZ / "template.html").read_text(encoding="utf-8")
     saida = re.sub(r"\{\{(\w+)\}\}", lambda m: trocas[m.group(1)], modelo)
     (RAIZ / "index.html").write_text(saida, encoding="utf-8")
-    print(f"index.html gerado ({len(noticias)} notícias)")
+    (RAIZ / "sitemap.xml").write_text(
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        f'  <url><loc>{SITE}/</loc><lastmod>{datetime.now():%Y-%m-%d}</lastmod></url>\n'
+        '</urlset>\n', encoding="utf-8")
+    print(f"index.html e sitemap.xml gerados ({len(noticias)} notícias)")
 
 
 if __name__ == "__main__":

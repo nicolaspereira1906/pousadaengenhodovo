@@ -13,6 +13,7 @@ Para pagar com cartão, o link do Booking.com já vai com as datas e hóspedes p
   e monta galeria, região e vídeos a partir das listas no começo do arquivo.
 - `assets/`: CSS, JavaScript, fotos e logos já otimizados.
 - `dados/noticias.json`: últimas notícias salvas (usado se a busca falhar).
+- SEO: `build.py` também gera o `sitemap.xml`; `robots.txt` e `llms.txt` (resumo da pousada para IAs) são fixos.
 
 ## Comandos
 
