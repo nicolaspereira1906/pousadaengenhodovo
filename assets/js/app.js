@@ -20,7 +20,7 @@ aoRolar();
 // ---------- estado da reserva ----------
 const hoje = new Date();
 hoje.setHours(0, 0, 0, 0);
-const estado = { entrada: null, saida: null, adultos: 2, criancas: 0, pets: 0 };
+const estado = { entrada: null, saida: null, adultos: 2, criancas: 0 };
 let previa = null; // dia sob o mouse enquanto escolhe a saída
 
 // ---------- calendário ----------
@@ -136,12 +136,12 @@ function atualizar() {
   const curta = (x) => `${x.getDate()} ${MESES[x.getMonth()].slice(0, 3)}`;
 
   $("#dica").innerHTML = !d.entrada ? "Toque na data de <b>entrada</b>"
-    : !d.saida ? "Agora toque na data de <b>saída</b>" : "Datas escolhidas! Pode trocar quando quiser.";
+    : !d.saida ? "Agora toque na data de <b>saída</b>" : "Para mudar, toque em outra data de entrada.";
 
   let resumo = "";
   if (pronto) {
     resumo = `${curta(d.entrada)} → ${curta(d.saida)} · ${plural(noites(d.entrada, d.saida), "noite", "noites")}` +
-      ` · ${textoHospedes(d)}${d.pets ? ` · ${plural(d.pets, "pet", "pets")}` : ""}`;
+      ` · ${textoHospedes(d)}`;
   }
   $("#resumo").textContent = resumo;
 
@@ -234,15 +234,15 @@ for (const b of $$(".yt")) {
 }
 
 // ---------- tempo (Open-Meteo, grátis e sem chave) ----------
-const ICONES = [[0, "☀️"], [2, "🌤️"], [3, "☁️"], [48, "🌫️"], [67, "🌧️"], [77, "❄️"], [82, "🌦️"], [99, "⛈️"]];
-const icone = (codigo) => ICONES.find(([max]) => codigo <= max)?.[1] ?? "🌡️";
+const TEMPO = [[0, "Sol"], [2, "Sol e nuvens"], [3, "Nublado"], [48, "Neblina"], [67, "Chuva"], [77, "Neve"], [82, "Pancadas"], [99, "Trovoadas"]];
+const tempo = (codigo) => TEMPO.find(([max]) => codigo <= max)?.[1] ?? "";
 fetch("https://api.open-meteo.com/v1/forecast?latitude=-22.7547&longitude=-46.1449" +
   "&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=America%2FSao_Paulo&forecast_days=5")
   .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
   .then(({ daily }) => {
     $("#clima-dias").innerHTML = daily.time.map((dia, i) => {
       const nome = i === 0 ? "hoje" : new Date(`${dia}T12:00`).toLocaleDateString("pt-BR", { weekday: "short" }).replace(".", "");
-      return `<div class="clima-dia"><b>${nome}</b><span aria-hidden="true">${icone(daily.weather_code[i])}</span>` +
+      return `<div class="clima-dia"><b>${nome}</b><span>${tempo(daily.weather_code[i])}</span>` +
         `${Math.round(daily.temperature_2m_max[i])}° / ${Math.round(daily.temperature_2m_min[i])}°</div>`;
     }).join("");
     $("#clima").hidden = false;

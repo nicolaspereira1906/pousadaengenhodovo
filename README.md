@@ -2,7 +2,7 @@
 
 Site da pousada em Camanducaia, MG: <https://www.pousadaengenhodovo.com.br>
 
-O visitante escolhe as datas no calendário e quantas pessoas vêm (adultos, crianças, pets).
+O visitante escolhe as datas no calendário e quantas pessoas vêm (adultos e crianças).
 O botão **Quero alugar!** abre o WhatsApp (+55 35 98877-3223) com uma mensagem pronta com esses dados.
 Para pagar com cartão, o link do Booking.com já vai com as datas e hóspedes preenchidos.
 

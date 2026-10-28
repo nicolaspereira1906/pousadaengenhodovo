@@ -57,17 +57,17 @@ FOTOS_HERO = ["fachada", "varanda", "quarto-casal-2", "portal"]
 
 # (arquivo em fontes/regiao, nome, título, texto, crédito, licença, página)
 REGIAO = [
-    ("r5.jpg", "monte-verde", "Monte Verde", "O distrito mais famoso de Camanducaia: chalés, fondue, chocolate e araucárias. Cerca de 30 km da pousada.",
+    ("r5.jpg", "monte-verde", "Monte Verde", "Distrito de Camanducaia, a uns 30 km da pousada. Tem chalés, restaurantes de fondue, lojas de chocolate e muita araucária.",
      "Rafael Vianna Croffi", "CC BY 2.0", "https://commons.wikimedia.org/wiki/File:Monte_Verde_-_MG_(31640041985).jpg"),
-    ("r3.jpg", "pedra-redonda", "Pedra Redonda", "Trilha de cerca de 1 hora, de nível moderado, até um dos mirantes mais bonitos da Mantiqueira.",
+    ("r3.jpg", "pedra-redonda", "Pedra Redonda", "Trilha de mais ou menos uma hora, de nível moderado. Lá de cima se vê boa parte da serra.",
      "Rafael Vianna Croffi", "CC BY 2.0", "https://commons.wikimedia.org/wiki/File:Pedra_Redonda_(31573907961).jpg"),
-    ("r4.jpg", "pico-do-selado", "Pico do Selado", "O ponto mais alto da região, com 2.082 m. Para quem gosta de aventura.",
+    ("r4.jpg", "pico-do-selado", "Pico do Selado", "Com 2.082 m, é o ponto mais alto da região.",
      "Igorh84", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Pico_do_Selado_-_Vista_01.jpg"),
-    ("r6.jpg", "serra", "Serra da Mantiqueira", "Mar de nuvens, mata atlântica e ar puro de montanha a poucos minutos.",
+    ("r6.jpg", "serra", "Serra da Mantiqueira", "Mata atlântica e araucárias. Nas manhãs frias, a neblina fica parada nos vales.",
      "Rafael Vianna Croffi", "CC BY 2.0", "https://commons.wikimedia.org/wiki/File:Do_topo_da_Pedra_Redonda_(31712520681).jpg"),
-    ("r1.jpg", "camanducaia", "Camanducaia", "Cidade acolhedora do Sul de Minas, à beira da Fernão Dias. Você fica no centro, perto de tudo.",
+    ("r1.jpg", "camanducaia", "Camanducaia", "A cidade da pousada, no Sul de Minas, à beira da Fernão Dias.",
      "Felipe Guimarães", "CC BY 2.0", "https://commons.wikimedia.org/wiki/File:Camanducaia_(Minas_Gerais)_-_Panorama.jpg"),
-    ("r2.jpg", "por-do-sol", "Pôr do sol", "Fim de tarde nas montanhas: o melhor jeito de terminar o dia de passeio.",
+    ("r2.jpg", "por-do-sol", "Pôr do sol", "Fim de tarde visto de Camanducaia.",
      "Felipe Guimarães", "CC BY 2.0", "https://commons.wikimedia.org/wiki/File:P%C3%B4r_do_Sol_em_Camanducaia_(10185821415).jpg"),
 ]
 
@@ -81,7 +81,7 @@ VIDEOS = [
 FEEDS = ['"Monte Verde" Camanducaia', '"Monte Verde" MG turismo', "Camanducaia"]
 BLOQUEIO = re.compile(
     r"elei|vot[oa]|\bturno|candidat|prefeit[oa] eleit|bolsonaro|lula|morre|mort[oe]|tiro|políc|polic|crime|feminic|assassin|"
-    r"pres[oa]\b|prisão|esquartej|vítima|desaparec|balead|facad|estupr|agress|golpe|fraude|acidente|tráfico|droga|roubo|furto|homic|velório|licitaç|concurso|imóve|venda|santa bárbara",
+    r"pres[oa]\b|prisão|esquartej|assalt|vítima|desaparec|balead|facad|estupr|agress|golpe|fraude|acidente|tráfico|droga|roubo|furto|homic|velório|licitaç|concurso|imóve|venda|santa bárbara",
     re.IGNORECASE,
 )
 

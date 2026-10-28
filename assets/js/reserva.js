@@ -21,19 +21,17 @@ export function textoHospedes({ adultos, criancas }) {
   return partes.join(" e ");
 }
 
-export function mensagem({ entrada, saida, adultos, criancas, pets }) {
-  const linhas = [
+export function mensagem({ entrada, saida, adultos, criancas }) {
+  return [
     // "Quero fazer uma reserva!" é o texto que o gatilho de conversão do Tag Manager procura no link
-    "Olá! Quero fazer uma reserva! 😊",
+    "Olá! Quero fazer uma reserva!",
     "",
-    `📅 Entrada: ${dataCurta(entrada)}`,
-    `📅 Saída: ${dataCurta(saida)}`,
-    `🌙 ${plural(noites(entrada, saida), "noite", "noites")}`,
-    `👥 ${textoHospedes({ adultos, criancas })}`,
-  ];
-  if (pets) linhas.push(`🐾 ${plural(pets, "pet", "pets")}`);
-  linhas.push("", "Tem disponibilidade?");
-  return linhas.join("\n");
+    `Entrada: ${dataCurta(entrada)}`,
+    `Saída: ${dataCurta(saida)} (${plural(noites(entrada, saida), "noite", "noites")})`,
+    `Hóspedes: ${textoHospedes({ adultos, criancas })}`,
+    "",
+    "Tem vaga?",
+  ].join("\n");
 }
 
 export const linkWhatsApp = (numero, dados) =>

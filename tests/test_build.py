@@ -11,4 +11,5 @@ assert not noticia_ok("Mulher é encontrada morta com tiro em casa, em Camanduca
 assert not noticia_ok("Lula vence em Santa Bárbara do Monte Verde")
 assert not noticia_ok("Show em Belo Horizonte")
 assert not noticia_ok("Mulher natural de Camanducaia é encontrada esquartejada em São Paulo")
+assert not noticia_ok("Informação sobre assalto à agência do Banco do Brasil em Camanducaia")
 print("ok")
