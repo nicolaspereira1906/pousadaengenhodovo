@@ -71,6 +71,30 @@ REGIAO = [
      "Felipe Guimarães", "CC BY 2.0", "https://commons.wikimedia.org/wiki/File:P%C3%B4r_do_Sol_em_Camanducaia_(10185821415).jpg"),
 ]
 
+# Notas públicas (conferidas em 28/10/2026). Atualize à mão quando mudarem.
+NOTAS = {
+    "google": {"nota": 4.7, "max": 5, "total": 102, "rotulo": "estrelas no Google",
+               "link": "https://www.google.com/maps?cid=5705025642227360171"},
+    "booking": {"nota": 9.3, "max": 10, "total": 48, "rotulo": "Fantástico no Booking", "link": BOOKING + "#tab-reviews"},
+}
+
+# Trechos de avaliações reais, sem alterar o texto (… marca corte)
+AVALIACOES = [
+    ("Google", "Giovani A.", "Era tarde da noite, estava chovendo bastante e fazendo muito frio. Havíamos chegado de uma viagem "
+     "longa e cansativa de São Paulo e procurávamos um lugar. O chuveiro e os quartos são tão bem aquecidos, que ficamos muito tranquilos."),
+    ("Booking", "Uiliade", "Acomodação bem pertinho do centro, em frente ao portal da cidade! A hospitalidade da equipe é fora de série "
+     "e nos deixaram muito a vontade!"),
+    ("Google", "Samuel F.", "Os proprietários, pessoas agradáveis e de boa índole, interagem e contam histórias da cidade e o convívio "
+     "fica ainda mais harmonioso."),
+    ("Google", "Vanessa K.", "Fiquei na suíte 8 e estava tudo muito limpo e aconchegante. … A pousada fica muito bem localizada na entrada "
+     "da cidade, de frente ao portal. Em breve vou voltar à Camanducaia e já sei onde ficar."),
+    ("Booking", "Souza", "Ótima recepção, quartos aconchegantes, cama limpinha e organizada. Tudo preparado para o frio. Café da manhã caprichado."),
+    ("Google", "Sebastian M.", "… uma excelente base para visitar Monte Verde. Muito central, barata e confortável."),
+    ("Google", "Renan A.", "… café da manhã tudo fresquinho e feito na hora, pão de queijo, pão de sal tudo quentinho, preço justo."),
+    ("Google", "Leonardo", "A Gislaine proprietária e seu filho o Nikolas são pessoas fantásticas que cuidam dos hóspedes como se fossem família …"),
+    ("Booking", "Rosemeri", "A simpatia e acolhimento da proprietária. A localização. A limpeza."),
+]
+
 VIDEOS = [
     ("Z_5SYZI0c_Y", "Conheça Camanducaia (4K)", "CurioCidades"),
     ("x2fnsIbJ_vY", "Monte Verde visto de drone (4K)", "Fernando Franchi"),
@@ -229,9 +253,37 @@ def html_noticias(noticias):
     return "\n".join(itens)
 
 
+def num(x):
+    return f"{x:.1f}".replace(".", ",")
+
+
+def html_notas():
+    partes = []
+    for fonte, n in NOTAS.items():
+        pct = round(n["nota"] / n["max"] * 100)
+        selo = (f'<span class="estrelas" style="--p:{pct}%" aria-hidden="true"></span>' if fonte == "google"
+                else '<span class="selo-booking" aria-hidden="true">B.</span>')
+        partes.append(
+            f'<a class="nota nota-{fonte}" href="{e(n["link"])}" target="_blank" rel="noopener" '
+            f'aria-label="{num(n["nota"])} de {n["max"]}, {n["rotulo"]}, {n["total"]} avaliações">'
+            f'{selo}<b class="nota-valor" data-alvo="{n["nota"]}">{num(n["nota"])}</b>'
+            f'<span class="nota-texto">{e(n["rotulo"])}<small>{n["total"]} avaliações</small></span></a>')
+    return "\n".join(partes)
+
+
+def html_avaliacoes():
+    return "\n".join(
+        f'<figure class="avaliacao reveal"><blockquote>{e(texto)}</blockquote>'
+        f'<figcaption>{e(nome)} <span class="fonte fonte-{fonte.lower()}">{fonte}</span></figcaption></figure>'
+        for fonte, nome, texto in AVALIACOES)
+
+
 def gerar_html(noticias):
     hero_video = (ASSETS / "video" / "hero.mp4").exists()
     trocas = {
+        "NOTAS": html_notas(),
+        "AVALIACOES": html_avaliacoes(),
+        "MAPA_ILUSTRADO": (ASSETS / "mapa.svg").read_text(encoding="utf-8"),
         "HERO_FOTOS": html_hero(),
         "HERO_VIDEO": '<video src="assets/video/hero.mp4" autoplay muted loop playsinline aria-hidden="true"></video>' if hero_video else "",
         "GALERIA": html_galeria(),

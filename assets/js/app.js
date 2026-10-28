@@ -236,7 +236,7 @@ for (const b of $$(".yt")) {
 // ---------- tempo (Open-Meteo, grátis e sem chave) ----------
 const TEMPO = [[0, "Sol"], [2, "Sol e nuvens"], [3, "Nublado"], [48, "Neblina"], [67, "Chuva"], [77, "Neve"], [82, "Pancadas"], [99, "Trovoadas"]];
 const tempo = (codigo) => TEMPO.find(([max]) => codigo <= max)?.[1] ?? "";
-fetch("https://api.open-meteo.com/v1/forecast?latitude=-22.7547&longitude=-46.1449" +
+fetch("https://api.open-meteo.com/v1/forecast?latitude=-22.7557&longitude=-46.1484" +
   "&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=America%2FSao_Paulo&forecast_days=5")
   .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
   .then(({ daily }) => {
@@ -254,3 +254,21 @@ const observador = new IntersectionObserver((itens) => {
   for (const i of itens) if (i.isIntersecting) { i.target.classList.add("visto"); observador.unobserve(i.target); }
 }, { rootMargin: "0px 0px -8% 0px" });
 for (const el of $$(".reveal")) observador.observe(el);
+
+// ---------- notas do topo contam até o valor ----------
+if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  for (const el of $$(".nota-valor")) {
+    const alvo = +el.dataset.alvo;
+    const inicio = performance.now() + 1100;
+    const passo = (agora) => {
+      const t = Math.min(1, Math.max(0, (agora - inicio) / 1200));
+      el.textContent = (alvo * (1 - (1 - t) ** 3)).toFixed(1).replace(".", ",");
+      if (t < 1) requestAnimationFrame(passo);
+    };
+    requestAnimationFrame(passo);
+  }
+}
+
+// ---------- mapa: no celular abre mostrando Camanducaia e Monte Verde ----------
+const mapa = $(".mapa-ilustrado");
+if (mapa) mapa.scrollLeft = (mapa.scrollWidth - mapa.clientWidth) * 0.3;

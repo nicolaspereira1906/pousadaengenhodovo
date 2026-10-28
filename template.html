@@ -17,14 +17,14 @@
   <link rel="apple-touch-icon" href="assets/logo/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@600;700&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Zilla+Slab:wght@600;700&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
   <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"LodgingBusiness","name":"Pousada Engenho do Vô",
    "image":"https://www.pousadaengenhodovo.com.br/assets/og.jpg","url":"https://www.pousadaengenhodovo.com.br/",
    "description":"Pousada no centro de Camanducaia (MG), a 30 km de Monte Verde. Quartos para casal, família e grupos, com Wi-Fi.",
    "telephone":"+55 35 98877-3223","checkinTime":"12:00","checkoutTime":"12:00",
-   "geo":{"@type":"GeoCoordinates","latitude":-22.7547,"longitude":-46.1449},
+   "geo":{"@type":"GeoCoordinates","latitude":-22.7557,"longitude":-46.1484},
    "amenityFeature":[{"@type":"LocationFeatureSpecification","name":"Wi-Fi grátis","value":true}],
    "address":{"@type":"PostalAddress","streetAddress":"Rua Artur Silva Bernardes, 14","addressLocality":"Camanducaia","addressRegion":"MG","addressCountry":"BR"},
    "sameAs":["https://www.instagram.com/pousadaengenhodo.vo","https://www.facebook.com/profile.php?id=100086007132862"]}
@@ -55,6 +55,7 @@
   </a>
   <nav aria-label="Seções">
     <a href="#pousada">A pousada</a>
+    <a href="#avaliacoes">Avaliações</a>
     <a href="#regiao">Região</a>
     <a href="#chegar">Como chegar</a>
   </nav>
@@ -70,6 +71,9 @@
         <img class="nome" src="assets/logo/nome-claro.webp" alt="Pousada Engenho do Vô, Camanducaia, Minas Gerais" width="640" height="354">
       </div>
       <h1 class="hero-frase">Pousada no centro de Camanducaia (MG),<br>pertinho de Monte Verde e da Serra da Mantiqueira.</h1>
+      <div class="notas">
+{{NOTAS}}
+      </div>
     </div>
 
     <form id="reservar" class="reserva" aria-labelledby="reserva-titulo" onsubmit="return false">
@@ -116,16 +120,18 @@
     <div class="pousada-intro">
       <div class="titulo-secao reveal">
         <h2>A pousada</h2>
-        <p>Fica no centro de Camanducaia, perto do comércio e na saída para Monte Verde. Para quem viaja pela Fernão Dias, é uma parada fácil.</p>
+        <p>Fica na entrada de Camanducaia, de frente para o portal da cidade, perto do comércio e na saída para Monte Verde. Para quem viaja pela Fernão Dias, é uma parada fácil.</p>
       </div>
       <ul class="destaques reveal">
-        <li>Quartos de casal, para família e com beliche; alguns com banheiro</li>
-        <li>TV e ventilador nos quartos</li>
+        <li>Suítes com banheiro privativo e quartos sem suíte, com banheiro compartilhado</li>
+        <li>Quartos para casal, família e grupos</li>
+        <li>Café da manhã</li>
+        <li>Chuveiro com aquecimento solar</li>
+        <li>TV e ventilador em todos os quartos</li>
         <li>Wi-Fi grátis</li>
-        <li>Copa com geladeira, micro-ondas e bebedouro, e refeitório</li>
-        <li>Entrada e saída ao meio-dia</li>
+        <li>Copa com geladeira, micro-ondas e bebedouro</li>
+        <li>Pátio na frente com vagas livres para carro</li>
         <li>Você recebe a chave e entra e sai quando quiser</li>
-        <li>Câmeras gravando 24 horas</li>
       </ul>
     </div>
     <div class="filtros" role="group" aria-label="Filtrar fotos">
@@ -136,6 +142,30 @@
     </div>
     <div class="galeria" id="galeria">
 {{GALERIA}}
+    </div>
+  </section>
+
+  <section id="avaliacoes" class="secao">
+    <div class="titulo-secao reveal">
+      <h2>O que dizem os hóspedes</h2>
+      <p>Trechos de avaliações deixadas no Google e no Booking.com.</p>
+    </div>
+    <div class="avaliacoes">
+{{AVALIACOES}}
+    </div>
+  </section>
+
+  <section id="historia" class="historia">
+    <div class="historia-dentro">
+      <img class="reveal" src="assets/logo/emblema-escuro.webp" alt="Desenho do engenho que dá nome à pousada" width="640" height="404" loading="lazy">
+      <div class="reveal">
+        <h2>Por que Engenho do Vô</h2>
+        <p>O vô tinha uma fazenda e, nela, um engenho de moer cana. Ninguém pensava em vender nada: a garapa era da casa, servida a quem estivesse por perto, ainda espumando no copo.</p>
+        <p>Da fazenda para cá, o engenho veio junto. Hoje ele fica na porta da pousada, e é a primeira coisa que você vê quando chega. Foi ele que deu nome à casa, e é ele que está desenhado no nosso logotipo.</p>
+        <p>Camanducaia também nasceu de uma estrada. No século XVIII, os bandeirantes que saíam de Atibaia atrás de ouro passavam por aqui, e foi nesse caminho que surgiram as primeiras casas. O nome vem do tupi e, pela explicação mais aceita, quer dizer "feijão queimado". A cidade já se chamou Jaguary e só voltou a ser Camanducaia em 1925.</p>
+        <p>Serra acima, um imigrante da Letônia, Verner Grinberg, transformou uma fazenda isolada na vila que hoje é Monte Verde, distrito da cidade.</p>
+        <p>A estrada continua passando pela porta. Agora ela se chama Fernão Dias, e quem vem por ela encontra o portal da cidade, o engenho do vô e um quarto pronto para descansar.</p>
+      </div>
     </div>
   </section>
 
@@ -152,6 +182,42 @@
       <h2>Camanducaia e arredores</h2>
       <p>Camanducaia fica no Sul de Minas, na Serra da Mantiqueira, à beira da Fernão Dias. Monte Verde, que é distrito da cidade, fica a uns 30 km da pousada.</p>
     </div>
+    <div class="mapa-ilustrado reveal">
+{{MAPA_ILUSTRADO}}
+    </div>
+    <p class="mapa-dica">Arraste para os lados para ver o mapa inteiro.</p>
+    <div class="mapa-blocos">
+      <div class="reveal">
+        <h3>Na beira da Fernão Dias</h3>
+        <p>A pousada fica no trevo de entrada da cidade. Quem vem de São Paulo chega em umas duas horas; de Belo Horizonte, em umas seis.</p>
+      </div>
+      <div class="reveal">
+        <h3>Monte Verde, a 29 km</h3>
+        <p>São uns 55 minutos de carro pela serra. Também há ônibus saindo da praça do Banco Santander, no centro de Camanducaia; confira os horários antes.</p>
+      </div>
+      <div class="reveal">
+        <h3>Fazenda Esperança</h3>
+        <p>Fazenda centenária em Jaguary de Cima, no km 20 da estrada para Sapucaí-Mirim, com museu, piscinas naturais, trilhas leves e comida no fogão a lenha. Confirme o funcionamento antes de ir.</p>
+      </div>
+    </div>
+
+    <div class="guia reveal">
+      <h3>Para quem vai a Monte Verde</h3>
+      <ul class="dicas">
+        <li>Para as trilhas da Pedra Redonda e do Pico do Selado, leve água e calçado firme.</li>
+        <li>No inverno a serra faz frio de verdade, principalmente à noite. Leve agasalho.</li>
+        <li>O portal oficial da vila tem mapa, trilhas, restaurantes e a agenda de eventos.</li>
+      </ul>
+      <div class="guia-links">
+        <a href="https://monteverde.org.br/mapa-de-monte-verde/" target="_blank" rel="noopener">Mapa de Monte Verde</a>
+        <a href="https://monteverde.org.br/o-que-fazer/" target="_blank" rel="noopener">O que fazer</a>
+        <a href="https://monteverde.org.br/trilhas-e-caminhadas/" target="_blank" rel="noopener">Trilhas</a>
+        <a href="https://monteverde.org.br/gastronomia/" target="_blank" rel="noopener">Onde comer</a>
+        <a href="https://monteverde.org.br/calendario-2026/" target="_blank" rel="noopener">Agenda de eventos</a>
+        <a href="https://www.instagram.com/visite.monteverde/" target="_blank" rel="noopener">@visite.monteverde</a>
+      </div>
+    </div>
+
     <div class="clima reveal" id="clima" hidden>
       <h3>Previsão para Camanducaia</h3>
       <div class="clima-dias" id="clima-dias"></div>
