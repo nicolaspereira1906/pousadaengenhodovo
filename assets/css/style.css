@@ -20,6 +20,7 @@ body {
   background: var(--creme);
   -webkit-font-smoothing: antialiased;
 }
+html, body { overflow-x: clip; }
 img { max-width: 100%; height: auto; display: block; }
 a { color: var(--cana); }
 h1, h2, h3 { font-family: var(--titulo); line-height: 1.15; margin: 0 0 .5em; }
@@ -371,12 +372,45 @@ button { font: inherit; cursor: pointer; }
 .faq[open] summary::after { content: "−"; }
 .faq p { margin: 0 0 16px; color: var(--tinta-2); }
 
+.texto-legal { max-width: 760px; }
+.texto-legal h1 { font-size: clamp(2rem, 5vw, 2.8rem); }
+.texto-legal h2 { font-size: 1.4rem; margin-top: 1.6em; }
+
+/* ---------- slides ---------- */
+.carrossel { --larg: 84%; --larg-d: 32%; margin-bottom: 8px; }
+.trilho {
+  display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; position: relative;
+  padding: 4px 0 10px; scroll-padding-inline: 7%; scrollbar-width: none; overscroll-behavior-x: contain;
+}
+.trilho::-webkit-scrollbar { display: none; }
+.trilho > * { flex: 0 0 var(--larg); scroll-snap-align: center; margin: 0; transition: opacity .5s, scale .5s; }
+.trilho > :not(.ativo) { opacity: .5; scale: .94; }
+@media (min-width: 761px) { .trilho > * { flex-basis: var(--larg-d); } }
+.c-ctl { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 6px; }
+.c-ctl button {
+  width: 42px; height: 42px; border: 1px solid currentColor; background: transparent; color: inherit;
+  border-radius: var(--raio); font-size: 1.4rem; line-height: 1;
+}
+.c-ctl button:hover { background: rgb(0 0 0 / .06); }
+.c-cont { min-width: 4.5em; text-align: center; font-weight: 700; font-variant-numeric: tabular-nums; font-size: .9rem; }
+
+.c-fotos { --larg: 86%; --larg-d: 40%; }
+.c-fotos .foto img, .c-antigas .foto img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.c-aval { --larg: 86%; --larg-d: 32%; }
+.c-aval .avaliacao { margin: 0; align-self: start; }
+.c-turmas { --larg: 64%; --larg-d: 24%; max-width: 1200px; margin: 28px auto 0; }
+.c-turmas .turma figcaption { color: var(--creme); }
+.c-lugares { --larg: 84%; --larg-d: 31%; }
+.c-videos { --larg: 86%; --larg-d: 32%; }
+.c-antigas { --larg: 78%; --larg-d: 30%; max-width: 1100px; margin: 36px auto 0; }
+.c-antigas .foto img { aspect-ratio: 1; object-position: center 35%; filter: drop-shadow(0 2px 3px rgb(0 0 0 / .25)); }
+.c-antigas .foto figcaption { font-family: Caveat, cursive; font-size: 1.2rem; color: var(--tinta-2); }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .hero-fundo img:first-child { opacity: 1; }
   .js .reveal { opacity: 1; translate: none; }
   .js .rota-mv { stroke-dashoffset: 0; }
   .js .reveal .barras i::after { scale: 1 1; }
-}.texto-legal { max-width: 760px; }
-.texto-legal h1 { font-size: clamp(2rem, 5vw, 2.8rem); }
-.texto-legal h2 { font-size: 1.4rem; margin-top: 1.6em; }
+  .trilho > :not(.ativo) { opacity: 1; scale: 1; }
+}

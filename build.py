@@ -57,6 +57,19 @@ FOTOS = [
 ]
 FOTOS_HERO = ["fachada", "varanda", "quarto-casal-2", "portal"]
 
+# Fotos antigas da fazenda do vô (PDF do iCloud, fontes/antigas). (arquivo, nome, legenda, preto e branco?)
+ANTIGAS = [
+    ("a04.jpg", "engenho-na-fazenda", "O engenho, ainda na fazenda", False),
+    ("a00.jpg", "sede-da-fazenda", "A sede da fazenda", False),
+    ("a01.jpg", "casa-da-fazenda", "A casa da fazenda", False),
+    ("a02.jpg", "porta-da-casa", "Na porta da casa, agosto de 1980", False),
+    ("a03.jpg", "a-cavalo-no-paiol", "A cavalo, em frente ao paiol", False),
+    ("a05.jpg", "lida-com-o-gado", "Na lida com o gado, 1980", False),
+    ("a06.jpg", "entre-araucarias", "A cavalo entre as araucárias, 1980", False),
+    ("a07.jpg", "retrato-antigo", "Retrato antigo da família", True),
+    ("a08.jpg", "na-fazenda-pb", "Na fazenda, em preto e branco", True),
+]
+
 # Fotos de turmas publicadas pela própria pousada no Google (conta JUAREZ B PEREIRA)
 TURMAS = [
     ("g125.jpg", "turma-bikes", "Bicicletas guardadas na varanda"),
@@ -182,6 +195,24 @@ def carregar_noticias():
 
 # ---------- mídia ----------
 
+def restaurar(im, pb):
+    """Tratamento leve de foto escaneada: corta a borda branca, tira o tom amarelado e acerta o contraste."""
+    from PIL import Image, ImageFilter, ImageOps
+    im = ImageOps.exif_transpose(im).convert("RGB")
+    cinza = im.convert("L").filter(ImageFilter.MedianFilter(9))
+    caixa = cinza.point(lambda v: 255 if v < 225 else 0).getbbox() or (0, 0, *im.size)
+    w, h = caixa[2] - caixa[0], caixa[3] - caixa[1]
+    m = int(min(w, h) * 0.03)  # some com os cantos arredondados do papel
+    im = im.crop((caixa[0] + m, caixa[1] + m, caixa[2] - m, caixa[3] - m))
+    if pb:
+        im = ImageOps.colorize(ImageOps.autocontrast(im.convert("L"), cutoff=1), black="#241c14", white="#f6eedf")
+    else:
+        canais = [ImageOps.autocontrast(c, cutoff=1.5) for c in im.split()]
+        corrigida = Image.merge("RGB", canais)
+        im = Image.blend(im, corrigida, 0.7)  # 70%: corrige sem deixar com cara de filtro
+    return im.filter(ImageFilter.UnsharpMask(radius=1.6, percent=60, threshold=3))
+
+
 def gerar_midia():
     from PIL import Image, ImageOps
 
@@ -203,6 +234,12 @@ def gerar_midia():
             og = ImageOps.fit(im, (1200, 630))
             og.save(ASSETS / "og.jpg", quality=82)
         print("foto", nome)
+
+    pasta = ASSETS / "antigas"
+    pasta.mkdir(exist_ok=True)
+    for arq, nome, _, pb in ANTIGAS:
+        salvar(restaurar(Image.open(RAIZ / "fontes" / "antigas" / arq), pb), pasta / f"{nome}.webp", 1000, 80)
+        print("antiga", nome)
 
     pasta = ASSETS / "turmas"
     pasta.mkdir(exist_ok=True)
@@ -350,6 +387,14 @@ def html_resumo_notas():
         f'<ul class="barras">{cats}</ul></div>')
 
 
+def html_antigas():
+    return "\n".join(
+        f'<figure class="foto antiga"><button type="button" data-full="assets/antigas/{nome}.webp" aria-label="Ampliar: {e(legenda)}">'
+        f'<img src="assets/antigas/{nome}.webp" alt="{e(legenda)}" loading="lazy" decoding="async" width="1000" height="1000">'
+        f'</button><figcaption>{e(legenda)}</figcaption></figure>'
+        for _, nome, legenda, _ in ANTIGAS)
+
+
 def html_turmas():
     return "\n".join(
         f'<figure class="turma reveal"><img src="assets/turmas/{nome}.webp" alt="{e(legenda)}" loading="lazy" '
@@ -410,6 +455,7 @@ def gerar_html(noticias):
         "AVALIACOES": html_avaliacoes(),
         "RESUMO_NOTAS": html_resumo_notas(),
         "TURMAS": html_turmas(),
+        "ANTIGAS": html_antigas(),
         "ROMEIRO": (ASSETS / "romeiro.svg").read_text(encoding="utf-8"),
         "MAPA_ILUSTRADO": (ASSETS / "mapa.svg").read_text(encoding="utf-8"),
         "HERO_FOTOS": html_hero(),

@@ -186,6 +186,7 @@ for (const f of $$(".filtros button")) {
       o.setAttribute("aria-pressed", o === f);
     }
     for (const foto of fotos) foto.hidden = !!f.dataset.filtro && foto.dataset.cat !== f.dataset.filtro;
+    $("#galeria").closest(".carrossel").atualizar?.();
   });
 }
 
@@ -199,10 +200,10 @@ function mostrarFoto(i) {
   $("#lb-img").alt = $("img", btn).alt;
   $("#lb-legenda").textContent = $("figcaption", visiveis[atual]).textContent;
 }
-$("#galeria").addEventListener("click", (ev) => {
+document.addEventListener("click", (ev) => {
   const btn = ev.target.closest("button[data-full]");
   if (!btn) return;
-  visiveis = fotos.filter((f) => !f.hidden);
+  visiveis = [...btn.closest(".trilho").children].filter((f) => !f.hidden);
   mostrarFoto(visiveis.indexOf(btn.parentElement));
   lb.showModal();
 });
@@ -272,3 +273,50 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
 // ---------- mapa: no celular abre mostrando Camanducaia e Monte Verde ----------
 const mapa = $(".mapa-ilustrado");
 if (mapa) mapa.scrollLeft = (mapa.scrollWidth - mapa.clientWidth) * 0.3;
+
+// ---------- slides: arrastar, setas, contador e troca automática ----------
+const semMovimento = matchMedia("(prefers-reduced-motion: reduce)").matches;
+function iniciarCarrossel(c) {
+  const trilho = $(".trilho", c);
+  const cont = $(".c-cont", c);
+  const itens = () => [...trilho.children].filter((i) => !i.hidden);
+  for (const el of trilho.children) el.classList.remove("reveal");
+  let indice = 0;
+  let timer = null;
+  const parar = () => { clearInterval(timer); timer = null; };
+  const ir = (i) => {
+    const lista = itens();
+    indice = (i + lista.length) % lista.length;
+    const el = lista[indice];
+    trilho.scrollTo({ left: el.offsetLeft - (trilho.clientWidth - el.clientWidth) / 2, behavior: semMovimento ? "auto" : "smooth" });
+  };
+  const marcar = () => {
+    const lista = itens();
+    const meio = trilho.scrollLeft + trilho.clientWidth / 2;
+    let melhor = 0;
+    let dist = Infinity;
+    lista.forEach((el, i) => {
+      const d = Math.abs(el.offsetLeft + el.clientWidth / 2 - meio);
+      if (d < dist) { dist = d; melhor = i; }
+    });
+    indice = melhor;
+    lista.forEach((el, i) => el.classList.toggle("ativo", i === melhor));
+    cont.textContent = `${melhor + 1} / ${lista.length}`;
+  };
+  let pedido = 0;
+  trilho.addEventListener("scroll", () => { cancelAnimationFrame(pedido); pedido = requestAnimationFrame(marcar); }, { passive: true });
+  $(".c-ant", c).addEventListener("click", () => { parar(); ir(indice - 1); });
+  $(".c-prox", c).addEventListener("click", () => { parar(); ir(indice + 1); });
+  // quem mexe no slide assume o controle: a troca automática para de vez
+  let mexeu = false;
+  for (const ev of ["pointerdown", "wheel", "keydown"]) trilho.addEventListener(ev, () => { mexeu = true; parar(); }, { passive: true });
+  if (c.hasAttribute("data-auto") && !semMovimento) {
+    new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !mexeu && !timer) timer = setInterval(() => ir(indice + 1), 4500);
+      if (!e.isIntersecting) parar();
+    }, { threshold: 0.5 }).observe(c);
+  }
+  c.atualizar = () => { trilho.scrollTo({ left: 0 }); marcar(); };
+  marcar();
+}
+$$(".carrossel").forEach(iniciarCarrossel);

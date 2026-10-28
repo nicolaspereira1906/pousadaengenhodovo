@@ -138,8 +138,11 @@
       <button type="button" aria-pressed="false" data-filtro="Áreas comuns">Áreas comuns</button>
       <button type="button" aria-pressed="false" data-filtro="Pousada">Fachada e varanda</button>
     </div>
-    <div class="galeria" id="galeria">
+    <div class="carrossel c-fotos reveal" data-auto aria-label="Fotos da pousada">
+    <div class="trilho galeria" id="galeria">
 {{GALERIA}}
+    </div>
+      <div class="c-ctl"><button type="button" class="c-ant" aria-label="Anterior">‹</button><span class="c-cont" aria-live="polite"></span><button type="button" class="c-prox" aria-label="Próximo">›</button></div>
     </div>
   </section>
 
@@ -151,8 +154,11 @@
     <div class="resumo-notas">
 {{RESUMO_NOTAS}}
     </div>
-    <div class="avaliacoes">
+    <div class="carrossel c-aval reveal" aria-label="Avaliações de hóspedes">
+    <div class="trilho avaliacoes">
 {{AVALIACOES}}
+    </div>
+      <div class="c-ctl"><button type="button" class="c-ant" aria-label="Anterior">‹</button><span class="c-cont" aria-live="polite"></span><button type="button" class="c-prox" aria-label="Próximo">›</button></div>
     </div>
   </section>
 
@@ -162,11 +168,18 @@
       <div class="reveal">
         <h2>Por que Engenho do Vô</h2>
         <p>O vô tinha uma fazenda e, nela, um engenho de moer cana. Ninguém pensava em vender nada: a garapa era da casa, servida a quem estivesse por perto, ainda espumando no copo.</p>
+        <p>A fazenda sempre recebeu quem estava de passagem. Tropeiros e boiadeiros que vinham de Belo Horizonte paravam ali para descansar e soltar os animais, e encontravam pouso, café e prosa. Hospedar gente na estrada vem desde o começo.</p>
         <p>Da fazenda para cá, o engenho veio junto. Hoje ele fica na porta da pousada, e é a primeira coisa que você vê quando chega. Foi ele que deu nome à casa, e é ele que está desenhado no nosso logotipo.</p>
         <p>Camanducaia também nasceu de uma estrada. No século XVIII, os bandeirantes que saíam de Atibaia atrás de ouro passavam por aqui, e foi nesse caminho que surgiram as primeiras casas. O nome vem do tupi e, pela explicação mais aceita, quer dizer "feijão queimado". A cidade já se chamou Jaguary e só voltou a ser Camanducaia em 1925.</p>
         <p>Serra acima, um imigrante da Letônia, Verner Grinberg, transformou uma fazenda isolada na vila que hoje é Monte Verde, distrito da cidade.</p>
         <p>A estrada continua passando pela porta. Agora ela se chama Fernão Dias, e quem vem por ela encontra o portal da cidade, o engenho do vô e um quarto pronto para descansar.</p>
       </div>
+    </div>
+    <div class="carrossel c-antigas reveal" data-auto aria-label="Fotos antigas da fazenda">
+      <div class="trilho antigas">
+{{ANTIGAS}}
+      </div>
+      <div class="c-ctl"><button type="button" class="c-ant" aria-label="Anterior">‹</button><span class="c-cont" aria-live="polite"></span><button type="button" class="c-prox" aria-label="Próximo">›</button></div>
     </div>
   </section>
 
@@ -181,8 +194,11 @@
 {{ROMEIRO}}
       </div>
     </div>
-    <div class="turmas">
+    <div class="carrossel c-turmas reveal" data-auto aria-label="Turmas que já passaram por aqui">
+    <div class="trilho turmas">
 {{TURMAS}}
+    </div>
+      <div class="c-ctl"><button type="button" class="c-ant" aria-label="Anterior">‹</button><span class="c-cont" aria-live="polite"></span><button type="button" class="c-prox" aria-label="Próximo">›</button></div>
     </div>
   </section>
 
@@ -232,13 +248,19 @@
       <div class="clima-dias" id="clima-dias"></div>
       <small>Previsão: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a></small>
     </div>
-    <div class="lugares">
+    <div class="carrossel c-lugares reveal" aria-label="Lugares da região">
+    <div class="trilho lugares">
 {{REGIAO}}
+    </div>
+      <div class="c-ctl"><button type="button" class="c-ant" aria-label="Anterior">‹</button><span class="c-cont" aria-live="polite"></span><button type="button" class="c-prox" aria-label="Próximo">›</button></div>
     </div>
 
     <h3 class="subtitulo reveal">Vídeos</h3>
-    <div class="videos">
+    <div class="carrossel c-videos reveal" aria-label="Vídeos da região">
+    <div class="trilho videos">
 {{VIDEOS}}
+    </div>
+      <div class="c-ctl"><button type="button" class="c-ant" aria-label="Anterior">‹</button><span class="c-cont" aria-live="polite"></span><button type="button" class="c-prox" aria-label="Próximo">›</button></div>
     </div>
 
     <h3 class="subtitulo reveal">Notícias de Camanducaia e Monte Verde</h3>
