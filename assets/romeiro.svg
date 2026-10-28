@@ -1,0 +1,32 @@
+<svg class="romeiro" viewBox="70 30 290 210" role="img" aria-label="Desenho de um romeiro caminhando com mochila, chapéu e cajado" xmlns="http://www.w3.org/2000/svg">
+  <g class="rom-morros" fill="none" stroke="#f5efe3" stroke-width="2" stroke-linecap="round" opacity=".35">
+    <path d="M-40 200C20 150 60 160 110 130S200 150 250 120 340 150 400 125 500 150 560 130"/>
+    <path d="M380 200C440 150 480 160 530 130S620 150 670 120"/>
+    <path d="M300 112v-22m-8 8h16" stroke-width="2.5"/>
+    <path d="M290 125v-14l10-8 10 8v14z"/>
+  </g>
+  <g class="rom-chao" stroke="#f5efe3" stroke-width="3" stroke-linecap="round" opacity=".7">
+    <path d="M0 226H460" stroke-dasharray="18 14"/>
+  </g>
+  <g class="rom-corpo" stroke="#2a221a" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">
+    <g class="rom-perna rom-perna-tras"><path d="M180 152L174 214" stroke-width="11" stroke="#3b3128"/><path d="M168 216h16" stroke-width="6"/></g>
+    <rect x="138" y="92" width="34" height="58" rx="9" fill="#7a5a36"/>
+    <rect x="134" y="80" width="42" height="15" rx="7" fill="#b9a27a"/>
+    <path d="M140 112h30M146 92v56" stroke-width="2"/>
+    <circle cx="146" cy="160" r="8" fill="#d9a441"/>
+    <path d="M146 152v-10" stroke-width="2"/>
+    <path d="M166 98h34v58h-34z" fill="#c58a4b"/>
+    <path d="M168 100l6 46" stroke-width="2" stroke="#7a5a36"/>
+    <g class="rom-perna rom-perna-frente"><path d="M186 152L192 214" stroke-width="11" stroke="#4a3e32"/><path d="M186 216h16" stroke-width="6"/></g>
+    <circle cx="190" cy="80" r="13" fill="#e2b98f"/>
+    <path d="M196 84q4 2 6 0" stroke-width="2"/>
+    <path d="M166 70c4-14 44-14 48 0" fill="#e9d9a8"/>
+    <ellipse cx="190" cy="70" rx="27" ry="6" fill="#e9d9a8"/>
+    <g class="rom-cajado">
+      <path d="M232 52L236 222" stroke="#8a5a2b" stroke-width="6"/>
+      <path d="M232 52c-2-12 10-16 14-8" fill="none" stroke="#8a5a2b" stroke-width="6"/>
+      <path d="M198 106C210 116 220 124 232 128" stroke="#c58a4b" stroke-width="11"/>
+      <circle cx="233" cy="129" r="6" fill="#e2b98f"/>
+    </g>
+  </g>
+</svg>

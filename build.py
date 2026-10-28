@@ -52,8 +52,20 @@ FOTOS = [
     (17, "quarto-individual", "Quarto individual", "Quartos"),
     (18, "quarto-tv", "Quarto com TV e mesa de apoio", "Quartos"),
     (19, "banheiro", "Banheiro", "Quartos"),
+    ("google/g92.jpg", "cafe-da-manha", "Café da manhã", "Áreas comuns"),
+    ("google/g84.jpg", "jipe-portal", "O jipe na frente da pousada", "Pousada"),
 ]
 FOTOS_HERO = ["fachada", "varanda", "quarto-casal-2", "portal"]
+
+# Fotos de turmas publicadas pela própria pousada no Google (conta JUAREZ B PEREIRA)
+TURMAS = [
+    ("g125.jpg", "turma-bikes", "Bicicletas guardadas na varanda"),
+    ("g123.jpg", "turma-varanda", "Turma reunida na varanda"),
+    ("g130.jpg", "turma-motos", "Grupo de motociclistas na saída"),
+    ("g131.jpg", "turma-bagagem", "Bagagem de grupo na varanda"),
+    ("g132.jpg", "turma-motos-2", "Motos guardadas na varanda"),
+    ("g111.jpg", "turma-jipes", "Jipeiros chegando à noite"),
+]
 
 # (arquivo em fontes/regiao, nome, título, texto, crédito, licença, página)
 REGIAO = [
@@ -77,22 +89,44 @@ NOTAS = {
                "link": "https://www.google.com/maps?cid=5705025642227360171"},
     "booking": {"nota": 9.3, "max": 10, "total": 48, "rotulo": "Fantástico no Booking", "link": BOOKING + "#tab-reviews"},
 }
+# Google: quantas avaliações de cada nota. Booking: notas por categoria.
+ESTRELAS_GOOGLE = {5: 84, 4: 10, 3: 6, 2: 1, 1: 1}
+CATEGORIAS_BOOKING = [("Funcionários", 9.9), ("Localização", 9.7), ("Custo-benefício", 9.6),
+                      ("Limpeza", 9.5), ("Conforto", 9.4), ("Comodidades", 9.2)]
 
-# Trechos de avaliações reais, sem alterar o texto (… marca corte)
+# Trechos de avaliações reais, sem alterar o texto (… marca corte); estrelas só onde o Google mostra a nota
 AVALIACOES = [
-    ("Google", "Giovani A.", "Era tarde da noite, estava chovendo bastante e fazendo muito frio. Havíamos chegado de uma viagem "
+    ("Google", "Giovani A.", 5, "Era tarde da noite, estava chovendo bastante e fazendo muito frio. Havíamos chegado de uma viagem "
      "longa e cansativa de São Paulo e procurávamos um lugar. O chuveiro e os quartos são tão bem aquecidos, que ficamos muito tranquilos."),
-    ("Booking", "Uiliade", "Acomodação bem pertinho do centro, em frente ao portal da cidade! A hospitalidade da equipe é fora de série "
+    ("Booking", "Uiliade", None, "Acomodação bem pertinho do centro, em frente ao portal da cidade! A hospitalidade da equipe é fora de série "
      "e nos deixaram muito a vontade!"),
-    ("Google", "Samuel F.", "Os proprietários, pessoas agradáveis e de boa índole, interagem e contam histórias da cidade e o convívio "
+    ("Google", "Samuel F.", 5, "Os proprietários, pessoas agradáveis e de boa índole, interagem e contam histórias da cidade e o convívio "
      "fica ainda mais harmonioso."),
-    ("Google", "Vanessa K.", "Fiquei na suíte 8 e estava tudo muito limpo e aconchegante. … A pousada fica muito bem localizada na entrada "
+    ("Google", "Vanessa K.", 5, "Fiquei na suíte 8 e estava tudo muito limpo e aconchegante. … A pousada fica muito bem localizada na entrada "
      "da cidade, de frente ao portal. Em breve vou voltar à Camanducaia e já sei onde ficar."),
-    ("Booking", "Souza", "Ótima recepção, quartos aconchegantes, cama limpinha e organizada. Tudo preparado para o frio. Café da manhã caprichado."),
-    ("Google", "Sebastian M.", "… uma excelente base para visitar Monte Verde. Muito central, barata e confortável."),
-    ("Google", "Renan A.", "… café da manhã tudo fresquinho e feito na hora, pão de queijo, pão de sal tudo quentinho, preço justo."),
-    ("Google", "Leonardo", "A Gislaine proprietária e seu filho o Nikolas são pessoas fantásticas que cuidam dos hóspedes como se fossem família …"),
-    ("Booking", "Rosemeri", "A simpatia e acolhimento da proprietária. A localização. A limpeza."),
+    ("Booking", "Souza", None, "Ótima recepção, quartos aconchegantes, cama limpinha e organizada. Tudo preparado para o frio. Café da manhã caprichado."),
+    ("Google", "Sebastian M.", 5, "… uma excelente base para visitar Monte Verde. Muito central, barata e confortável."),
+    ("Google", "Renan A.", 4, "… café da manhã tudo fresquinho e feito na hora, pão de queijo, pão de sal tudo quentinho, preço justo."),
+    ("Google", "Leonardo", 5, "A Gislaine proprietária e seu filho o Nikolas são pessoas fantásticas que cuidam dos hóspedes como se fossem família …"),
+    ("Booking", "Rosemeri", None, "A simpatia e acolhimento da proprietária. A localização. A limpeza."),
+]
+
+FAQ = [
+    ("Qual o horário de check-in e check-out?",
+     "Entrada e saída ao meio-dia. A porta da rua fecha às 22h, e você recebe a chave na chegada para entrar e sair quando quiser."),
+    ("O café da manhã está incluído?",
+     "Nas suítes, sim. Nos quartos com banheiro compartilhado, o café da manhã custa R$ 20 por pessoa."),
+    ("Tem estacionamento?",
+     "Na frente da pousada há um pátio com vagas livres para carro. Bicicletas e motos podem ficar na varanda."),
+    ("Qual a distância até Monte Verde?",
+     "São 29 km pela serra, mais ou menos 55 minutos de carro. Também há ônibus saindo da praça do Banco Santander, no centro de Camanducaia."),
+    ("Vocês recebem grupos e romarias?",
+     "Sim. Temos quartos com beliche para romeiros, excursões, trilheiros e jipeiros. Combine as datas e o número de pessoas pelo WhatsApp."),
+    ("Criança paga?",
+     "Crianças até 5 anos não pagam. A partir dos 6 anos, pagam a diária."),
+    ("Como faço a reserva?",
+     "Escolha as datas no site e toque em Quero alugar!: a mensagem vai pronta para o nosso WhatsApp. Se preferir garantir com cartão de crédito, reserve pelo Booking.com."),
+    ("Tem Wi-Fi?", "Sim, Wi-Fi grátis em toda a pousada."),
 ]
 
 VIDEOS = [
@@ -160,7 +194,7 @@ def gerar_midia():
     pasta.mkdir(parents=True, exist_ok=True)
     originais = {int(p.stem.split("-")[-1]): p for p in FOTOS_ORIGINAIS.iterdir()}
     for num, nome, *_ in FOTOS:
-        im = Image.open(originais[num])
+        im = Image.open(originais[num] if isinstance(num, int) else RAIZ / "fontes" / num)
         im.draft("RGB", (2400, 2400))
         im = ImageOps.exif_transpose(im).convert("RGB")
         salvar(im, pasta / f"{nome}-800.webp", 800)
@@ -169,6 +203,12 @@ def gerar_midia():
             og = ImageOps.fit(im, (1200, 630))
             og.save(ASSETS / "og.jpg", quality=82)
         print("foto", nome)
+
+    pasta = ASSETS / "turmas"
+    pasta.mkdir(exist_ok=True)
+    for arq, nome, _ in TURMAS:
+        im = ImageOps.exif_transpose(Image.open(RAIZ / "fontes" / "google" / arq)).convert("RGB")
+        salvar(ImageOps.fit(im, (900, 1125)), pasta / f"{nome}.webp", 900)
 
     pasta = ASSETS / "regiao"
     pasta.mkdir(exist_ok=True)
@@ -204,20 +244,31 @@ def e(texto):
     return html.escape(str(texto), quote=True)
 
 
+def tamanho(caminho, padrao=(800, 533)):
+    try:
+        from PIL import Image
+        with Image.open(caminho) as im:
+            return im.size
+    except Exception:  # sem Pillow (ex.: no GitHub Actions) usa a proporção padrão
+        return padrao
+
+
 def html_galeria():
     partes = []
     for i, (_, nome, legenda, cat) in enumerate(FOTOS):
+        w, h = tamanho(ASSETS / "fotos" / f"{nome}-800.webp")
         partes.append(
             f'<figure class="foto" data-cat="{e(cat)}"><button type="button" data-i="{i}" '
             f'data-full="assets/fotos/{nome}-1600.webp" aria-label="Ampliar: {e(legenda)}">'
-            f'<img src="assets/fotos/{nome}-800.webp" alt="{e(legenda)}" loading="lazy" decoding="async" width="800" height="533">'
+            f'<img src="assets/fotos/{nome}-800.webp" alt="{e(legenda)}" loading="lazy" decoding="async" width="{w}" height="{h}">'
             f'</button><figcaption>{e(legenda)}</figcaption></figure>')
     return "\n".join(partes)
 
 
 def html_hero():
     return "\n".join(
-        f'<img src="assets/fotos/{n}-1600.webp" alt="" {"fetchpriority=high" if i == 0 else "loading=lazy"}>'
+        f'<img src="assets/fotos/{n}-1600.webp" srcset="assets/fotos/{n}-800.webp 800w, assets/fotos/{n}-1600.webp 1600w" '
+        f'sizes="100vw" alt="" {"fetchpriority=high" if i == 0 else "loading=lazy"}>'
         for i, n in enumerate(FOTOS_HERO))
 
 
@@ -274,15 +325,92 @@ def html_notas():
 def html_avaliacoes():
     return "\n".join(
         f'<figure class="avaliacao reveal"><blockquote>{e(texto)}</blockquote>'
-        f'<figcaption>{e(nome)} <span class="fonte fonte-{fonte.lower()}">{fonte}</span></figcaption></figure>'
-        for fonte, nome, texto in AVALIACOES)
+        f'<figcaption>{e(nome)} <span class="fonte fonte-{fonte.lower()}">{fonte}</span>'
+        + (f'<span class="estrelinhas" aria-label="{n} de 5 estrelas">{"★" * n}{"☆" * (5 - n)}</span>' if n else "")
+        + '</figcaption></figure>'
+        for fonte, nome, n, texto in AVALIACOES)
+
+
+def html_resumo_notas():
+    g, total = NOTAS["google"], NOTAS["google"]["total"]
+    barras = "".join(
+        f'<li><span>{n} ★</span><i style="--p:{q / total:.0%}"></i><b>{q}</b></li>'
+        for n, q in ESTRELAS_GOOGLE.items())
+    cats = "".join(
+        f'<li><span>{e(nome)}</span><i style="--p:{nota * 10:.0f}%"></i><b>{num(nota)}</b></li>'
+        for nome, nota in CATEGORIAS_BOOKING)
+    bons = ESTRELAS_GOOGLE[5] + ESTRELAS_GOOGLE[4]
+    return (
+        f'<div class="resumo-nota reveal"><p class="resumo-grande">{num(g["nota"])}<small>de 5</small></p>'
+        f'<p><span class="estrelas" style="--p:{round(g["nota"] / 5 * 100)}%" aria-hidden="true"></span><br>'
+        f'<b>{ESTRELAS_GOOGLE[5]} avaliações de 5 estrelas</b> no Google. {bons} das {total} têm 4 ou 5 estrelas.</p>'
+        f'<ul class="barras">{barras}</ul></div>'
+        f'<div class="resumo-nota reveal"><p class="resumo-grande">{num(NOTAS["booking"]["nota"])}<small>de 10</small></p>'
+        f'<p><b>Fantástico no Booking.com</b>, em {NOTAS["booking"]["total"]} avaliações.</p>'
+        f'<ul class="barras">{cats}</ul></div>')
+
+
+def html_turmas():
+    return "\n".join(
+        f'<figure class="turma reveal"><img src="assets/turmas/{nome}.webp" alt="{e(legenda)}" loading="lazy" '
+        f'decoding="async" width="900" height="1125"><figcaption>{e(legenda)}</figcaption></figure>'
+        for _, nome, legenda in TURMAS)
+
+
+def html_faq():
+    return "\n".join(
+        f'<details class="faq reveal"><summary>{e(p)}</summary><p>{e(r)}</p></details>' for p, r in FAQ)
+
+
+def jsonld():
+    fotos = [f"{SITE}/assets/fotos/{n}-1600.webp" for _, n, *_ in FOTOS[:8]]
+    mapa = "https://www.google.com/maps?cid=5705025642227360171"
+    pousada = {
+        "@context": "https://schema.org", "@type": "Hostel", "@id": f"{SITE}/#pousada",
+        "name": "Pousada Engenho do Vô", "url": f"{SITE}/", "image": [f"{SITE}/assets/og.jpg", *fotos],
+        "logo": f"{SITE}/assets/logo/apple-touch-icon.png",
+        "description": "Pousada no centro de Camanducaia (MG), na entrada da cidade e a 29 km de Monte Verde. "
+                       "Suítes e quartos com banheiro compartilhado para casal, família, grupos e romarias.",
+        "telephone": "+55 35 98877-3223", "checkinTime": "12:00", "checkoutTime": "12:00", "petsAllowed": False,
+        "address": {"@type": "PostalAddress", "streetAddress": "Rua Artur Silva Bernardes, 14", "addressLocality": "Camanducaia",
+                    "addressRegion": "MG", "postalCode": "37650-000", "addressCountry": "BR"},
+        "geo": {"@type": "GeoCoordinates", "latitude": -22.7557, "longitude": -46.1484},
+        "hasMap": mapa,
+        "amenityFeature": [{"@type": "LocationFeatureSpecification", "name": n, "value": True} for n in
+                           ("Wi-Fi grátis", "Café da manhã", "Vagas para carro", "Chuveiro com aquecimento solar", "TV no quarto")],
+        "containedInPlace": {"@type": "City", "name": "Camanducaia"},
+        "sameAs": ["https://www.instagram.com/pousadaengenhodo.vo", "https://www.facebook.com/profile.php?id=100086007132862",
+                   BOOKING, mapa],
+    }
+    faq = {"@context": "https://schema.org", "@type": "FAQPage",
+           "mainEntity": [{"@type": "Question", "name": p, "acceptedAnswer": {"@type": "Answer", "text": r}} for p, r in FAQ]}
+    # "</" não pode aparecer dentro de <script>
+    return "\n".join(f'<script type="application/ld+json">{json.dumps(d, ensure_ascii=False).replace("</", "<\\/")}</script>'
+                     for d in (pousada, faq))
+
+
+def sitemap():
+    imagens = "".join(f"<image:image><image:loc>{SITE}/assets/fotos/{n}-1600.webp</image:loc></image:image>"
+                      for _, n, *_ in FOTOS)
+    hoje = f"{datetime.now():%Y-%m-%d}"
+    return ('<?xml version="1.0" encoding="UTF-8"?>\n'
+            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
+            'xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n'
+            f'  <url><loc>{SITE}/</loc><lastmod>{hoje}</lastmod>{imagens}</url>\n'
+            f'  <url><loc>{SITE}/politica-de-privacidade.html</loc></url>\n'
+            '</urlset>\n')
 
 
 def gerar_html(noticias):
     hero_video = (ASSETS / "video" / "hero.mp4").exists()
     trocas = {
         "NOTAS": html_notas(),
+        "FAQ": html_faq(),
+        "JSONLD": jsonld(),
         "AVALIACOES": html_avaliacoes(),
+        "RESUMO_NOTAS": html_resumo_notas(),
+        "TURMAS": html_turmas(),
+        "ROMEIRO": (ASSETS / "romeiro.svg").read_text(encoding="utf-8"),
         "MAPA_ILUSTRADO": (ASSETS / "mapa.svg").read_text(encoding="utf-8"),
         "HERO_FOTOS": html_hero(),
         "HERO_VIDEO": '<video src="assets/video/hero.mp4" autoplay muted loop playsinline aria-hidden="true"></video>' if hero_video else "",
@@ -300,11 +428,7 @@ def gerar_html(noticias):
     modelo = (RAIZ / "template.html").read_text(encoding="utf-8")
     saida = re.sub(r"\{\{(\w+)\}\}", lambda m: trocas[m.group(1)], modelo)
     (RAIZ / "index.html").write_text(saida, encoding="utf-8")
-    (RAIZ / "sitemap.xml").write_text(
-        '<?xml version="1.0" encoding="UTF-8"?>\n'
-        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-        f'  <url><loc>{SITE}/</loc><lastmod>{datetime.now():%Y-%m-%d}</lastmod></url>\n'
-        '</urlset>\n', encoding="utf-8")
+    (RAIZ / "sitemap.xml").write_text(sitemap(), encoding="utf-8")
     print(f"index.html e sitemap.xml gerados ({len(noticias)} notícias)")
 
 

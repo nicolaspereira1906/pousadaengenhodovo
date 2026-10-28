@@ -5,30 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="facebook-domain-verification" content="e0gssl7se1h9dbl93sye7sx2c8100h">
   <title>Pousada Engenho do Vô | Pousada em Camanducaia, MG, perto de Monte Verde</title>
-  <meta name="description" content="Pousada econômica no centro de Camanducaia (MG), a 30 km de Monte Verde, na Serra da Mantiqueira e à beira da Fernão Dias. Quartos para casal, família e grupos, com Wi-Fi. Reserve pelo WhatsApp.">
+  <meta name="description" content="Pousada econômica no centro de Camanducaia (MG), a 30 km de Monte Verde, na Serra da Mantiqueira e à beira da Fernão Dias. Suítes com café da manhã, quartos para família, grupos e romarias. Nota 4,7 no Google. Reserve pelo WhatsApp.">
   <meta name="theme-color" content="#1f1b16">
   <link rel="canonical" href="https://www.pousadaengenhodovo.com.br/">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Pousada Engenho do Vô · Camanducaia, MG">
-  <meta property="og:description" content="No centro de Camanducaia, pertinho de Monte Verde. Escolha as datas e reserve pelo WhatsApp.">
+  <meta property="og:title" content="Pousada Engenho do Vô | Pousada em Camanducaia, perto de Monte Verde">
+  <meta property="og:description" content="Na entrada de Camanducaia, a 29 km de Monte Verde. 4,7 estrelas no Google e 9,3 no Booking. Escolha as datas e reserve pelo WhatsApp.">
   <meta property="og:image" content="https://www.pousadaengenhodovo.com.br/assets/og.jpg">
   <meta property="og:url" content="https://www.pousadaengenhodovo.com.br/">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:site_name" content="Pousada Engenho do Vô">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="geo.region" content="BR-MG">
+  <meta name="geo.placename" content="Camanducaia">
+  <meta name="geo.position" content="-22.7557;-46.1484">
+  <link rel="preload" as="image" href="assets/fotos/fachada-1600.webp" imagesrcset="assets/fotos/fachada-800.webp 800w, assets/fotos/fachada-1600.webp 1600w" imagesizes="100vw" fetchpriority="high">
   <link rel="icon" href="assets/logo/favicon.png">
   <link rel="apple-touch-icon" href="assets/logo/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Zilla+Slab:wght@600;700&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
-  <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"LodgingBusiness","name":"Pousada Engenho do Vô",
-   "image":"https://www.pousadaengenhodovo.com.br/assets/og.jpg","url":"https://www.pousadaengenhodovo.com.br/",
-   "description":"Pousada no centro de Camanducaia (MG), a 30 km de Monte Verde. Quartos para casal, família e grupos, com Wi-Fi.",
-   "telephone":"+55 35 98877-3223","checkinTime":"12:00","checkoutTime":"12:00",
-   "geo":{"@type":"GeoCoordinates","latitude":-22.7557,"longitude":-46.1484},
-   "amenityFeature":[{"@type":"LocationFeatureSpecification","name":"Wi-Fi grátis","value":true}],
-   "address":{"@type":"PostalAddress","streetAddress":"Rua Artur Silva Bernardes, 14","addressLocality":"Camanducaia","addressRegion":"MG","addressCountry":"BR"},
-   "sameAs":["https://www.instagram.com/pousadaengenhodo.vo","https://www.facebook.com/profile.php?id=100086007132862"]}
-  </script>
+  {{JSONLD}}
   <!-- Meta Pixel Code -->
   <script>
   !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -148,7 +146,10 @@
   <section id="avaliacoes" class="secao">
     <div class="titulo-secao reveal">
       <h2>O que dizem os hóspedes</h2>
-      <p>Trechos de avaliações deixadas no Google e no Booking.com.</p>
+      <p>Notas e trechos de avaliações deixadas no Google e no Booking.com.</p>
+    </div>
+    <div class="resumo-notas">
+{{RESUMO_NOTAS}}
     </div>
     <div class="avaliacoes">
 {{AVALIACOES}}
@@ -169,11 +170,19 @@
     </div>
   </section>
 
-  <section class="grupos">
-    <div class="reveal">
-      <h2>Grupos e romarias</h2>
-      <p>Temos quartos com beliche para excursões, turmas e romeiros. Mande pelo WhatsApp as datas e quantas pessoas vêm, e a gente vê como dividir os quartos.</p>
-      <a class="btn btn-claro" href="https://wa.me/{{WHATSAPP}}?text=Quero%20fazer%20uma%20reserva%20para%20o%20meu%20grupo!" target="_blank" rel="noopener" data-evento="whatsapp_grupo">Combinar pelo WhatsApp</a>
+  <section id="grupos" class="grupos">
+    <div class="grupos-topo">
+      <div class="reveal">
+        <h2>Grupos e romarias</h2>
+        <p>Romeiros a pé, de bicicleta ou de moto, excursões, trilheiros e jipeiros: temos quartos com beliche e lugar na varanda para guardar bicicletas e motos. Mande pelo WhatsApp as datas e quantas pessoas vêm, e a gente vê como dividir os quartos.</p>
+        <a class="btn btn-claro" href="https://wa.me/{{WHATSAPP}}?text=Quero%20fazer%20uma%20reserva%20para%20o%20meu%20grupo!" target="_blank" rel="noopener" data-evento="whatsapp_grupo">Combinar pelo WhatsApp</a>
+      </div>
+      <div class="romeiro-caixa">
+{{ROMEIRO}}
+      </div>
+    </div>
+    <div class="turmas">
+{{TURMAS}}
     </div>
   </section>
 
@@ -238,6 +247,13 @@
     </ul>
   </section>
 
+  <section id="perguntas" class="secao perguntas">
+    <div class="titulo-secao reveal">
+      <h2>Perguntas frequentes</h2>
+    </div>
+{{FAQ}}
+  </section>
+
   <section id="chegar" class="secao chegar">
     <div class="reveal">
       <h2>Como chegar</h2>
@@ -263,12 +279,13 @@
 <footer class="rodape">
   <img src="assets/logo/logo-claro.webp" alt="Pousada Engenho do Vô" width="160" height="160" loading="lazy">
   <div>
+    <p>{{ENDERECO}}</p>
     <p><a href="https://wa.me/{{WHATSAPP}}" target="_blank" rel="noopener">WhatsApp (35) 98877-3223</a></p>
     <p>
       <a href="https://www.instagram.com/pousadaengenhodo.vo" target="_blank" rel="noopener">Instagram</a> ·
       <a href="https://www.facebook.com/profile.php?id=100086007132862" target="_blank" rel="noopener">Facebook</a>
     </p>
-    <p><small>© {{ANO}} Pousada Engenho do Vô · Camanducaia, MG</small></p>
+    <p><small>© {{ANO}} Pousada Engenho do Vô · Camanducaia, MG · <a href="politica-de-privacidade.html">Política de privacidade</a></small></p>
   </div>
 </footer>
 
