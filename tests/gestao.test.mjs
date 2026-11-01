@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { iso, br, parseValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut } from "../gestao/regras.js";
+import { iso, br, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut } from "../gestao/regras.js";
 
 const regs = [{ quarto: 3, checkIn: "2026-11-10", checkOut: "2026-11-13", hospedes: 2, valor: 900 }];
 
@@ -14,6 +14,9 @@ test("valor aceita formato brasileiro", () => {
   assert.equal(parseValor("1.250,50"), 1250.5);
   assert.equal(parseValor("900"), 900);
   assert.equal(parseValor("abc"), 0);
+  assert.equal(parseValor("1.000"), 1000);
+  assert.equal(parseValor("1"), 1);
+  assert.equal(parseValor("1.250,5"), 1250.5);
 });
 
 test("quarto fica ocupado até o dia anterior ao check-out", () => {
@@ -44,4 +47,19 @@ test("check-in mostra o horário do registro e check-out é sempre meio-dia", ()
   assert.equal(fmtCheckIn({ checkIn: "2026-11-01", checkInHora: "14:32" }), "01/11/2026 14:32");
   assert.equal(fmtCheckIn({ checkIn: "2026-11-01" }), "01/11/2026");
   assert.equal(fmtCheckOut({ checkOut: "2026-11-04" }), "04/11/2026 12:00");
+});
+
+test("máscara do valor: reais com ponto de milhar e centavos só após a vírgula", () => {
+  assert.equal(mascaraValor("1"), "1");
+  assert.equal(mascaraValor("10"), "10");
+  assert.equal(mascaraValor("100"), "100");
+  assert.equal(mascaraValor("1000"), "1.000");
+  assert.equal(mascaraValor("1000000"), "1.000.000");
+  assert.equal(mascaraValor("1.000"), "1.000");
+  assert.equal(mascaraValor("1250,5"), "1.250,5");
+  assert.equal(mascaraValor("1250,567"), "1.250,56");
+  assert.equal(mascaraValor("1000,00"), "1.000,00");
+  assert.equal(mascaraValor(","), "0,");
+  assert.equal(mascaraValor("007"), "7");
+  assert.equal(mascaraValor("abc"), "");
 });

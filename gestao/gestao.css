@@ -106,7 +106,8 @@ td { padding: 12px; border-bottom: 1px solid #efe9db; }
 .noites { margin: -6px 0 0; color: var(--cana); font-weight: 800; font-size: 14px; }
 .passo { display: flex; align-items: center; gap: 12px; }
 .passo button { width: 52px; height: 52px; border-radius: 6px; border: 1.5px solid var(--cana); background: #fff; color: var(--cana); font-size: 26px; font-weight: 700; }
-.passo output { min-width: 64px; text-align: center; font-size: 32px; font-weight: 800; }
+.passo input { width: 84px; height: 52px; text-align: center; font: inherit; font-size: 30px; font-weight: 800; color: var(--tinta); border: 1.5px solid #8a7f6d; border-radius: 6px; background: #fff; padding: 0; }
+.passo input:focus { outline: 2px solid var(--cana); outline-offset: 1px; }
 .valor { display: flex; align-items: center; border: 1.5px solid #8a7f6d; border-radius: 6px; padding: 0 16px; height: 56px; }
 .valor span { font-size: 20px; font-weight: 700; color: var(--tinta-2); margin-right: 8px; }
 .valor input { flex: 1; min-width: 0; border: 0; outline: 0; font: inherit; font-size: 22px; font-weight: 800; background: transparent; }

@@ -1,5 +1,5 @@
-import { URL_SCRIPT } from "./config.js";
-import { iso, deIso, br, brl, parseValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT } from "./regras.js";
+import { URL_SCRIPT } from "./config.js?v=4";
+import { iso, deIso, br, brl, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT } from "./regras.js?v=4";
 
 const QUARTOS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const PAGAMENTOS = ["PIX", "Dinheiro", "Cartão de débito", "Cartão de crédito"];
@@ -189,7 +189,7 @@ function renderModal() {
       <p class="noites" id="m-noites" hidden></p>
       <p class="erro" id="m-conflito" role="alert" hidden></p>
       <div class="campo"><span class="rotulo">Quantidade de hóspedes</span>
-        <div class="passo"><button data-acao="hosp" data-d="-1" aria-label="Diminuir hóspedes">&minus;</button><output id="m-hosp"></output><button data-acao="hosp" data-d="1" aria-label="Aumentar hóspedes">+</button></div></div>
+        <div class="passo"><button data-acao="hosp" data-d="-1" aria-label="Diminuir hóspedes">&minus;</button><input id="m-hosp" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off" aria-label="Quantidade de hóspedes"><button data-acao="hosp" data-d="1" aria-label="Aumentar hóspedes">+</button></div></div>
       <div class="campo"><label for="m-valor">Valor total cobrado pela estadia</label>
         <div class="valor"><span>R$</span><input id="m-valor" type="text" inputmode="decimal" placeholder="0,00" autocomplete="off"></div></div>
       <div class="campo"><span class="rotulo">Forma de pagamento</span>
@@ -200,7 +200,23 @@ function renderModal() {
   m.innerHTML = `<div class="janela" role="dialog" aria-modal="true" aria-label="Registro do quarto ${q}">${topo}${corpo}</div>`;
   m.hidden = false;
   if (!est) {
-    $("m-valor").addEventListener("input", (e) => { s.form.valor = e.target.value; atualizarForm(); });
+    $("m-valor").addEventListener("input", (e) => {
+      const el = e.target;
+      // guarda quantos dígitos/vírgulas ficaram antes do cursor para devolvê-lo ao lugar certo
+      const antes = el.value.slice(0, el.selectionStart).replace(/[^\d,]/g, "").length;
+      el.value = mascaraValor(el.value);
+      let pos = 0, n = 0;
+      while (pos < el.value.length && n < antes) { if (/[\d,]/.test(el.value[pos])) n++; pos++; }
+      el.setSelectionRange(pos, pos);
+      s.form.valor = el.value; atualizarForm();
+    });
+    const h = $("m-hosp");
+    h.addEventListener("focus", () => h.select());
+    h.addEventListener("input", () => {
+      h.value = h.value.replace(/\D/g, "").replace(/^0+/, "");
+      s.form.hosp = Number(h.value) || 0; atualizarForm();
+    });
+    h.addEventListener("blur", () => { if (s.form.hosp < 1) { s.form.hosp = 1; } h.value = s.form.hosp; atualizarForm(); });
     atualizarForm();
   }
 }
@@ -219,9 +235,10 @@ function atualizarForm() {
   const c = $("m-conflito");
   c.hidden = !bate;
   if (bate) c.textContent = `Este quarto já está ocupado de ${br(bate.checkIn)} até ${br(bate.checkOut)}.`;
-  $("m-hosp").textContent = f.hosp;
+  const campoHosp = $("m-hosp");
+  if (document.activeElement !== campoHosp) campoHosp.value = f.hosp;
   document.querySelectorAll(".pag").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.p === f.pag)));
-  $("m-salvar").disabled = s.salvando || !(temSaida && !bate && parseValor(f.valor) > 0 && f.pag);
+  $("m-salvar").disabled = s.salvando || !(temSaida && !bate && f.hosp >= 1 && parseValor(f.valor) > 0 && f.pag);
 }
 
 async function salvar() {

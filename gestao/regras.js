@@ -8,12 +8,25 @@ export const deIso = (s) => { const [a, m, d] = s.split("-").map(Number); return
 export const br = (s) => (s ? s.split("-").reverse().join("/") : "");
 export const brl = (n) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(n);
 
-// aceita "1.250,50", "1250,5", "1250.50"
+// aceita "1.250,50", "1.250", "1250,5", "1250.50"
 export function parseValor(txt) {
   let t = String(txt || "").replace(/[^0-9.,]/g, "");
   if (t.includes(",")) t = t.replace(/\./g, "").replace(",", ".");
+  else if (/^\d{1,3}(\.\d{3})+$/.test(t)) t = t.replace(/\./g, ""); // "1.250" = mil duzentos e cinquenta
   const n = parseFloat(t);
   return Number.isNaN(n) ? 0 : n;
+}
+
+// máscara ao digitar: reais com ponto de milhar, vírgula só para centavos (até 2 casas)
+// 1 -> 1 | 1000 -> 1.000 | 1250,5 -> 1.250,5
+export function mascaraValor(txt) {
+  const t = String(txt || "").replace(/[^\d,]/g, "");
+  const v = t.indexOf(",");
+  let inteiro = (v >= 0 ? t.slice(0, v) : t).replace(/^0+(?=\d)/, "");
+  const dec = v >= 0 ? t.slice(v + 1).replace(/,/g, "").slice(0, 2) : null;
+  inteiro = inteiro.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  if (v >= 0 && inteiro === "") inteiro = "0";
+  return dec === null ? inteiro : `${inteiro},${dec}`;
 }
 
 export const noites = (entrada, saida) => Math.round((deIso(saida) - deIso(entrada)) / 864e5);
