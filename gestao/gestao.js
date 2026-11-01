@@ -1,5 +1,5 @@
-import { URL_SCRIPT } from "./config.js?v=17";
-import { iso, deIso, br, brl, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT, CAFES, rotuloCafe, rotuloCafeCamareira, cafeClasse } from "./regras.js?v=17";
+import { URL_SCRIPT } from "./config.js?v=18";
+import { iso, deIso, br, brl, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT, CAFES, rotuloCafe, rotuloCafeCamareira, cafeClasse, HORA_LIMITE_CAFE } from "./regras.js?v=18";
 
 const QUARTOS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const PAGAMENTOS = ["PIX", "Dinheiro", "Cartão de débito", "Cartão de crédito"];
@@ -261,7 +261,7 @@ function renderRelatorioCamareira() {
     let cafe;
     if (!e.ocupado) cafe = '<span class="traco" aria-label="sem hóspede">—</span>';
     else if (e.cafe === "Com café" && e.cafeHoje) cafe = chip("Preparar", "com");
-    else if (e.cafe === "Com café") cafe = `${chip("Só amanhã", "azul")}<small>chegou depois das 06:00</small>`;
+    else if (e.cafe === "Com café") cafe = `${chip("Só amanhã", "azul")}<small>chegou depois das ${HORA_LIMITE_CAFE}</small>`;
     else cafe = chip(rotuloCafeCamareira(e.cafe), cafeClasse(e.cafe));
     const limp = e.limpeza ? chip("Sim", "azul") : e.saindo ? chip(`Às ${HORA_CHECKOUT}`, "ambar") : chip("Não", "neutro");
     const obs = e.limpeza && e.estadia ? "novo hóspede chega hoje" : (e.chegaHoje && !e.saindo ? "chega hoje" : "");
@@ -289,7 +289,7 @@ function renderRelatorioCamareira() {
       <div class="rel-linha rel-cab" role="row"><div role="columnheader">Quarto</div><div role="columnheader">Pessoas</div><div role="columnheader">Café de hoje?</div><div role="columnheader">Pronto para limpeza?</div></div>
       ${linhas}
     </div>
-    <p class="muda rel-regra">Café de hoje: quem dormiu aqui ou fez check-in até as 06:00. Quem chega depois conta a partir de amanhã.</p>`;
+    <p class="muda rel-regra">Café de hoje: quem dormiu aqui ou fez check-in até as ${HORA_LIMITE_CAFE}. Quem chega depois conta a partir de amanhã.</p>`;
 }
 
 function render() { if (s.papel === "camareira") renderCamareira(); else { renderCalendario(); renderQuartos(); } }
@@ -308,7 +308,7 @@ function renderModalCamareira() {
   const e = estadoQuarto(q);
   const cafeSelo = (x) => `<span class="cafe-selo ${cafeClasse(x.cafe)}">${esc(rotuloCafeCamareira(x.cafe))}</span>${
     cafeClasse(x.cafe) === "nd" ? '<span class="muda">Confirme com a recepção.</span>'
-    : x.cafe === "Com café" ? (x.cafeHoje ? '<span class="muda">Preparar café hoje.</span>' : '<span class="muda">Chegou depois das 06:00: o café começa amanhã.</span>') : ""}`;
+    : x.cafe === "Com café" ? (x.cafeHoje ? '<span class="muda">Preparar café hoje.</span>' : `<span class="muda">Chegou depois das ${HORA_LIMITE_CAFE}: o café começa amanhã.</span>`) : ""}`;
   const chegada = e.estadia && (e.limpeza || e.saindo)
     ? `<div class="ocupado-caixa"><span class="etq">Novo hóspede chega hoje</span><strong>${hospedesTxt(e.estadia.hospedes)}</strong>${cafeSelo(e.estadia)}</div>` : "";
   let corpo;

@@ -11,10 +11,11 @@
 const ABA = 'Registros';
 const FUSO = 'America/Sao_Paulo';
 const HORA_CHECKOUT = '12:00'; // check-out sempre ao meio-dia
-const VERSAO = 'v8-cafe-por-horario-de-checkin';
-// Café da manhã: quem faz check-in HOJE só entra na conta de hoje se o check-in foi até este horário (madrugada).
-// Depois disso, o café só conta a partir do dia seguinte. Quem chegou em dias anteriores conta sempre.
-const HORA_LIMITE_CAFE = '06:00';
+const VERSAO = 'v9-cafe-ate-09h';
+// Café da manhã: check-in de 00:00 até este horário conta o café no MESMO dia (chegou cedo ou de madrugada).
+// Check-in depois disso (ex.: de 12:00 a 00:00) conta o quarto como ocupado no dia, mas o café só a partir do dia seguinte,
+// e continua até o check-out. Quem chegou em dias anteriores conta sempre.
+const HORA_LIMITE_CAFE = '09:00';
 const SESSAO_SEGUNDOS = 6 * 60 * 60; // 6 horas (máximo do CacheService)
 const MAX_ERROS = 5;                 // erros de login antes de bloquear
 const BLOQUEIO_SEGUNDOS = 15 * 60;
