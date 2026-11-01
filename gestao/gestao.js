@@ -1,5 +1,5 @@
-import { URL_SCRIPT } from "./config.js?v=11";
-import { iso, deIso, br, brl, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT } from "./regras.js?v=11";
+import { URL_SCRIPT } from "./config.js?v=12";
+import { iso, deIso, br, brl, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT } from "./regras.js?v=12";
 
 const QUARTOS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const PAGAMENTOS = ["PIX", "Dinheiro", "Cartão de débito", "Cartão de crédito"];
@@ -207,7 +207,7 @@ function renderModal() {
       <div class="campo"><span class="rotulo">Quantidade de hóspedes</span>
         <div class="passo"><button data-acao="hosp" data-d="-1" aria-label="Diminuir hóspedes">&minus;</button><input id="m-hosp" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off" aria-label="Quantidade de hóspedes"><button data-acao="hosp" data-d="1" aria-label="Aumentar hóspedes">+</button></div></div>
       <div class="campo"><label for="m-valor">Valor total cobrado pela estadia</label>
-        <div class="valor"><span>R$</span><input id="m-valor" type="text" inputmode="decimal" placeholder="0,00" autocomplete="off"></div></div>
+        <div class="valor"><span>R$</span><input id="m-valor" type="text" inputmode="decimal" autocomplete="off"></div></div>
       <div class="campo"><span class="rotulo">Forma de pagamento</span>
         <div class="pagamentos">${PAGAMENTOS.map((p) => `<button class="pag" data-acao="pag" data-p="${esc(p)}" aria-pressed="false">${esc(p)}</button>`).join("")}</div></div>
       <button class="btn" id="m-salvar" data-acao="salvar">Salvar</button>`;
@@ -216,15 +216,30 @@ function renderModal() {
   m.innerHTML = `<div class="janela" role="dialog" aria-modal="true" aria-label="Registro do quarto ${q}">${topo}${corpo}</div>`;
   m.hidden = false;
   if (!est) {
-    $("m-valor").addEventListener("input", (e) => {
-      const el = e.target;
-      // guarda quantos dígitos/vírgulas ficaram antes do cursor para devolvê-lo ao lugar certo
-      const antes = el.value.slice(0, el.selectionStart).replace(/[^\d,]/g, "").length;
-      el.value = mascaraValor(el.value);
-      let pos = 0, n = 0;
-      while (pos < el.value.length && n < antes) { if (/[\d,]/.test(el.value[pos])) n++; pos++; }
-      el.setSelectionRange(pos, pos);
-      s.form.valor = el.value; atualizarForm();
+    const v = $("m-valor");
+    v.value = "0,00"; s.form.valor = "0,00";
+    let ultimo = v.value, recemFocado = false;
+    const antesDaVirgula = () => { const n = v.value.indexOf(","); v.setSelectionRange(n, n); };
+    // primeiro toque: cursor antes da vírgula, para o que for digitado entrar nos reais
+    v.addEventListener("focus", () => { recemFocado = true; setTimeout(antesDaVirgula, 0); });
+    v.addEventListener("click", () => { if (recemFocado) { recemFocado = false; antesDaVirgula(); } });
+    v.addEventListener("input", (e) => {
+      let raw = v.value, pos = v.selectionStart;
+      const apagando = (e.inputType || "").startsWith("delete");
+      // apagar a vírgula não pode multiplicar o valor: só devolve o cursor para antes dela
+      if (apagando && !raw.includes(",")) { v.value = ultimo; antesDaVirgula(); return; }
+      const digitouSeparador = e.data === "," || e.data === ".";
+      if (digitouSeparador) raw = raw.slice(0, pos - 1) + "," + raw.slice(pos);
+      const virgula = raw.indexOf(",");
+      const naDecimal = virgula >= 0 && pos > virgula && !digitouSeparador;
+      const texto = mascaraValor(raw);
+      const novaVirgula = texto.indexOf(",");
+      v.value = texto;
+      const alvo = digitouSeparador ? novaVirgula + 1
+        : naDecimal ? novaVirgula + 1 + Math.min(2, pos - virgula - 1)
+        : novaVirgula;
+      v.setSelectionRange(alvo, alvo);
+      ultimo = texto; s.form.valor = texto; atualizarForm();
     });
     const h = $("m-hosp");
     h.addEventListener("focus", () => h.select());

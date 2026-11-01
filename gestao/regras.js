@@ -17,16 +17,14 @@ export function parseValor(txt) {
   return Number.isNaN(n) ? 0 : n;
 }
 
-// máscara ao digitar: reais com ponto de milhar, vírgula só para centavos (até 2 casas)
-// 1 -> 1 | 1000 -> 1.000 | 1250,5 -> 1.250,5
+// máscara do valor: o que se digita são reais e as casas decimais ficam sempre visíveis
+// "" -> 0,00 | 25 -> 25,00 | 250 -> 250,00 | 2500 -> 2.500,00 | 250,5 -> 250,50
 export function mascaraValor(txt) {
   const t = String(txt || "").replace(/[^\d,]/g, "");
   const v = t.indexOf(",");
-  let inteiro = (v >= 0 ? t.slice(0, v) : t).replace(/^0+(?=\d)/, "");
-  const dec = v >= 0 ? t.slice(v + 1).replace(/,/g, "").slice(0, 2) : null;
-  inteiro = inteiro.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-  if (v >= 0 && inteiro === "") inteiro = "0";
-  return dec === null ? inteiro : `${inteiro},${dec}`;
+  const inteiro = (v >= 0 ? t.slice(0, v) : t).replace(/^0+/, "").slice(0, 9) || "0";
+  const dec = (v >= 0 ? t.slice(v + 1).replace(/,/g, "") : "").slice(0, 2).padEnd(2, "0");
+  return `${inteiro.replace(/\B(?=(\d{3})+(?!\d))/g, ".")},${dec}`;
 }
 
 export const noites = (entrada, saida) => Math.round((deIso(saida) - deIso(entrada)) / 864e5);

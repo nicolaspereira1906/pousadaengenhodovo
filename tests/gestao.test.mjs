@@ -49,17 +49,18 @@ test("check-in mostra o horário do registro e check-out é sempre meio-dia", ()
   assert.equal(fmtCheckOut({ checkOut: "2026-11-04" }), "04/11/2026 12:00");
 });
 
-test("máscara do valor: reais com ponto de milhar e centavos só após a vírgula", () => {
-  assert.equal(mascaraValor("1"), "1");
-  assert.equal(mascaraValor("10"), "10");
-  assert.equal(mascaraValor("100"), "100");
-  assert.equal(mascaraValor("1000"), "1.000");
-  assert.equal(mascaraValor("1000000"), "1.000.000");
-  assert.equal(mascaraValor("1.000"), "1.000");
-  assert.equal(mascaraValor("1250,5"), "1.250,5");
-  assert.equal(mascaraValor("1250,567"), "1.250,56");
-  assert.equal(mascaraValor("1000,00"), "1.000,00");
-  assert.equal(mascaraValor(","), "0,");
-  assert.equal(mascaraValor("007"), "7");
-  assert.equal(mascaraValor("abc"), "");
+test("máscara do valor: reais com casas decimais sempre visíveis", () => {
+  assert.equal(mascaraValor(""), "0,00");
+  assert.equal(mascaraValor("2"), "2,00");
+  assert.equal(mascaraValor("02,00"), "2,00"); // digitou 2 antes do 0 de "0,00"
+  assert.equal(mascaraValor("25,00"), "25,00");
+  assert.equal(mascaraValor("250,00"), "250,00");
+  assert.equal(mascaraValor("2500,00"), "2.500,00");
+  assert.equal(mascaraValor("1.2500,00"), "12.500,00");
+  assert.equal(mascaraValor("1250000"), "1.250.000,00");
+  assert.equal(mascaraValor("250,5"), "250,50");
+  assert.equal(mascaraValor("25,050"), "25,05");
+  assert.equal(mascaraValor(",00"), "0,00");
+  assert.equal(mascaraValor("abc"), "0,00");
+  assert.equal(parseValor(mascaraValor("2500,5")), 2500.5);
 });
