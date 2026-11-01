@@ -1,5 +1,5 @@
-import { URL_SCRIPT } from "./config.js?v=19";
-import { iso, deIso, br, brl, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT, CAFES, rotuloCafe, rotuloCafeCamareira, cafeClasse } from "./regras.js?v=19";
+import { URL_SCRIPT } from "./config.js?v=20";
+import { iso, deIso, br, brl, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT, CAFES, rotuloCafe, rotuloCafeCamareira, cafeClasse, precisaLimpeza } from "./regras.js?v=20";
 
 const QUARTOS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const PAGAMENTOS = ["PIX", "Dinheiro", "Cartão de débito", "Cartão de crédito"];
@@ -22,7 +22,9 @@ const s = {
   salvando: false,
   calAberto: false,
   aba: "quartos", // camareira: quartos | relatorio
-  atualizadoEm: ""
+  atualizadoEm: "",
+  hoje: "", hora: "", // data e hora do servidor, vêm junto com a lista
+  confLimpo: null    // quarto aguardando a segunda batida para confirmar "limpo"
 };
 
 // ---------- conexão com a planilha ----------
@@ -52,6 +54,7 @@ async function carregar() {
   s.papel = r.papel || "admin";
   localStorage.setItem(CHAVE_PAPEL, s.papel);
   s.regs = r.registros;
+  s.hoje = r.hoje || iso(new Date()); s.hora = r.hora || "";
   s.atualizadoEm = new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
   if (s.papel === "camareira") s.sel = r.hoje || iso(new Date()); // camareira só vê o dia de hoje
   aplicarPapel();
@@ -74,10 +77,10 @@ function aplicarPapel() {
   document.querySelectorAll(".aba").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.a === s.aba)));
   clearInterval(tAtualiza);
   // a camareira não tem botão de atualizar: a tela se atualiza sozinha (e vira "pronto para limpeza" às 12:00)
-  if (cam) tAtualiza = setInterval(() => { if (s.token && !document.hidden) carregar().catch(() => {}); }, 60000);
+  tAtualiza = setInterval(() => { if (s.token && !document.hidden) carregar().catch(() => {}); }, 60000);
 }
 document.addEventListener("visibilitychange", () => {
-  if (!document.hidden && s.token && s.papel === "camareira") carregar().catch(() => {});
+  if (!document.hidden && s.token) carregar().catch(() => {});
 });
 document.body.dataset.papel = s.papel;
 
@@ -175,19 +178,28 @@ function renderCalendario() {
     </div>`;
 }
 
+// Admin: o quarto aparece "pronto para limpeza" quando se olha para hoje e há locação pendente com check-out passado
+const limpezaPendenteAdmin = (q) => s.sel === s.hoje && s.regs.some((r) => r.quarto === q && precisaLimpeza(r.limpeza, r.checkIn, r.checkOut, s.hoje, s.hora));
+
 function renderQuartos() {
   let ocupados = 0, hospedados = 0;
   $("quartos").innerHTML = QUARTOS.map((q) => {
     const est = estadiaEm(s.regs, q, s.sel);
     const sai = saidaEm(s.regs, q, s.sel);
+    const lp = limpezaPendenteAdmin(q);
     let cls = "quarto", selo = "Livre", seloCls = "selo", principal = "Disponível", sub = "Sem estadia", cta = "Registrar locação";
-    if (est) {
+    if (lp) {
+      if (est) { ocupados++; hospedados += est.hospedes; }
+      cls += " limpeza"; selo = "Limpeza"; seloCls += " limpeza"; principal = "Pronto para limpeza";
+      sub = est ? `Novo hóspede hoje · ${est.hospedes} ${est.hospedes === 1 ? "hóspede" : "hóspedes"}` : "Check-out concluído";
+      cta = "Marcar como limpo";
+    } else if (est) {
       ocupados++; hospedados += est.hospedes;
       cls += " ocupado"; selo = "Ocupado"; seloCls += " ocupado";
       principal = "Até " + br(est.checkOut).slice(0, 5) + " " + HORA_CHECKOUT;
       sub = `${est.hospedes} ${est.hospedes === 1 ? "hóspede" : "hóspedes"} · ${brl(est.valor)}`;
       cta = "Ver estadia";
-    } else if (sai) {
+    } else if (sai && !(s.sel === s.hoje && s.hora >= HORA_CHECKOUT)) { // depois do meio-dia o quarto já foi liberado
       selo = "Saída hoje"; seloCls += " saida";
       sub = `Check-out até ${HORA_CHECKOUT} · ${sai.hospedes} ${sai.hospedes === 1 ? "hóspede" : "hóspedes"}`;
     }
@@ -230,7 +242,7 @@ function renderCamareira() {
     let cls = "quarto", selo = "Livre", seloCls = "selo", principal = "Disponível", sub = "Quarto não ocupado";
     if (e.limpeza) {
       cls += " limpeza"; selo = "Limpeza"; seloCls += " limpeza"; principal = "Pronto para limpeza";
-      sub = e.estadia ? "Novo hóspede chega hoje" : "Check-out de hoje";
+      sub = e.estadia ? "Novo hóspede chega hoje" : "Quarto liberado";
     } else if (e.saindo) {
       cls += " saindo"; selo = "Saída hoje"; seloCls += " saida"; principal = `Saída até ${HORA_CHECKOUT}`;
       sub = `${hospedesTxt(e.saindo.hospedes)} · ${cafeTexto(e.saindo)}`;
@@ -241,7 +253,7 @@ function renderCamareira() {
     return `<button class="${cls}" data-acao="quarto" data-q="${q}" aria-label="Abrir quarto ${q}, ${principal.toLowerCase()}">
       <div class="linha"><span class="nome">Quarto ${q}</span><span class="${seloCls}">${selo}</span></div>
       <div><div class="principal">${principal}</div><div class="sub">${esc(sub)}</div></div>
-      <span class="cta">Ver detalhes &rarr;</span></button>`;
+      <span class="cta">${e.limpeza ? "Marcar como limpo" : "Ver detalhes"} &rarr;</span></button>`;
   }).join("");
   renderRelatorioCamareira();
 }
@@ -288,11 +300,43 @@ function renderRelatorioCamareira() {
 
 function render() { if (s.papel === "camareira") renderCamareira(); else { renderCalendario(); renderQuartos(); } }
 
+// ---------- marcar quarto como limpo (admin e camareira) ----------
+const botaoLimpo = (q) => `<button class="btn-limpar" data-acao="limpar-pedir" data-quarto="${q}">Marcar como limpo</button>`;
+let tConf;
+function zerarConfLimpo() {
+  clearTimeout(tConf); s.confLimpo = null;
+  document.querySelectorAll('[data-acao="limpar-pedir"]').forEach((b) => { b.textContent = "Marcar como limpo"; b.classList.remove("confirmar"); });
+}
+// primeira batida pede confirmação (evita toque sem querer); a segunda grava
+function pedirLimpo(q) {
+  if (s.confLimpo !== q) {
+    s.confLimpo = q;
+    document.querySelectorAll('[data-acao="limpar-pedir"]').forEach((b) => { b.textContent = `Confirmar: quarto ${q} está limpo`; b.classList.add("confirmar"); });
+    clearTimeout(tConf); tConf = setTimeout(zerarConfLimpo, 5000);
+    return;
+  }
+  marcarLimpo(q);
+}
+async function marcarLimpo(q) {
+  document.querySelectorAll('[data-acao="limpar-pedir"]').forEach((b) => { b.disabled = true; b.textContent = "Salvando..."; });
+  try {
+    await api("limpar", { quarto: q });
+    clearTimeout(tConf); s.confLimpo = null;
+    await carregar();
+    fecharModal();
+    avisar(`Quarto ${q} marcado como limpo. Agora está livre.`);
+  } catch (e) {
+    avisar(e.message, true);
+    document.querySelectorAll('[data-acao="limpar-pedir"]').forEach((b) => { b.disabled = false; });
+    zerarConfLimpo();
+  }
+}
+
 // ---------- janela do quarto ----------
 function abrirQuarto(q) {
   s.quarto = q;
   s.form = { ci: s.sel, co: "", hosp: 2, valor: "", pag: "", cafe: "" };
-  s.picker = null;
+  s.picker = null; s.confLimpo = null;
   if (s.papel === "camareira") renderModalCamareira(); else renderModal();
 }
 
@@ -309,8 +353,8 @@ function renderModalCamareira() {
     ? `<div class="ocupado-caixa"><span class="etq">Novo hóspede chega hoje</span><strong>${hospedesTxt(e.estadia.hospedes)}</strong>${cafeSelo(e.estadia)}</div>` : "";
   let corpo;
   if (e.limpeza) {
-    corpo = `<div class="limpeza-caixa"><span class="etq">Pronto para limpeza</span><strong>Check-out de hoje</strong>
-      <span class="muda">Quarto liberado.</span></div>${chegada}`;
+    corpo = `<div class="limpeza-caixa"><span class="etq">Pronto para limpeza</span><strong>Quarto liberado</strong>
+      <span class="muda">Depois de limpar, marque abaixo.</span>${botaoLimpo(q)}</div>${chegada}`;
   } else if (e.saindo) {
     corpo = `<div class="saindo-caixa"><span class="etq">Saída hoje até ${HORA_CHECKOUT}</span>
         <strong>${hospedesTxt(e.saindo.hospedes)}</strong>${cafeSelo(e.saindo)}
@@ -333,6 +377,9 @@ function renderModal() {
   const q = s.quarto;
   const est = estadiaEm(s.regs, q, s.sel);
   const topo = `<div class="janela-topo"><div><h2>Quarto ${q}</h2><p class="muda">${esc(deIso(s.sel).toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long", year: "numeric" }))}</p></div><button class="fechar" data-acao="fechar" aria-label="Fechar">&times;</button></div>`;
+  const limpezaBox = limpezaPendenteAdmin(q)
+    ? `<div class="limpeza-caixa"><span class="etq">Pronto para limpeza</span><strong>Check-out concluído</strong>
+        <span class="muda">Depois de limpar, marque abaixo. O quarto passa a livre.</span>${botaoLimpo(q)}</div>` : "";
   let corpo;
   if (est) {
     corpo = `<div class="ocupado-caixa"><span class="etq">Quarto ocupado</span><strong>${esc(fmtCheckIn(est))} até ${esc(fmtCheckOut(est))}</strong>
@@ -359,7 +406,7 @@ function renderModal() {
       <button class="btn" id="m-salvar" data-acao="salvar">Salvar</button>`;
   }
   const m = $("modal");
-  m.innerHTML = `<div class="janela" role="dialog" aria-modal="true" aria-label="Registro do quarto ${q}">${topo}${corpo}</div>`;
+  m.innerHTML = `<div class="janela" role="dialog" aria-modal="true" aria-label="Registro do quarto ${q}">${topo}${limpezaBox}${corpo}</div>`;
   m.hidden = false;
   if (!est) {
     const v = $("m-valor");
@@ -426,8 +473,8 @@ async function salvar() {
   $("m-salvar").textContent = "Salvando na planilha...";
   try {
     await api("salvar", reg);
-    s.regs.push(reg);
-    fecharModal(); render();
+    await carregar().catch(() => { s.regs.push({ ...reg, limpeza: "Pendente" }); render(); }); // servidor é a verdade (evita duplicar com a atualização automática)
+    fecharModal();
     avisar(`Locação salva na planilha: quarto ${reg.quarto}, check-in ${fmtCheckIn(reg)}, check-out ${fmtCheckOut(reg)}.`);
   } catch (e) {
     s.salvando = false;
@@ -442,8 +489,8 @@ async function encerrar() {
   if (!est) return;
   try {
     await api("checkout", { quarto: est.quarto, checkIn: est.checkIn, checkOut: s.sel });
-    est.checkOut = s.sel;
-    fecharModal(); render();
+    await carregar().catch(() => { est.checkOut = s.sel; render(); });
+    fecharModal();
     avisar(`Check-out do quarto ${est.quarto} feito em ${br(s.sel)} (${HORA_CHECKOUT}).`);
   } catch (e) { avisar(e.message, true); }
 }
@@ -507,6 +554,7 @@ document.addEventListener("click", (e) => {
     case "pag": s.form.pag = d.p; atualizarForm(); break;
     case "cafe": s.form.cafe = d.c; atualizarForm(); break;
     case "aba": s.aba = d.a; aplicarPapel(); break;
+    case "limpar-pedir": pedirLimpo(Number(d.quarto)); break;
     case "salvar": salvar(); break;
     case "encerrar": encerrar(); break;
   }

@@ -55,3 +55,6 @@ Google "Hóspedes e Pagamentos".
 - Café da manhã (relatório da camareira): conta no café de hoje quem dormiu aqui na noite anterior ou fez check-in até as 09:00
   (`HORA_LIMITE_CAFE` em `apps-script/Codigo.gs`). Check-in depois disso só conta a partir do dia seguinte. O relatório mostra
   só o que ela precisa: ocupado/livre, pessoas, cafés a preparar hoje e quartos para limpar.
+- Limpeza: o quarto vira "Pronto para limpeza" depois do check-out (a partir das 12:00) e continua assim, mesmo em outro dia, até
+  alguém tocar em "Marcar como limpo" (admin ou camareira, com confirmação). A coluna I "Limpeza" guarda "Pendente" e depois
+  "Limpo em dd/mm/aaaa hh:mm (quem)". Linhas antigas, com a coluna I vazia, são ignoradas. As telas se atualizam sozinhas a cada minuto.

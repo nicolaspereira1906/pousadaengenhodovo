@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { iso, br, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, rotuloCafe, rotuloCafeCamareira, cafeClasse } from "../gestao/regras.js";
+import { iso, br, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, rotuloCafe, rotuloCafeCamareira, cafeClasse, precisaLimpeza } from "../gestao/regras.js";
 
 const regs = [{ quarto: 3, checkIn: "2026-11-10", checkOut: "2026-11-13", hospedes: 2, valor: 900 }];
 
@@ -79,4 +79,13 @@ test("café na tela da camareira: sem informação vira 'a confirmar' e tem cor 
   assert.equal(cafeClasse("Com café"), "com");
   assert.equal(cafeClasse("Sem café"), "sem");
   assert.equal(cafeClasse(""), "nd");
+});
+
+test("pronto para limpeza: só locação pendente com check-out passado, e continua até limpar", () => {
+  assert.equal(precisaLimpeza("Pendente", "2026-11-01", "2026-11-03", "2026-11-03", "12:00"), true);   // sai hoje, meio-dia
+  assert.equal(precisaLimpeza("Pendente", "2026-11-01", "2026-11-03", "2026-11-03", "11:59"), false);  // ainda antes do meio-dia
+  assert.equal(precisaLimpeza("Pendente", "2026-11-01", "2026-11-03", "2026-11-05", "08:00"), true);   // saiu há dias e não limparam
+  assert.equal(precisaLimpeza("Pendente", "2026-11-01", "2026-11-03", "2026-11-02", "18:00"), false);  // ainda hospedado
+  assert.equal(precisaLimpeza("Limpo em 03/11/2026 14:00 (camareira)", "2026-11-01", "2026-11-03", "2026-11-04", "09:00"), false);
+  assert.equal(precisaLimpeza("", "2026-11-01", "2026-11-03", "2026-11-04", "09:00"), false);          // linha antiga: ignorada
 });

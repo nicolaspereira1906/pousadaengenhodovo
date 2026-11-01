@@ -61,3 +61,8 @@ export const rotuloCafe = (c) => (CAFES.includes(c) ? c : "Café não informado"
 // Para a camareira: "não informado" soa como erro; o que ela precisa é confirmar com a recepção
 export const rotuloCafeCamareira = (c) => (CAFES.includes(c) ? c : "Café a confirmar");
 export const cafeClasse = (c) => (c === "Com café" ? "com" : c === "Sem café" ? "sem" : "nd");
+
+// Quarto pronto para limpeza: locação com limpeza "Pendente" cujo check-out já passou
+// (dias anteriores, ou hoje a partir das 12:00). Espelha a regra do servidor; hoje e hora vêm do servidor.
+export const precisaLimpeza = (limpeza, checkIn, checkOut, hoje, hora) =>
+  limpeza === "Pendente" && checkIn < checkOut && (checkOut < hoje || (checkOut === hoje && hora >= HORA_CHECKOUT));
