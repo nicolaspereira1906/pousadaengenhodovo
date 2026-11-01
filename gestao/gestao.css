@@ -37,7 +37,7 @@ button:disabled { cursor: not-allowed; }
 .voltar { text-align: center; color: var(--tinta-2); margin-top: 8px; }
 
 /* app */
-.pagina { max-width: 1120px; margin: 0 auto; padding: 32px 20px 64px; display: flex; flex-direction: column; gap: 24px; }
+.pagina { max-width: 1120px; margin: 0 auto; padding: calc(32px + env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-right)) 64px max(20px, env(safe-area-inset-left)); display: flex; flex-direction: column; gap: 24px; }
 .topo { display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: flex-end; }
 .topo h1 { font-size: 32px; }
 .resumo { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; background: #fff; border: 1px solid var(--creme-2); border-radius: 8px; padding: 12px 20px; }
@@ -127,7 +127,7 @@ td { padding: 12px; border-bottom: 1px solid #efe9db; }
 /* ---------- celular ---------- */
 @media (max-width: 720px) {
   body { font-size: 16px; }
-  .pagina { padding: 16px 12px calc(40px + env(safe-area-inset-bottom)); gap: 14px; }
+  .pagina { padding: calc(16px + env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right)) calc(40px + env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); gap: 14px; }
   .topo { align-items: stretch; gap: 10px; }
   .topo h1 { font-size: 26px; }
   .topo .muda { display: none; }
@@ -178,7 +178,7 @@ td { padding: 12px; border-bottom: 1px solid #efe9db; }
   .janela > .btn { min-height: 58px; position: sticky; bottom: calc(-16px - env(safe-area-inset-bottom)); box-shadow: 0 -10px 12px -6px #fff; }
 
   /* login */
-  .login { padding: 16px 12px; align-items: start; padding-top: 8vh; }
+  .login { padding: 16px 12px; align-items: start; padding-top: calc(8vh + env(safe-area-inset-top, 0px)); }
   .login-caixa { padding: 24px 18px; }
 }
 
@@ -318,3 +318,8 @@ body[data-papel="camareira"] .abas { display: flex; }
 .carregando p { margin: 12px 0 0; font-weight: 700; }
 .tem-sessao .carregando { display: grid; }
 .tem-sessao #tela-login { display: none; }
+
+/* Aplicativo na tela inicial (barra de status translúcida): faixa fixa e opaca atrás do relógio e da bateria.
+   Sem ela o título ficava por baixo da barra e o conteúdo "sumia" em degradê ao rolar. */
+body::before { content: ""; position: fixed; top: 0; left: 0; right: 0; height: env(safe-area-inset-top, 0px); background: var(--tinta); z-index: 100; pointer-events: none; }
+.carregando { padding-top: env(safe-area-inset-top, 0px); }
