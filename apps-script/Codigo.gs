@@ -8,7 +8,7 @@
 const ABA = 'Registros';
 const FUSO = 'America/Sao_Paulo';
 const HORA_CHECKOUT = '12:00'; // check-out sempre ao meio-dia
-const VERSAO = 'v3-checkin-com-horario';
+const VERSAO = 'v4-data-sem-horario';
 const SESSAO_SEGUNDOS = 6 * 60 * 60; // 6 horas (máximo do CacheService)
 const MAX_ERROS = 5;                 // erros de login antes de bloquear
 const BLOQUEIO_SEGUNDOS = 15 * 60;
@@ -28,9 +28,14 @@ function doPost(e) {
 
     if (d.acao === 'salvar') {
       aba.appendRow([
-        paraData(d.data), Number(d.quarto), Number(d.hospedes), Number(d.valor),
+        soData(d.data), Number(d.quarto), Number(d.hospedes), Number(d.valor),
         String(d.pagamento), paraData(d.checkIn, d.checkInHora), paraData(d.checkOut, HORA_CHECKOUT)
       ]);
+      // formatos explícitos: o Sheets sozinho trocaria a coluna Data para data e hora
+      const linha = aba.getLastRow();
+      aba.getRange(linha, 1).setNumberFormat('dd/mm/yyyy');
+      aba.getRange(linha, 4).setNumberFormat('"R$" #,##0.00');
+      aba.getRange(linha, 6, 1, 2).setNumberFormat('dd/mm/yyyy hh:mm');
       return saida({ ok: true });
     }
 
@@ -39,7 +44,7 @@ function doPost(e) {
       for (let i = valores.length - 1; i >= 1; i--) {
         const entrada = Utilities.formatDate(new Date(valores[i][5]), FUSO, 'yyyy-MM-dd');
         if (Number(valores[i][1]) === Number(d.quarto) && entrada === d.checkIn) {
-          aba.getRange(i + 1, 7).setValue(paraData(d.checkOut, HORA_CHECKOUT));
+          aba.getRange(i + 1, 7).setValue(paraData(d.checkOut, HORA_CHECKOUT)).setNumberFormat('dd/mm/yyyy hh:mm');
           return saida({ ok: true });
         }
       }
@@ -102,6 +107,15 @@ function listar(aba) {
     checkInHora: Utilities.formatDate(new Date(l[5]), FUSO, 'HH:mm'),
     checkOut: Utilities.formatDate(new Date(l[6]), FUSO, 'yyyy-MM-dd')
   }));
+}
+
+// Só a data (sem horário): meia-noite no fuso de São Paulo
+function soData(txt) {
+  const s = String(txt);
+  let a, m, d;
+  if (s.indexOf('/') >= 0) { [d, m, a] = s.split('/'); }
+  else { [a, m, d] = s.split('-'); }
+  return Utilities.parseDate(a + '-' + ('0' + m).slice(-2) + '-' + ('0' + d).slice(-2), FUSO, 'yyyy-MM-dd');
 }
 
 // Data (dd/mm/aaaa ou aaaa-mm-dd) + hora (HH:mm, padrão 12:00), no fuso de São Paulo

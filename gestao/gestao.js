@@ -1,5 +1,5 @@
-import { URL_SCRIPT } from "./config.js?v=10";
-import { iso, deIso, br, brl, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT } from "./regras.js?v=10";
+import { URL_SCRIPT } from "./config.js?v=11";
+import { iso, deIso, br, brl, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT } from "./regras.js?v=11";
 
 const QUARTOS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const PAGAMENTOS = ["PIX", "Dinheiro", "Cartão de débito", "Cartão de crédito"];
@@ -100,9 +100,6 @@ async function entrarComSalva() {
     }
   } catch (e) { /* sem credencial salva: o preenchimento automático do navegador cuida */ }
 }
-$("btn-atualizar").addEventListener("click", async () => {
-  try { await carregar(); avisar("Dados atualizados da planilha."); } catch (e) { avisar(e.message, true); }
-});
 
 let tAviso;
 function avisar(msg, ruim = false) {
