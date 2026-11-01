@@ -199,6 +199,7 @@ body[data-papel="camareira"] .resumo .resumo-acoes { width: 100%; }
 .cafe-selo { align-self: flex-start; padding: 6px 14px; border-radius: 999px; font-size: 17px; font-weight: 800; }
 .cafe-selo.com { background: var(--cana); color: #fff; }
 .cafe-selo.nd { background: #ece9e1; color: #3c4743; border: 1.5px dashed #8a7f6d; }
+.cafe-selo.nao { background: #ece9e1; color: #3c4743; }
 .cafe-selo.sem { background: #fce9c8; color: #5c3b00; border: 1.5px solid #a8641f; }
 
 /* pronto para limpeza (check-out de hoje) */
