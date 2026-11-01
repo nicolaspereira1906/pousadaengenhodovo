@@ -1,5 +1,5 @@
-import { URL_SCRIPT } from "./config.js?v=9";
-import { iso, deIso, br, brl, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT } from "./regras.js?v=9";
+import { URL_SCRIPT } from "./config.js?v=10";
+import { iso, deIso, br, brl, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT } from "./regras.js?v=10";
 
 const QUARTOS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const PAGAMENTOS = ["PIX", "Dinheiro", "Cartão de débito", "Cartão de crédito"];
@@ -362,6 +362,8 @@ const ehIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
 let convite = null;
 window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); convite = e; });
 window.addEventListener("appinstalled", () => { convite = null; document.querySelectorAll("[data-instalar]").forEach((b) => { b.hidden = true; }); });
+// navegadores embutidos (WhatsApp, Instagram...) não leem o ícone do app: o atalho sai com uma letra
+if (/FBAN|FBAV|Instagram|MicroMessenger|; wv\)|GSA\/|Line\//i.test(navigator.userAgent)) $("aviso-navegador").hidden = false;
 if (modoApp()) document.querySelectorAll("[data-instalar]").forEach((b) => { b.hidden = true; });
 
 function recado(msg) {

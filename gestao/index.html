@@ -9,14 +9,15 @@
   <meta name="apple-mobile-web-app-title" content="Gestão">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icones/app-apple-180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icones/app-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icones/app-512.png">
   <meta name="robots" content="noindex, nofollow">
   <title>Acesso privado · Pousada Engenho do Vô</title>
-  <link rel="icon" href="icones/icone-192.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@600;700&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="gestao.css?v=9">
+  <link rel="stylesheet" href="gestao.css?v=10">
 </head>
 <body>
 
@@ -35,6 +36,7 @@
       <button class="btn-sec" type="button" data-acao="instalar" data-instalar>Adicionar à tela inicial</button>
     </div>
     <p id="dica" class="dica" role="status" hidden></p>
+    <p id="aviso-navegador" class="dica ruim" hidden>Você abriu dentro de outro aplicativo (WhatsApp, Instagram etc.). Para o ícone sair com o logo, abra este link no <strong>Chrome</strong> (Android) ou no <strong>Safari</strong> (iPhone) e adicione de lá.</p>
     <a class="voltar" href="../">Voltar ao site</a>
   </form>
 </section>
@@ -77,6 +79,6 @@
 <div id="modal" class="fundo" hidden></div>
 <div id="picker" class="fundo fundo-2" hidden></div>
 
-<script type="module" src="gestao.js?v=9"></script>
+<script type="module" src="gestao.js?v=10"></script>
 </body>
 </html>

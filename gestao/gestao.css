@@ -32,7 +32,8 @@ button:disabled { cursor: not-allowed; }
 .login-caixa .btn { margin-top: 14px; }
 .login-extras { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
 .dica { margin: 4px 0 0; padding: 10px 12px; border-radius: 6px; background: var(--cana-claro); color: #1f3d23; font-weight: 700; font-size: 14px; word-break: break-word; }
-.resumo .resumo-acoes { flex-direction: row; flex-wrap: wrap; gap: 8px; align-items: center; }
+.resumo .dica.ruim { background: #fbe9e7; color: #8c1d18; }
+.resumo-acoes { flex-direction: row; flex-wrap: wrap; gap: 8px; align-items: center; }
 .voltar { text-align: center; color: var(--tinta-2); margin-top: 8px; }
 
 /* app */
@@ -131,7 +132,8 @@ td { padding: 12px; border-bottom: 1px solid #efe9db; }
   .resumo { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 10px; padding: 12px; }
   .resumo strong { font-size: 18px; }
   .resumo span { font-size: 10.5px; letter-spacing: .03em; }
-  .resumo .resumo-acoes { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .resumo .dica.ruim { background: #fbe9e7; color: #8c1d18; }
+.resumo-acoes { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .resumo-acoes .btn-sec { padding: 0 6px; font-size: 14px; }
   .corpo { gap: 14px; }
 
