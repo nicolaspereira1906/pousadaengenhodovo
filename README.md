@@ -58,3 +58,6 @@ Google "Hóspedes e Pagamentos".
 - Limpeza: o quarto vira "Pronto para limpeza" depois do check-out (a partir das 12:00) e continua assim, mesmo em outro dia, até
   alguém tocar em "Marcar como limpo" (admin ou camareira, com confirmação). A coluna I "Limpeza" guarda "Pendente" e depois
   "Limpo em dd/mm/aaaa hh:mm (quem)". Linhas antigas, com a coluna I vazia, são ignoradas. As telas se atualizam sozinhas a cada minuto.
+- Encerrar estadia (admin): botão "Encerrar estadia agora" no quarto ocupado ou que sai hoje antes das 12:00, com confirmação.
+  O check-out passa a ser hoje, a coluna J registra "Encerrada em ..." e a coluna I vira "Pendente" (inclusive em linhas antigas).
+  O quarto vira "Pronto para limpeza" na hora, para admin e camareira, até alguém marcar como limpo.

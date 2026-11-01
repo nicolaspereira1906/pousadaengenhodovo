@@ -1,9 +1,10 @@
 // Pousada Engenho do Vô: back-end da área privada (/gestao).
 // Fica na planilha "Hóspedes e Pagamentos" (Extensões > Apps Script).
 // Colunas da aba "Registros":
-//   A Data | B Quarto | C Hóspedes | D Valor (R$) | E Forma de pagamento | F Check-in (data e hora) | G Check-out (12:00) | H Café | I Limpeza
+//   A Data | B Quarto | C Hóspedes | D Valor (R$) | E Forma de pagamento | F Check-in (data e hora) | G Check-out (12:00) | H Café | I Limpeza | J Encerrada em
 //   Coluna I: "Pendente" ao cadastrar a locação; ao marcar o quarto como limpo vira "Limpo em dd/mm/aaaa hh:mm (quem)".
 //   Linhas antigas, com a coluna I vazia, são ignoradas (não geram limpeza pendente).
+//   Coluna J: preenchida quando o admin encerra a estadia ANTES do meio-dia (o quarto vira "pronto para limpeza" na hora).
 //
 // Dois acessos, definidos em Configurações do projeto > Propriedades do script:
 //   USUARIO e SENHA                        -> administração (vê tudo, lança e edita)
@@ -13,7 +14,7 @@
 const ABA = 'Registros';
 const FUSO = 'America/Sao_Paulo';
 const HORA_CHECKOUT = '12:00'; // check-out sempre ao meio-dia
-const VERSAO = 'v10-marcar-quarto-limpo';
+const VERSAO = 'v11-encerrar-estadia';
 // Café da manhã: check-in de 00:00 até este horário conta o café no MESMO dia (chegou cedo ou de madrugada).
 // Check-in depois disso (ex.: de 12:00 a 00:00) conta o quarto como ocupado no dia, mas o café só a partir do dia seguinte,
 // e continua até o check-out. Quem chegou em dias anteriores conta sempre.
@@ -53,7 +54,7 @@ function doPost(e) {
         if (Number(l[1]) !== Number(d.quarto)) continue;
         const ci = Utilities.formatDate(new Date(l[5]), FUSO, 'yyyy-MM-dd');
         const co = Utilities.formatDate(new Date(l[6]), FUSO, 'yyyy-MM-dd');
-        if (precisaLimpeza(String(l[8] || ''), ci, co, hoje, hora)) { aba.getRange(i + 1, 9).setValue(carimbo); n++; }
+        if (precisaLimpeza(String(l[8] || ''), ci, co, hoje, hora, String(l[9] || '') !== '')) { aba.getRange(i + 1, 9).setValue(carimbo); n++; }
       }
       if (!n) return saida({ ok: false, erro: 'Este quarto não está pronto para limpeza.' });
       return saida({ ok: true });
@@ -74,6 +75,28 @@ function doPost(e) {
       aba.getRange(linha, 4).setNumberFormat('"R$" #,##0.00');
       aba.getRange(linha, 6, 1, 2).setNumberFormat('dd/mm/yyyy hh:mm');
       return saida({ ok: true });
+    }
+
+    // Encerrar a estadia agora (check-out antecipado ou na hora): o quarto vira "pronto para limpeza" para admin e camareira.
+    if (d.acao === 'encerrar') {
+      const valores = aba.getDataRange().getValues();
+      for (let i = valores.length - 1; i >= 1; i--) {
+        const l = valores[i];
+        if (Number(l[1]) !== Number(d.quarto)) continue;
+        const ci = Utilities.formatDate(new Date(l[5]), FUSO, 'yyyy-MM-dd');
+        const co = Utilities.formatDate(new Date(l[6]), FUSO, 'yyyy-MM-dd');
+        if (d.checkIn && ci !== d.checkIn) continue; // a tela indica qual estadia (importa na troca de hóspede no mesmo dia)
+        const encerrada = String(l[9] || '') !== '';
+        const limpeza = String(l[8] || '');
+        // estadia ativa: já começou, ainda não terminou, não foi encerrada nem está pronta para limpeza
+        if (encerrada || limpeza.indexOf('Limpo') === 0 || ci > hoje || co < hoje) continue;
+        if (precisaLimpeza(limpeza, ci, co, hoje, hora, false)) continue;
+        if (co > hoje) aba.getRange(i + 1, 7).setValue(paraData(hoje, HORA_CHECKOUT)).setNumberFormat('dd/mm/yyyy hh:mm'); // check-out passa a ser hoje
+        aba.getRange(i + 1, 9).setValue('Pendente'); // inclusive linhas antigas passam a ter controle de limpeza
+        aba.getRange(i + 1, 10).setValue('Encerrada em ' + Utilities.formatDate(agora, FUSO, 'dd/MM/yyyy HH:mm') + ' (administração)');
+        return saida({ ok: true });
+      }
+      return saida({ ok: false, erro: 'Não há estadia ativa neste quarto para encerrar.' });
     }
 
     if (d.acao === 'checkout') {
@@ -159,14 +182,18 @@ function listar(aba) {
     checkInHora: Utilities.formatDate(new Date(l[5]), FUSO, 'HH:mm'),
     checkOut: Utilities.formatDate(new Date(l[6]), FUSO, 'yyyy-MM-dd'),
     cafe: String(l[7] || ''),
-    limpeza: String(l[8] || '')
+    limpeza: String(l[8] || ''),
+    encerrado: String(l[9] || '') !== ''
   }));
 }
 
-// Quarto pronto para limpeza: locação nova (coluna I = Pendente) cujo check-out já passou
+// Quarto pronto para limpeza: locação nova (coluna I = Pendente) cujo check-out já passou (ou que foi encerrada)
 // (dias anteriores, ou hoje a partir das 12:00). Continua assim, mesmo em outro dia, até alguém marcar como limpo.
-function precisaLimpeza(limpeza, checkIn, checkOut, hoje, hora) {
-  return limpeza === 'Pendente' && checkIn < checkOut && (checkOut < hoje || (checkOut === hoje && hora >= HORA_CHECKOUT));
+// Se a estadia foi encerrada pelo admin, o quarto está pronto para limpeza na hora, sem esperar o meio-dia.
+function precisaLimpeza(limpeza, checkIn, checkOut, hoje, hora, encerrada) {
+  if (limpeza !== 'Pendente') return false;
+  if (encerrada) return true;
+  return checkIn < checkOut && (checkOut < hoje || (checkOut === hoje && hora >= HORA_CHECKOUT));
 }
 
 // Camareira: só o que importa HOJE, sem valor, pagamento nem datas.
@@ -178,11 +205,11 @@ function listarCamareira(aba, hoje, hora) {
   listar(aba).forEach((r) => {
     // conta no café de hoje: dormiu aqui na noite anterior ou chegou na madrugada (até HORA_LIMITE_CAFE)
     const cafeHoje = r.cafe === 'Com café' && (r.checkIn < hoje || (r.checkInHora || '99:99') <= HORA_LIMITE_CAFE);
-    if (r.checkIn <= hoje && hoje < r.checkOut) {
+    if (!r.encerrado && r.checkIn <= hoje && hoje < r.checkOut) {
       saida.push({ quarto: r.quarto, situacao: 'ocupado', hospedes: r.hospedes, cafe: r.cafe, chegaHoje: r.checkIn === hoje, cafeHoje: cafeHoje });
-    } else if (r.checkOut === hoje && r.checkIn < r.checkOut && hora < HORA_CHECKOUT) {
+    } else if (!r.encerrado && r.checkOut === hoje && r.checkIn < r.checkOut && hora < HORA_CHECKOUT) {
       saida.push({ quarto: r.quarto, situacao: 'saindo', hospedes: r.hospedes, cafe: r.cafe, cafeHoje: cafeHoje });
-    } else if (precisaLimpeza(r.limpeza, r.checkIn, r.checkOut, hoje, hora) && !jaLimpeza[r.quarto]) {
+    } else if (precisaLimpeza(r.limpeza, r.checkIn, r.checkOut, hoje, hora, r.encerrado) && !jaLimpeza[r.quarto]) {
       jaLimpeza[r.quarto] = true; // uma linha por quarto, mesmo que várias locações tenham ficado sem limpar
       saida.push({ quarto: r.quarto, situacao: 'limpeza' });
     }

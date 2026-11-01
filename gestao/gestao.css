@@ -294,3 +294,11 @@ body[data-papel="camareira"] .abas { display: flex; }
 .btn-limpar { margin-top: 8px; width: 100%; min-height: 58px; border: 0; border-radius: 8px; background: var(--cana); color: #fff; font-weight: 800; font-size: 18px; }
 .btn-limpar.confirmar { background: var(--azul); }
 .btn-limpar:disabled { background: #9bb0cf; color: #fff; }
+
+/* encerrar estadia (admin) */
+.btn-encerrar { margin-top: 8px; width: 100%; min-height: 58px; border: 2px solid var(--verm); border-radius: 8px; background: #fff; color: var(--verm-escuro); font-weight: 800; font-size: 18px; }
+.btn-encerrar.confirmar { background: var(--verm); color: #fff; }
+.btn-encerrar:disabled { background: #e8b9b5; color: #fff; border-color: #e8b9b5; }
+.btn-limpar:disabled { background: #9bb0cf; }
+.ocupado-caixa .btn-encerrar, .saindo-caixa .btn-encerrar { background: #fff; }
+.ocupado-caixa .btn-encerrar.confirmar, .saindo-caixa .btn-encerrar.confirmar { background: var(--verm); }

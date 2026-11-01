@@ -34,7 +34,7 @@ export const estadiaEm = (regs, quarto, dia) =>
   regs.find((r) => r.quarto === quarto && r.checkIn <= dia && dia < r.checkOut);
 
 export const saidaEm = (regs, quarto, dia) =>
-  regs.find((r) => r.quarto === quarto && r.checkOut === dia && r.checkIn < r.checkOut);
+  regs.find((r) => r.quarto === quarto && r.checkOut === dia && r.checkIn < r.checkOut && !r.encerrado);
 
 // reserva nova [ci, co) que bate com alguma já existente no quarto
 export const conflito = (regs, quarto, ci, co) =>
@@ -62,7 +62,7 @@ export const rotuloCafe = (c) => (CAFES.includes(c) ? c : "Café não informado"
 export const rotuloCafeCamareira = (c) => (CAFES.includes(c) ? c : "Café a confirmar");
 export const cafeClasse = (c) => (c === "Com café" ? "com" : c === "Sem café" ? "sem" : "nd");
 
-// Quarto pronto para limpeza: locação com limpeza "Pendente" cujo check-out já passou
-// (dias anteriores, ou hoje a partir das 12:00). Espelha a regra do servidor; hoje e hora vêm do servidor.
-export const precisaLimpeza = (limpeza, checkIn, checkOut, hoje, hora) =>
-  limpeza === "Pendente" && checkIn < checkOut && (checkOut < hoje || (checkOut === hoje && hora >= HORA_CHECKOUT));
+// Quarto pronto para limpeza: locação com limpeza "Pendente" cujo check-out já passou (dias anteriores, ou hoje a partir
+// das 12:00), ou que foi encerrada pelo admin (aí vale na hora). Espelha a regra do servidor; hoje e hora vêm do servidor.
+export const precisaLimpeza = (limpeza, checkIn, checkOut, hoje, hora, encerrada = false) =>
+  limpeza === "Pendente" && (encerrada || (checkIn < checkOut && (checkOut < hoje || (checkOut === hoje && hora >= HORA_CHECKOUT))));
