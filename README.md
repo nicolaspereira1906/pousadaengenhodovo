@@ -46,3 +46,7 @@ Google "Hóspedes e Pagamentos".
 - Instalável como aplicativo: `gestao/manifest.webmanifest`, `gestao/sw.js` e `gestao/icones/`. Ao adicionar
   `/gestao/` à tela inicial do celular, o ícone abre direto no painel. Botão "Adicionar à tela inicial". O login pode ser salvo no gerenciador de senhas do aparelho.
   Ao mudar `gestao.js`, `gestao.css` ou `regras.js`, troque o número `?v=` em `gestao/index.html` e nos `import` de `gestao.js`.
+- Dois acessos no mesmo login: administração (`USUARIO`/`SENHA`) e camareira (`USUARIO_CAMAREIRA`/`SENHA_CAMAREIRA`),
+  todos nas Propriedades do script. A camareira só vê, de hoje, quarto livre/ocupado, hóspedes e café. O filtro é feito no
+  `apps-script/Codigo.gs` (a resposta dela não traz valor, pagamento nem datas) e ela não consegue lançar nem alterar nada.
+- Planilha, coluna H "Café" (Com café / Sem café), preenchida no cadastro da locação.

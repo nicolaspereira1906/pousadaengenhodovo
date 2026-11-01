@@ -1,14 +1,17 @@
 // Pousada Engenho do Vô: back-end da área privada (/gestao).
 // Fica na planilha "Hóspedes e Pagamentos" (Extensões > Apps Script).
-// Colunas da aba "Registros": A Data | B Quarto | C Hóspedes | D Valor (R$) | E Forma de pagamento | F Check-in (data e hora) | G Check-out (sempre 12:00)
+// Colunas da aba "Registros":
+//   A Data | B Quarto | C Hóspedes | D Valor (R$) | E Forma de pagamento | F Check-in (data e hora) | G Check-out (12:00) | H Café
 //
-// O usuário e a senha NÃO ficam neste arquivo. Cadastre em
-// Configurações do projeto > Propriedades do script:  USUARIO  e  SENHA
+// Dois acessos, definidos em Configurações do projeto > Propriedades do script:
+//   USUARIO e SENHA                        -> administração (vê tudo, lança e edita)
+//   USUARIO_CAMAREIRA e SENHA_CAMAREIRA    -> camareira (só vê quarto livre/ocupado, hóspedes e café de HOJE)
+// Nenhuma senha fica neste arquivo.
 
 const ABA = 'Registros';
 const FUSO = 'America/Sao_Paulo';
 const HORA_CHECKOUT = '12:00'; // check-out sempre ao meio-dia
-const VERSAO = 'v4-data-sem-horario';
+const VERSAO = 'v5-camareira-e-cafe';
 const SESSAO_SEGUNDOS = 6 * 60 * 60; // 6 horas (máximo do CacheService)
 const MAX_ERROS = 5;                 // erros de login antes de bloquear
 const BLOQUEIO_SEGUNDOS = 15 * 60;
@@ -21,15 +24,24 @@ function doPost(e) {
 
     if (d.acao === 'login') return entrar(d);
 
-    if (!sessaoValida(d.token)) return saida({ ok: false, erro: 'sessao' });
+    const papel = papelDaSessao(d.token);
+    if (!papel) return saida({ ok: false, erro: 'sessao' });
     const aba = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(ABA);
+    const hoje = Utilities.formatDate(new Date(), FUSO, 'yyyy-MM-dd');
 
-    if (d.acao === 'listar') return saida({ ok: true, registros: listar(aba) });
+    if (d.acao === 'listar') {
+      // A camareira NUNCA recebe valor, forma de pagamento ou datas de outros dias: o filtro é aqui, no servidor.
+      const registros = papel === 'admin' ? listar(aba) : listarCamareira(aba, hoje);
+      return saida({ ok: true, papel: papel, hoje: hoje, registros: registros });
+    }
+
+    if (papel !== 'admin') return saida({ ok: false, erro: 'Sem permissão para esta ação.' });
 
     if (d.acao === 'salvar') {
       aba.appendRow([
         soData(d.data), Number(d.quarto), Number(d.hospedes), Number(d.valor),
-        String(d.pagamento), paraData(d.checkIn, d.checkInHora), paraData(d.checkOut, HORA_CHECKOUT)
+        String(d.pagamento), paraData(d.checkIn, d.checkInHora), paraData(d.checkOut, HORA_CHECKOUT),
+        d.cafe === 'Com café' ? 'Com café' : 'Sem café'
       ]);
       // formatos explícitos: o Sheets sozinho trocaria a coluna Data para data e hora
       const linha = aba.getLastRow();
@@ -69,24 +81,35 @@ function entrar(d) {
     return saida({ ok: false, erro: 'Muitas tentativas. Aguarde 15 minutos.' });
   }
   const props = PropertiesService.getScriptProperties();
-  const usuario = props.getProperty('USUARIO');
-  const senha = props.getProperty('SENHA');
-  if (!usuario || !senha) return saida({ ok: false, erro: 'Acesso ainda não configurado na planilha.' });
+  const usuario = String(d.usuario || ''), senha = String(d.senha || '');
 
-  const certo = iguais(String(d.usuario || ''), usuario) & iguais(String(d.senha || ''), senha);
-  if (!certo) {
+  const admin = props.getProperty('USUARIO') && props.getProperty('SENHA')
+    ? iguais(usuario, props.getProperty('USUARIO')) & iguais(senha, props.getProperty('SENHA')) : 0;
+  const camareira = props.getProperty('USUARIO_CAMAREIRA') && props.getProperty('SENHA_CAMAREIRA')
+    ? iguais(usuario, props.getProperty('USUARIO_CAMAREIRA')) & iguais(senha, props.getProperty('SENHA_CAMAREIRA')) : 0;
+
+  if (!props.getProperty('USUARIO') && !props.getProperty('USUARIO_CAMAREIRA')) {
+    return saida({ ok: false, erro: 'Acesso ainda não configurado na planilha.' });
+  }
+  const papel = admin ? 'admin' : camareira ? 'camareira' : null;
+  if (!papel) {
     Utilities.sleep(1500);
     cache.put('erros', String(Number(cache.get('erros') || 0) + 1), BLOQUEIO_SEGUNDOS);
     return saida({ ok: false, erro: 'Usuário ou senha incorretos.' });
   }
   cache.remove('erros');
   const token = Utilities.getUuid() + Utilities.getUuid();
-  cache.put('s_' + token, '1', SESSAO_SEGUNDOS);
-  return saida({ ok: true, token: token });
+  cache.put('s_' + token, papel, SESSAO_SEGUNDOS);
+  return saida({ ok: true, token: token, papel: papel });
 }
 
-function sessaoValida(token) {
-  return !!token && CacheService.getScriptCache().get('s_' + token) === '1';
+// devolve 'admin', 'camareira' ou null. Sessões criadas antes desta versão guardavam '1' e eram do admin.
+function papelDaSessao(token) {
+  if (!token) return null;
+  const v = CacheService.getScriptCache().get('s_' + token);
+  if (v === 'camareira') return 'camareira';
+  if (v === 'admin' || v === '1') return 'admin';
+  return null;
 }
 
 // comparação sem parar no primeiro caractere diferente
@@ -96,8 +119,12 @@ function iguais(a, b) {
   return r === 0 ? 1 : 0;
 }
 
+function lerLinhas(aba) {
+  return aba.getDataRange().getValues().slice(1).filter((l) => l[1] !== '');
+}
+
 function listar(aba) {
-  return aba.getDataRange().getValues().slice(1).filter((l) => l[1] !== '').map((l) => ({
+  return lerLinhas(aba).map((l) => ({
     data: Utilities.formatDate(new Date(l[0]), FUSO, 'yyyy-MM-dd'),
     quarto: Number(l[1]),
     hospedes: Number(l[2]),
@@ -105,8 +132,16 @@ function listar(aba) {
     pagamento: String(l[4]),
     checkIn: Utilities.formatDate(new Date(l[5]), FUSO, 'yyyy-MM-dd'),
     checkInHora: Utilities.formatDate(new Date(l[5]), FUSO, 'HH:mm'),
-    checkOut: Utilities.formatDate(new Date(l[6]), FUSO, 'yyyy-MM-dd')
+    checkOut: Utilities.formatDate(new Date(l[6]), FUSO, 'yyyy-MM-dd'),
+    cafe: String(l[7] || '')
   }));
+}
+
+// Camareira: só estadias que ocupam o quarto HOJE, e só quarto, hóspedes e café.
+function listarCamareira(aba, hoje) {
+  return listar(aba)
+    .filter((r) => r.checkIn <= hoje && hoje < r.checkOut)
+    .map((r) => ({ quarto: r.quarto, hospedes: r.hospedes, cafe: r.cafe }));
 }
 
 // Só a data (sem horário): meia-noite no fuso de São Paulo

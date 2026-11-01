@@ -1,9 +1,10 @@
-import { URL_SCRIPT } from "./config.js?v=12";
-import { iso, deIso, br, brl, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT } from "./regras.js?v=12";
+import { URL_SCRIPT } from "./config.js?v=14";
+import { iso, deIso, br, brl, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT, CAFES, rotuloCafe } from "./regras.js?v=14";
 
 const QUARTOS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const PAGAMENTOS = ["PIX", "Dinheiro", "Cartão de débito", "Cartão de crédito"];
 const CHAVE_SESSAO = "pousada_sessao"; // vale 6 h; o servidor derruba a sessão depois disso
+const CHAVE_PAPEL = "pousada_papel";
 
 const $ = (id) => document.getElementById(id);
 const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -12,10 +13,11 @@ const mesNome = (a, m) => new Date(a, m, 1).toLocaleDateString("pt-BR", { month:
 const hoje = new Date();
 const s = {
   token: localStorage.getItem(CHAVE_SESSAO) || "",
+  papel: localStorage.getItem(CHAVE_PAPEL) || "admin", // admin ou camareira (quem decide é o servidor)
   regs: [],
   sel: iso(hoje), vy: hoje.getFullYear(), vm: hoje.getMonth(),
   quarto: null,
-  form: { ci: "", co: "", hosp: 2, valor: "", pag: "" },
+  form: { ci: "", co: "", hosp: 2, valor: "", pag: "", cafe: "" },
   picker: null, py: hoje.getFullYear(), pm: hoje.getMonth(),
   salvando: false,
   calAberto: false
@@ -45,9 +47,31 @@ async function api(acao, dados = {}) {
 
 async function carregar() {
   const r = await api("listar");
+  s.papel = r.papel || "admin";
+  localStorage.setItem(CHAVE_PAPEL, s.papel);
   s.regs = r.registros;
+  if (s.papel === "camareira") s.sel = r.hoje || iso(new Date()); // camareira só vê o dia de hoje
+  aplicarPapel();
   render();
 }
+
+// Camareira: sem calendário, valores, pagamentos nem registros (e o servidor nem envia esses dados).
+let tAtualiza;
+function aplicarPapel() {
+  const cam = s.papel === "camareira";
+  document.body.dataset.papel = s.papel;
+  $("titulo-app").textContent = cam ? "Quartos de hoje" : "Hóspedes e pagamentos";
+  $("sub-app").textContent = cam
+    ? deIso(s.sel).toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })
+    : "Escolha o dia no calendário e toque em um quarto para registrar a locação.";
+  clearInterval(tAtualiza);
+  // a camareira não tem botão de atualizar: a tela se atualiza sozinha
+  if (cam) tAtualiza = setInterval(() => { if (s.token && !document.hidden) carregar().catch(() => {}); }, 60000);
+}
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden && s.token && s.papel === "camareira") carregar().catch(() => {});
+});
+document.body.dataset.papel = s.papel;
 
 // ---------- login ----------
 function mostrarApp() {
@@ -55,7 +79,10 @@ function mostrarApp() {
   $("tela-app").hidden = false;
 }
 function sair() {
-  s.token = ""; s.regs = [];
+  s.token = ""; s.regs = []; s.papel = "admin";
+  clearInterval(tAtualiza);
+  localStorage.removeItem(CHAVE_PAPEL);
+  document.body.dataset.papel = "";
   $("senha").value = "";
   // sair de propósito: o aparelho não deve entrar sozinho de novo até a próxima vez que tocar em Entrar
   if (navigator.credentials?.preventSilentAccess) navigator.credentials.preventSilentAccess().catch(() => {});
@@ -170,19 +197,46 @@ function renderQuartos() {
   $("reg-titulo").textContent = "Registros de " + br(s.sel);
   $("reg-corpo").innerHTML = doDia.length === 0
     ? '<p class="muda">Nenhum registro neste dia. Clique em um quarto para começar.</p>'
-    : `<div class="tabela-caixa"><table><thead><tr><th>Quarto</th><th>Check-in</th><th>Check-out</th><th>Hóspedes</th><th>Valor total</th><th>Pagamento</th></tr></thead><tbody>${
-      doDia.slice().reverse().map((r) => `<tr><td data-l="Quarto"><strong>Quarto ${r.quarto}</strong></td><td data-l="Check-in">${esc(fmtCheckIn(r))}</td><td data-l="Check-out">${esc(fmtCheckOut(r))}</td><td data-l="Hóspedes">${r.hospedes}</td><td data-l="Valor total"><strong>${brl(r.valor)}</strong></td><td data-l="Pagamento">${esc(r.pagamento)}</td></tr>`).join("")
+    : `<div class="tabela-caixa"><table><thead><tr><th>Quarto</th><th>Check-in</th><th>Check-out</th><th>Hóspedes</th><th>Valor total</th><th>Pagamento</th><th>Café</th></tr></thead><tbody>${
+      doDia.slice().reverse().map((r) => `<tr><td data-l="Quarto"><strong>Quarto ${r.quarto}</strong></td><td data-l="Check-in">${esc(fmtCheckIn(r))}</td><td data-l="Check-out">${esc(fmtCheckOut(r))}</td><td data-l="Hóspedes">${r.hospedes}</td><td data-l="Valor total"><strong>${brl(r.valor)}</strong></td><td data-l="Pagamento">${esc(r.pagamento)}</td><td data-l="Café">${esc(rotuloCafe(r.cafe))}</td></tr>`).join("")
     }</tbody></table></div>`;
 }
 
-function render() { renderCalendario(); renderQuartos(); }
+function renderCamareira() {
+  $("quartos").innerHTML = QUARTOS.map((q) => {
+    const est = s.regs.find((r) => r.quarto === q);
+    const ocupado = !!est;
+    const sub = ocupado ? `${est.hospedes} ${est.hospedes === 1 ? "hóspede" : "hóspedes"} · ${rotuloCafe(est.cafe)}` : "Quarto não ocupado";
+    return `<button class="quarto${ocupado ? " ocupado" : ""}" data-acao="quarto" data-q="${q}" aria-label="Abrir quarto ${q}, ${ocupado ? "ocupado" : "disponível"}">
+      <div class="linha"><span class="nome">Quarto ${q}</span><span class="selo${ocupado ? " ocupado" : ""}">${ocupado ? "Ocupado" : "Livre"}</span></div>
+      <div><div class="principal">${ocupado ? "Ocupado" : "Disponível"}</div><div class="sub">${esc(sub)}</div></div>
+      <span class="cta">Ver detalhes &rarr;</span></button>`;
+  }).join("");
+}
+
+function render() { if (s.papel === "camareira") renderCamareira(); else { renderCalendario(); renderQuartos(); } }
 
 // ---------- janela do quarto ----------
 function abrirQuarto(q) {
   s.quarto = q;
-  s.form = { ci: s.sel, co: "", hosp: 2, valor: "", pag: "" };
+  s.form = { ci: s.sel, co: "", hosp: 2, valor: "", pag: "", cafe: "" };
   s.picker = null;
-  renderModal();
+  if (s.papel === "camareira") renderModalCamareira(); else renderModal();
+}
+
+// Camareira: só diz se o quarto está livre ou ocupado, quantos hóspedes e se tem café
+function renderModalCamareira() {
+  const q = s.quarto;
+  const est = s.regs.find((r) => r.quarto === q);
+  const corpo = est
+    ? `<div class="ocupado-caixa"><span class="etq">Quarto ocupado</span>
+        <strong>${est.hospedes} ${est.hospedes === 1 ? "hóspede" : "hóspedes"}</strong>
+        <span class="cafe-selo ${est.cafe === "Com café" ? "com" : "sem"}">${esc(rotuloCafe(est.cafe))}</span></div>`
+    : `<div class="livre-caixa"><span class="etq">Quarto disponível</span><strong>Quarto não ocupado</strong></div>`;
+  const m = $("modal");
+  m.innerHTML = `<div class="janela" role="dialog" aria-modal="true" aria-label="Quarto ${q}">
+    <div class="janela-topo"><div><h2>Quarto ${q}</h2></div><button class="fechar" data-acao="fechar" aria-label="Fechar">&times;</button></div>${corpo}</div>`;
+  m.hidden = false;
 }
 function fecharModal() { s.quarto = null; s.picker = null; $("modal").hidden = true; $("picker").hidden = true; }
 
@@ -194,6 +248,7 @@ function renderModal() {
   if (est) {
     corpo = `<div class="ocupado-caixa"><span class="etq">Quarto ocupado</span><strong>${esc(fmtCheckIn(est))} até ${esc(fmtCheckOut(est))}</strong>
       <span>${est.hospedes} ${est.hospedes === 1 ? "hóspede" : "hóspedes"} · ${brl(est.valor)} · ${esc(est.pagamento)}</span>
+      <span>${esc(rotuloCafe(est.cafe))}</span>
       <span class="muda">Libera automaticamente às ${HORA_CHECKOUT} do dia do check-out.</span></div>
       ${s.sel > est.checkIn ? `<button class="btn-perigo" data-acao="encerrar">Fazer check-out em ${br(s.sel)} às ${HORA_CHECKOUT}</button>` : ""}`;
   } else {
@@ -208,6 +263,8 @@ function renderModal() {
         <div class="passo"><button data-acao="hosp" data-d="-1" aria-label="Diminuir hóspedes">&minus;</button><input id="m-hosp" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off" aria-label="Quantidade de hóspedes"><button data-acao="hosp" data-d="1" aria-label="Aumentar hóspedes">+</button></div></div>
       <div class="campo"><label for="m-valor">Valor total cobrado pela estadia</label>
         <div class="valor"><span>R$</span><input id="m-valor" type="text" inputmode="decimal" autocomplete="off"></div></div>
+      <div class="campo"><span class="rotulo">Café da manhã (cobrado à parte)</span>
+        <div class="pagamentos">${CAFES.map((c) => `<button class="cafe-op" data-acao="cafe" data-c="${esc(c)}" aria-pressed="false">${esc(c)}</button>`).join("")}</div></div>
       <div class="campo"><span class="rotulo">Forma de pagamento</span>
         <div class="pagamentos">${PAGAMENTOS.map((p) => `<button class="pag" data-acao="pag" data-p="${esc(p)}" aria-pressed="false">${esc(p)}</button>`).join("")}</div></div>
       <button class="btn" id="m-salvar" data-acao="salvar">Salvar</button>`;
@@ -269,12 +326,13 @@ function atualizarForm() {
   const campoHosp = $("m-hosp");
   if (document.activeElement !== campoHosp) campoHosp.value = f.hosp;
   document.querySelectorAll(".pag").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.p === f.pag)));
-  $("m-salvar").disabled = s.salvando || !(temSaida && !bate && f.hosp >= 1 && parseValor(f.valor) > 0 && f.pag);
+  document.querySelectorAll(".cafe-op").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.c === f.cafe)));
+  $("m-salvar").disabled = s.salvando || !(temSaida && !bate && f.hosp >= 1 && parseValor(f.valor) > 0 && f.pag && f.cafe);
 }
 
 async function salvar() {
   const f = s.form;
-  const reg = { data: s.sel, quarto: s.quarto, hospedes: f.hosp, valor: parseValor(f.valor), pagamento: f.pag, checkIn: f.ci, checkInHora: agora(), checkOut: f.co };
+  const reg = { data: s.sel, quarto: s.quarto, hospedes: f.hosp, valor: parseValor(f.valor), pagamento: f.pag, cafe: f.cafe, checkIn: f.ci, checkInHora: agora(), checkOut: f.co };
   s.salvando = true; atualizarForm();
   $("m-salvar").textContent = "Salvando na planilha...";
   try {
@@ -358,6 +416,7 @@ document.addEventListener("click", (e) => {
       fecharPicker(); atualizarForm(); break;
     case "hosp": s.form.hosp = Math.min(99, Math.max(1, s.form.hosp + Number(d.d))); atualizarForm(); break;
     case "pag": s.form.pag = d.p; atualizarForm(); break;
+    case "cafe": s.form.cafe = d.c; atualizarForm(); break;
     case "salvar": salvar(); break;
     case "encerrar": encerrar(); break;
   }

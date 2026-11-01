@@ -53,3 +53,7 @@ export const HORA_CHECKOUT = "12:00";
 export const agora = (d = new Date()) => `${dois(d.getHours())}:${dois(d.getMinutes())}`;
 export const fmtCheckIn = (r) => br(r.checkIn) + (r.checkInHora ? ` ${r.checkInHora}` : "");
 export const fmtCheckOut = (r) => `${br(r.checkOut)} ${HORA_CHECKOUT}`;
+
+// Café da manhã (cobrado à parte): o que a camareira precisa saber
+export const CAFES = ["Com café", "Sem café"];
+export const rotuloCafe = (c) => (CAFES.includes(c) ? c : "Café não informado");

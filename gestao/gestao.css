@@ -117,6 +117,8 @@ td { padding: 12px; border-bottom: 1px solid #efe9db; }
 .valor input { flex: 1; min-width: 0; border: 0; outline: 0; font: inherit; font-size: 22px; font-weight: 800; background: transparent; }
 .pagamentos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .pag { height: 68px; display: flex; align-items: center; justify-content: center; text-align: center; padding: 6px 10px; border-radius: 8px; border: 1.5px solid #8a7f6d; background: #fff; color: var(--tinta); font-weight: 800; font-size: 16px; line-height: 1.2; }
+.cafe-op { height: 68px; display: flex; align-items: center; justify-content: center; text-align: center; padding: 6px 10px; border-radius: 8px; border: 1.5px solid #8a7f6d; background: #fff; color: var(--tinta); font-weight: 800; font-size: 16px; line-height: 1.2; }
+.cafe-op[aria-pressed="true"] { background: var(--cana); border-color: var(--cana); color: #fff; }
 .pag[aria-pressed="true"] { background: var(--cana); border-color: var(--cana); color: #fff; }
 .ocupado-caixa { background: var(--verm-claro); border: 2px solid var(--verm); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 6px; }
 .ocupado-caixa .etq { font-size: 14px; font-weight: 800; color: var(--verm-escuro); text-transform: uppercase; letter-spacing: .05em; }
@@ -181,3 +183,19 @@ td { padding: 12px; border-bottom: 1px solid #efe9db; }
 }
 
 .janela > .btn { min-height: 58px; }
+
+/* ---------- perfil camareira: só quarto livre/ocupado, hóspedes e café de hoje ---------- */
+body[data-papel="camareira"] .cal,
+body[data-papel="camareira"] .registros,
+body[data-papel="camareira"] .resumo > div:not(.resumo-acoes) { display: none; }
+body[data-papel="camareira"] .topo .muda { display: block; }
+body[data-papel="camareira"] .topo .muda::first-letter { text-transform: uppercase; }
+body[data-papel="camareira"] .resumo { display: flex; padding: 8px 12px; }
+body[data-papel="camareira"] .resumo .resumo-acoes { width: 100%; }
+.livre-caixa { background: var(--cana-claro); border: 2px solid var(--cana); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 6px; }
+.livre-caixa .etq { font-size: 14px; font-weight: 800; color: #1f3d23; text-transform: uppercase; letter-spacing: .05em; }
+.livre-caixa strong { font-size: 20px; }
+.ocupado-caixa strong { font-size: 20px; }
+.cafe-selo { align-self: flex-start; padding: 6px 14px; border-radius: 999px; font-size: 17px; font-weight: 800; }
+.cafe-selo.com { background: var(--cana); color: #fff; }
+.cafe-selo.sem { background: #fce9c8; color: #5c3b00; border: 1.5px solid #a8641f; }

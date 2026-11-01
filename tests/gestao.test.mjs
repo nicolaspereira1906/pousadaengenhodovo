@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { iso, br, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut } from "../gestao/regras.js";
+import { iso, br, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, rotuloCafe } from "../gestao/regras.js";
 
 const regs = [{ quarto: 3, checkIn: "2026-11-10", checkOut: "2026-11-13", hospedes: 2, valor: 900 }];
 
@@ -63,4 +63,11 @@ test("máscara do valor: reais com casas decimais sempre visíveis", () => {
   assert.equal(mascaraValor(",00"), "0,00");
   assert.equal(mascaraValor("abc"), "0,00");
   assert.equal(parseValor(mascaraValor("2500,5")), 2500.5);
+});
+
+test("rótulo do café: com, sem ou não informado (registros antigos)", () => {
+  assert.equal(rotuloCafe("Com café"), "Com café");
+  assert.equal(rotuloCafe("Sem café"), "Sem café");
+  assert.equal(rotuloCafe(""), "Café não informado");
+  assert.equal(rotuloCafe(undefined), "Café não informado");
 });
