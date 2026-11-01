@@ -17,7 +17,8 @@ const s = {
   quarto: null,
   form: { ci: "", co: "", hosp: 2, valor: "", pag: "" },
   picker: null, py: hoje.getFullYear(), pm: hoje.getMonth(),
-  salvando: false
+  salvando: false,
+  calAberto: false
 };
 
 // ---------- conexão com a planilha ----------
@@ -101,16 +102,26 @@ function renderCalendario() {
     const cls = ["dia", c.chave === s.sel && "sel", c.chave === hojeIso && "hoje", s.regs.some((r) => r.data === c.chave) && "tem"].filter(Boolean).join(" ");
     return `<button class="${cls}" data-acao="dia" data-chave="${c.chave}" aria-pressed="${c.chave === s.sel}" aria-label="${c.n} de ${esc(mesNome(s.vy, s.vm).split(" ")[0])}${c.chave === hojeIso ? ", hoje" : ""}">${c.n}</button>`;
   }).join("");
+  $("cal").classList.toggle("aberto", s.calAberto);
   $("cal").innerHTML = `
-    <div><span class="etq">${tag}</span><div class="dia-sel">${esc(rotulo)}</div></div>
-    <div class="mes-barra">
-      <button class="seta" data-acao="mes" data-d="-1" aria-label="Mês anterior">&#8249;</button>
-      <strong>${esc(mesNome(s.vy, s.vm))}</strong>
-      <button class="seta" data-acao="mes" data-d="1" aria-label="Próximo mês">&#8250;</button>
+    <div class="cal-topo">
+      <button class="seta dia-nav" data-acao="dia-mais" data-d="-1" aria-label="Dia anterior">&#8249;</button>
+      <div class="cal-data"><span class="etq">${tag}</span><div class="dia-sel">${esc(rotulo)}</div></div>
+      <button class="seta dia-nav" data-acao="dia-mais" data-d="1" aria-label="Próximo dia">&#8250;</button>
     </div>
-    <div class="sem"><span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span></div>
-    <div class="dias">${dias}</div>
-    <button class="btn-sec" data-acao="hoje">Ir para hoje</button>`;
+    <div class="cal-acoes">
+      <button class="btn-sec" data-acao="hoje">Ir para hoje</button>
+      <button class="btn-sec cal-toggle" data-acao="cal-toggle" aria-expanded="${s.calAberto}">${s.calAberto ? "Fechar calendário" : "Abrir calendário"}</button>
+    </div>
+    <div class="cal-grade">
+      <div class="mes-barra">
+        <button class="seta" data-acao="mes" data-d="-1" aria-label="Mês anterior">&#8249;</button>
+        <strong>${esc(mesNome(s.vy, s.vm))}</strong>
+        <button class="seta" data-acao="mes" data-d="1" aria-label="Próximo mês">&#8250;</button>
+      </div>
+      <div class="sem"><span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span></div>
+      <div class="dias">${dias}</div>
+    </div>`;
 }
 
 function renderQuartos() {
@@ -144,7 +155,7 @@ function renderQuartos() {
   $("reg-corpo").innerHTML = doDia.length === 0
     ? '<p class="muda">Nenhum registro neste dia. Clique em um quarto para começar.</p>'
     : `<div class="tabela-caixa"><table><thead><tr><th>Quarto</th><th>Check-in</th><th>Check-out</th><th>Hóspedes</th><th>Valor total</th><th>Pagamento</th></tr></thead><tbody>${
-      doDia.slice().reverse().map((r) => `<tr><td><strong>Quarto ${r.quarto}</strong></td><td>${br(r.checkIn)}</td><td>${br(r.checkOut)}</td><td>${r.hospedes}</td><td><strong>${brl(r.valor)}</strong></td><td>${esc(r.pagamento)}</td></tr>`).join("")
+      doDia.slice().reverse().map((r) => `<tr><td data-l="Quarto"><strong>Quarto ${r.quarto}</strong></td><td data-l="Check-in">${br(r.checkIn)}</td><td data-l="Check-out">${br(r.checkOut)}</td><td data-l="Hóspedes">${r.hospedes}</td><td data-l="Valor total"><strong>${brl(r.valor)}</strong></td><td data-l="Pagamento">${esc(r.pagamento)}</td></tr>`).join("")
     }</tbody></table></div>`;
 }
 
@@ -278,8 +289,10 @@ document.addEventListener("click", (e) => {
   if (!el) return;
   const d = el.dataset;
   switch (d.acao) {
-    case "dia": s.sel = d.chave; render(); break;
-    case "hoje": { const t = new Date(); s.sel = iso(t); s.vy = t.getFullYear(); s.vm = t.getMonth(); render(); break; }
+    case "dia": s.sel = d.chave; s.calAberto = false; render(); break;
+    case "dia-mais": { const x = deIso(s.sel); x.setDate(x.getDate() + Number(d.d)); s.sel = iso(x); s.vy = x.getFullYear(); s.vm = x.getMonth(); render(); break; }
+    case "cal-toggle": s.calAberto = !s.calAberto; renderCalendario(); break;
+    case "hoje": { const t = new Date(); s.sel = iso(t); s.vy = t.getFullYear(); s.vm = t.getMonth(); s.calAberto = false; render(); break; }
     case "mes": { const x = new Date(s.vy, s.vm + Number(d.d), 1); s.vy = x.getFullYear(); s.vm = x.getMonth(); renderCalendario(); break; }
     case "quarto": abrirQuarto(Number(d.q)); break;
     case "fechar": fecharModal(); break;

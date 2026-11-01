@@ -7,7 +7,7 @@
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--creme); color: var(--tinta); font-family: "Nunito Sans", system-ui, sans-serif; font-size: 16px; line-height: 1.4; }
 h1, h2, h3 { font-family: var(--titulo); margin: 0; }
-button { font: inherit; cursor: pointer; }
+button { font: inherit; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 button:disabled { cursor: not-allowed; }
 [hidden] { display: none !important; }
 .muda { color: var(--tinta-2); margin: 4px 0 0; }
@@ -43,6 +43,11 @@ button:disabled { cursor: not-allowed; }
 .corpo { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
 
 .cal { flex: 0 0 340px; max-width: 100%; background: #fff; border: 1px solid var(--creme-2); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+.cal-topo { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.cal-data { flex: 1; min-width: 0; }
+.dia-nav, .cal-toggle { display: none; }
+.cal-acoes { order: 3; display: flex; flex-direction: column; }
+.cal-grade { order: 2; display: flex; flex-direction: column; gap: 14px; }
 .cal .etq { font-size: 12px; font-weight: 800; color: var(--tinta-2); text-transform: uppercase; letter-spacing: .06em; }
 .cal .dia-sel { font-family: var(--titulo); font-size: 20px; font-weight: 700; }
 .cal .dia-sel::first-letter { text-transform: uppercase; }
@@ -106,3 +111,62 @@ td { padding: 12px; border-bottom: 1px solid #efe9db; }
 .ocupado-caixa { background: var(--verm-claro); border: 2px solid var(--verm); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 6px; }
 .ocupado-caixa .etq { font-size: 14px; font-weight: 800; color: var(--verm-escuro); text-transform: uppercase; letter-spacing: .05em; }
 .ocupado-caixa strong { font-size: 18px; }
+
+/* ---------- celular ---------- */
+@media (max-width: 720px) {
+  body { font-size: 16px; }
+  .pagina { padding: 16px 12px calc(40px + env(safe-area-inset-bottom)); gap: 14px; }
+  .topo { align-items: stretch; gap: 10px; }
+  .topo h1 { font-size: 26px; }
+  .topo .muda { display: none; }
+  .resumo { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 10px; padding: 12px; }
+  .resumo strong { font-size: 18px; }
+  .resumo span { font-size: 10.5px; letter-spacing: .03em; }
+  .resumo .btn-sec { grid-column: 1 / -1; }
+  .corpo { gap: 14px; }
+
+  /* calendário recolhido: dia atual, setas de dia e botão para abrir o mês */
+  .cal { flex: 1 1 100%; width: 100%; padding: 14px; gap: 10px; }
+  .cal .dia-sel { font-size: 17px; }
+  .dia-nav { display: block; flex: none; }
+  .cal-toggle { display: block; }
+  .cal-acoes { order: 1; flex-direction: row; gap: 8px; }
+  .cal-acoes .btn-sec { flex: 1; padding: 0 8px; }
+  .cal-grade { order: 2; }
+  .cal:not(.aberto) .cal-grade { display: none; }
+  .dia { height: 46px; }
+
+  /* quartos em 2 colunas */
+  .quartos { flex-basis: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .quarto { min-height: 118px; padding: 12px; gap: 8px; }
+  .quarto .linha { flex-wrap: wrap; gap: 4px; }
+  .quarto .nome { font-size: 17px; }
+  .quarto .principal { font-size: 18px; }
+  .quarto .sub { font-size: 12.5px; }
+  .quarto .cta { display: none; }
+  .selo { font-size: 11px; padding: 3px 8px; }
+
+  /* registros viram cartões, sem rolagem lateral */
+  .registros { padding: 14px; }
+  .reg-topo .btn-sec { width: 100%; }
+  table, thead, tbody, tr, td { display: block; min-width: 0; }
+  thead { position: absolute; left: -9999px; }
+  tr { border: 1px solid var(--creme-2); border-radius: 8px; padding: 6px 12px; margin-bottom: 10px; }
+  td { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border: 0; text-align: right; }
+  td::before { content: attr(data-l); color: var(--tinta-2); font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; text-align: left; align-self: center; }
+  .tabela-caixa { overflow: visible; }
+
+  /* janelas viram painéis que sobem de baixo */
+  .fundo { align-items: flex-end; padding: 0; }
+  .janela, .janela.pequena { max-width: none; max-height: 94vh; max-height: 94dvh; border-radius: 16px 16px 0 0; padding: 18px 16px calc(16px + env(safe-area-inset-bottom)); gap: 16px; }
+  .janela-topo h2 { font-size: 24px; }
+  .datas { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .data-btn { padding: 0 12px; font-size: 17px; min-height: 52px; }
+  .pagamentos { grid-template-columns: 1fr; }
+  .pag { min-height: 50px; }
+  .janela > .btn { position: sticky; bottom: calc(-16px - env(safe-area-inset-bottom)); min-height: 54px; box-shadow: 0 -10px 12px -6px #fff; }
+
+  /* login */
+  .login { padding: 16px 12px; align-items: start; padding-top: 8vh; }
+  .login-caixa { padding: 24px 18px; }
+}
