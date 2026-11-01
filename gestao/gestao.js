@@ -1,5 +1,5 @@
-import { URL_SCRIPT } from "./config.js?v=5";
-import { iso, deIso, br, brl, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT } from "./regras.js?v=5";
+import { URL_SCRIPT } from "./config.js?v=7";
+import { iso, deIso, br, brl, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT } from "./regras.js?v=7";
 
 const QUARTOS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const PAGAMENTOS = ["PIX", "Dinheiro", "Cartão de débito", "Cartão de crédito"];
@@ -225,7 +225,7 @@ function atualizarForm() {
   const f = s.form;
   const temSaida = f.co !== "" && f.co > f.ci;
   const bCi = $("b-ci"), bCo = $("b-co");
-  bCi.innerHTML = `${esc(br(f.ci))}<small>horário registrado ao salvar</small>`;
+  bCi.innerHTML = `${esc(br(f.ci))}<small>hora do registro</small>`;
   bCo.innerHTML = f.co ? `${esc(br(f.co))}<small>às ${HORA_CHECKOUT}</small>` : "Escolher data";
   bCo.classList.toggle("vazio", !temSaida);
   const n = $("m-noites");
