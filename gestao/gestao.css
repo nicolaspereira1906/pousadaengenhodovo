@@ -311,3 +311,10 @@ body[data-papel="camareira"] .abas { display: flex; }
 .estado-op.livre.atual { background: var(--cana); }
 .estado-op:disabled:not(.atual) { opacity: .55; }
 .btn-limpar:disabled { background: #9bb0cf; }
+
+/* tela neutra enquanto a sessão guardada é conferida (não mostra nada de nenhum perfil) */
+.carregando { display: none; min-height: 100vh; place-items: center; background: var(--tinta); color: var(--creme); text-align: center; }
+.carregando img { width: 96px; height: auto; }
+.carregando p { margin: 12px 0 0; font-weight: 700; }
+.tem-sessao .carregando { display: grid; }
+.tem-sessao #tela-login { display: none; }

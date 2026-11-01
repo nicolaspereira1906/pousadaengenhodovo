@@ -17,9 +17,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@600;700&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="gestao.css?v=23">
+  <script>try { if (localStorage.getItem("pousada_sessao")) document.documentElement.classList.add("tem-sessao"); } catch (e) {}</script>
+  <link rel="stylesheet" href="gestao.css?v=24">
 </head>
 <body>
+
+<section id="tela-carregando" class="carregando" aria-live="polite">
+  <div><img src="../assets/logo/logo-claro.webp" alt="Pousada Engenho do Vô" width="110" height="110"><p>Carregando...</p></div>
+</section>
 
 <section id="tela-login" class="login">
   <form id="form-login" class="login-caixa" method="post" action="#" autocomplete="on">
@@ -45,8 +50,8 @@
   <div class="pagina">
     <header class="topo">
       <div>
-        <h1 id="titulo-app">Hóspedes e pagamentos</h1>
-        <p class="muda" id="sub-app">Escolha o dia no calendário e toque em um quarto para registrar a locação.</p>
+        <h1 id="titulo-app">Gestão</h1>
+        <p class="muda" id="sub-app"></p>
       </div>
       <div class="resumo">
         <div><span>Lançado no dia</span><strong id="r-total" class="verde">R$ 0,00</strong></div>
@@ -84,6 +89,6 @@
 <div id="modal" class="fundo" hidden></div>
 <div id="picker" class="fundo fundo-2" hidden></div>
 
-<script type="module" src="gestao.js?v=23"></script>
+<script type="module" src="gestao.js?v=24"></script>
 </body>
 </html>

@@ -1,5 +1,5 @@
-import { URL_SCRIPT } from "./config.js?v=23";
-import { iso, deIso, br, brl, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT, CAFES, rotuloCafe, rotuloCafeCamareira, cafeClasse, precisaLimpeza } from "./regras.js?v=23";
+import { URL_SCRIPT } from "./config.js?v=24";
+import { iso, deIso, br, brl, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT, CAFES, rotuloCafe, rotuloCafeCamareira, cafeClasse, precisaLimpeza } from "./regras.js?v=24";
 
 const QUARTOS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const PAGAMENTOS = ["PIX", "Dinheiro", "Cartão de débito", "Cartão de crédito"];
@@ -87,7 +87,10 @@ document.addEventListener("visibilitychange", () => {
 document.body.dataset.papel = s.papel;
 
 // ---------- login ----------
+// O app só aparece depois que os dados chegaram e o perfil (admin ou camareira) já foi aplicado:
+// assim ninguém vê, nem por um instante, a tela do outro perfil.
 function mostrarApp() {
+  document.documentElement.classList.remove("tem-sessao");
   $("tela-login").hidden = true;
   $("tela-app").hidden = false;
 }
@@ -101,6 +104,7 @@ function sair() {
   if (navigator.credentials?.preventSilentAccess) navigator.credentials.preventSilentAccess().catch(() => {});
   localStorage.removeItem(CHAVE_SESSAO);
   $("tela-app").hidden = true;
+  document.documentElement.classList.remove("tem-sessao");
   $("tela-login").hidden = false;
   fecharModal();
 }
@@ -115,8 +119,8 @@ $("form-login").addEventListener("submit", async (e) => {
     s.token = r.token;
     localStorage.setItem(CHAVE_SESSAO, r.token);
     await guardarSenha($("usuario").value, $("senha").value);
-    mostrarApp();
-    await carregar();
+    await carregar();   // primeiro carrega e aplica o perfil...
+    mostrarApp();       // ...só então mostra a tela
   } catch (err) {
     erro.textContent = err.message; erro.hidden = false;
   } finally {
@@ -620,8 +624,13 @@ document.addEventListener("click", (e) => {
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js", { scope: "./" }).catch(() => {});
 
 // ---------- início ----------
-entrarComSalva();
-if (s.token) {
-  mostrarApp();
-  carregar().catch((e) => { if (s.token) avisar(e.message, true); });
+// reabrir com a sessão guardada: tela neutra de carregamento até saber o perfil
+async function abrirSessao() {
+  try { await carregar(); mostrarApp(); }
+  catch (e) {
+    document.documentElement.classList.remove("tem-sessao");
+    $("erro-login").textContent = e.message; $("erro-login").hidden = false;
+  }
 }
+entrarComSalva();
+if (s.token) abrirSessao();
