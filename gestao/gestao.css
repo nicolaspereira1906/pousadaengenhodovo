@@ -198,4 +198,14 @@ body[data-papel="camareira"] .resumo .resumo-acoes { width: 100%; }
 .ocupado-caixa strong { font-size: 20px; }
 .cafe-selo { align-self: flex-start; padding: 6px 14px; border-radius: 999px; font-size: 17px; font-weight: 800; }
 .cafe-selo.com { background: var(--cana); color: #fff; }
+.cafe-selo.nd { background: #ece9e1; color: #3c4743; border: 1.5px dashed #8a7f6d; }
 .cafe-selo.sem { background: #fce9c8; color: #5c3b00; border: 1.5px solid #a8641f; }
+
+/* pronto para limpeza (check-out de hoje) */
+:root { --azul: #1d4f91; --azul-claro: #e8f0fb; }
+.quarto.limpeza { background: var(--azul-claro); border: 2px solid var(--azul); }
+.quarto.limpeza .cta { color: var(--azul); }
+.selo.limpeza { background: var(--azul); color: #fff; }
+.limpeza-caixa { background: var(--azul-claro); border: 2px solid var(--azul); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 6px; }
+.limpeza-caixa .etq { font-size: 14px; font-weight: 800; color: var(--azul); text-transform: uppercase; letter-spacing: .05em; }
+.limpeza-caixa strong { font-size: 20px; }

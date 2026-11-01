@@ -5,13 +5,13 @@
 //
 // Dois acessos, definidos em Configurações do projeto > Propriedades do script:
 //   USUARIO e SENHA                        -> administração (vê tudo, lança e edita)
-//   USUARIO_CAMAREIRA e SENHA_CAMAREIRA    -> camareira (só vê quarto livre/ocupado, hóspedes e café de HOJE)
+//   USUARIO_CAMAREIRA e SENHA_CAMAREIRA    -> camareira (só vê livre/ocupado/pronto para limpeza, hóspedes e café de HOJE)
 // Nenhuma senha fica neste arquivo.
 
 const ABA = 'Registros';
 const FUSO = 'America/Sao_Paulo';
 const HORA_CHECKOUT = '12:00'; // check-out sempre ao meio-dia
-const VERSAO = 'v5-camareira-e-cafe';
+const VERSAO = 'v6-pronto-para-limpeza';
 const SESSAO_SEGUNDOS = 6 * 60 * 60; // 6 horas (máximo do CacheService)
 const MAX_ERROS = 5;                 // erros de login antes de bloquear
 const BLOQUEIO_SEGUNDOS = 15 * 60;
@@ -137,11 +137,19 @@ function listar(aba) {
   }));
 }
 
-// Camareira: só estadias que ocupam o quarto HOJE, e só quarto, hóspedes e café.
+// Camareira: só o que importa HOJE, sem valor, pagamento nem datas.
+//  - situacao "ocupado": hóspede no quarto (hospedes e café); chegaHoje = o check-in é hoje
+//  - situacao "limpeza": check-out é hoje, quarto liberado e pronto para limpeza
 function listarCamareira(aba, hoje) {
-  return listar(aba)
-    .filter((r) => r.checkIn <= hoje && hoje < r.checkOut)
-    .map((r) => ({ quarto: r.quarto, hospedes: r.hospedes, cafe: r.cafe }));
+  const saida = [];
+  listar(aba).forEach((r) => {
+    if (r.checkIn <= hoje && hoje < r.checkOut) {
+      saida.push({ quarto: r.quarto, situacao: 'ocupado', hospedes: r.hospedes, cafe: r.cafe, chegaHoje: r.checkIn === hoje });
+    } else if (r.checkOut === hoje && r.checkIn < r.checkOut) {
+      saida.push({ quarto: r.quarto, situacao: 'limpeza' });
+    }
+  });
+  return saida;
 }
 
 // Só a data (sem horário): meia-noite no fuso de São Paulo

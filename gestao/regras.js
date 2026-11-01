@@ -57,3 +57,7 @@ export const fmtCheckOut = (r) => `${br(r.checkOut)} ${HORA_CHECKOUT}`;
 // Café da manhã (cobrado à parte): o que a camareira precisa saber
 export const CAFES = ["Com café", "Sem café"];
 export const rotuloCafe = (c) => (CAFES.includes(c) ? c : "Café não informado");
+
+// Para a camareira: "não informado" soa como erro; o que ela precisa é confirmar com a recepção
+export const rotuloCafeCamareira = (c) => (CAFES.includes(c) ? c : "Café a confirmar");
+export const cafeClasse = (c) => (c === "Com café" ? "com" : c === "Sem café" ? "sem" : "nd");

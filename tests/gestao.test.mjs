@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { iso, br, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, rotuloCafe } from "../gestao/regras.js";
+import { iso, br, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, rotuloCafe, rotuloCafeCamareira, cafeClasse } from "../gestao/regras.js";
 
 const regs = [{ quarto: 3, checkIn: "2026-11-10", checkOut: "2026-11-13", hospedes: 2, valor: 900 }];
 
@@ -70,4 +70,13 @@ test("rótulo do café: com, sem ou não informado (registros antigos)", () => {
   assert.equal(rotuloCafe("Sem café"), "Sem café");
   assert.equal(rotuloCafe(""), "Café não informado");
   assert.equal(rotuloCafe(undefined), "Café não informado");
+});
+
+test("café na tela da camareira: sem informação vira 'a confirmar' e tem cor própria", () => {
+  assert.equal(rotuloCafeCamareira("Com café"), "Com café");
+  assert.equal(rotuloCafeCamareira("Sem café"), "Sem café");
+  assert.equal(rotuloCafeCamareira(""), "Café a confirmar");
+  assert.equal(cafeClasse("Com café"), "com");
+  assert.equal(cafeClasse("Sem café"), "sem");
+  assert.equal(cafeClasse(""), "nd");
 });

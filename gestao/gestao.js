@@ -1,5 +1,5 @@
-import { URL_SCRIPT } from "./config.js?v=14";
-import { iso, deIso, br, brl, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT, CAFES, rotuloCafe } from "./regras.js?v=14";
+import { URL_SCRIPT } from "./config.js?v=15";
+import { iso, deIso, br, brl, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT, CAFES, rotuloCafe, rotuloCafeCamareira, cafeClasse } from "./regras.js?v=15";
 
 const QUARTOS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const PAGAMENTOS = ["PIX", "Dinheiro", "Cartão de débito", "Cartão de crédito"];
@@ -202,14 +202,28 @@ function renderQuartos() {
     }</tbody></table></div>`;
 }
 
+// situação do quarto para a camareira: ocupado, pronto para limpeza (check-out hoje) ou disponível
+function situacaoQuarto(q) {
+  const estadia = s.regs.find((r) => r.quarto === q && r.situacao !== "limpeza");
+  const saindo = s.regs.some((r) => r.quarto === q && r.situacao === "limpeza");
+  return { estadia, saindo };
+}
+const hospedesTxt = (n) => `${n} ${n === 1 ? "hóspede" : "hóspedes"}`;
+
 function renderCamareira() {
   $("quartos").innerHTML = QUARTOS.map((q) => {
-    const est = s.regs.find((r) => r.quarto === q);
-    const ocupado = !!est;
-    const sub = ocupado ? `${est.hospedes} ${est.hospedes === 1 ? "hóspede" : "hóspedes"} · ${rotuloCafe(est.cafe)}` : "Quarto não ocupado";
-    return `<button class="quarto${ocupado ? " ocupado" : ""}" data-acao="quarto" data-q="${q}" aria-label="Abrir quarto ${q}, ${ocupado ? "ocupado" : "disponível"}">
-      <div class="linha"><span class="nome">Quarto ${q}</span><span class="selo${ocupado ? " ocupado" : ""}">${ocupado ? "Ocupado" : "Livre"}</span></div>
-      <div><div class="principal">${ocupado ? "Ocupado" : "Disponível"}</div><div class="sub">${esc(sub)}</div></div>
+    const { estadia, saindo } = situacaoQuarto(q);
+    let cls = "quarto", selo = "Livre", seloCls = "selo", principal = "Disponível", sub = "Quarto não ocupado";
+    if (saindo) {
+      cls += " limpeza"; selo = "Limpeza"; seloCls += " limpeza"; principal = "Pronto para limpeza";
+      sub = estadia ? "Novo hóspede chega hoje" : "Check-out de hoje";
+    } else if (estadia) {
+      cls += " ocupado"; selo = "Ocupado"; seloCls += " ocupado"; principal = "Ocupado";
+      sub = `${hospedesTxt(estadia.hospedes)} · ${rotuloCafeCamareira(estadia.cafe)}`;
+    }
+    return `<button class="${cls}" data-acao="quarto" data-q="${q}" aria-label="Abrir quarto ${q}, ${principal.toLowerCase()}">
+      <div class="linha"><span class="nome">Quarto ${q}</span><span class="${seloCls}">${selo}</span></div>
+      <div><div class="principal">${principal}</div><div class="sub">${esc(sub)}</div></div>
       <span class="cta">Ver detalhes &rarr;</span></button>`;
   }).join("");
 }
@@ -227,17 +241,25 @@ function abrirQuarto(q) {
 // Camareira: só diz se o quarto está livre ou ocupado, quantos hóspedes e se tem café
 function renderModalCamareira() {
   const q = s.quarto;
-  const est = s.regs.find((r) => r.quarto === q);
-  const corpo = est
-    ? `<div class="ocupado-caixa"><span class="etq">Quarto ocupado</span>
-        <strong>${est.hospedes} ${est.hospedes === 1 ? "hóspede" : "hóspedes"}</strong>
-        <span class="cafe-selo ${est.cafe === "Com café" ? "com" : "sem"}">${esc(rotuloCafe(est.cafe))}</span></div>`
-    : `<div class="livre-caixa"><span class="etq">Quarto disponível</span><strong>Quarto não ocupado</strong></div>`;
+  const { estadia, saindo } = situacaoQuarto(q);
+  const cafeSelo = (e) => `<span class="cafe-selo ${cafeClasse(e.cafe)}">${esc(rotuloCafeCamareira(e.cafe))}</span>${cafeClasse(e.cafe) === "nd" ? '<span class="muda">Confirme com a recepção.</span>' : ""}`;
+  let corpo;
+  if (saindo) {
+    corpo = `<div class="limpeza-caixa"><span class="etq">Pronto para limpeza</span><strong>Check-out de hoje</strong>
+      <span class="muda">Quarto liberado.</span></div>
+      ${estadia ? `<div class="ocupado-caixa"><span class="etq">Novo hóspede chega hoje</span><strong>${hospedesTxt(estadia.hospedes)}</strong>${cafeSelo(estadia)}</div>` : ""}`;
+  } else if (estadia) {
+    corpo = `<div class="ocupado-caixa"><span class="etq">Quarto ocupado</span>
+        <strong>${hospedesTxt(estadia.hospedes)}</strong>${cafeSelo(estadia)}</div>`;
+  } else {
+    corpo = `<div class="livre-caixa"><span class="etq">Quarto disponível</span><strong>Quarto não ocupado</strong></div>`;
+  }
   const m = $("modal");
   m.innerHTML = `<div class="janela" role="dialog" aria-modal="true" aria-label="Quarto ${q}">
     <div class="janela-topo"><div><h2>Quarto ${q}</h2></div><button class="fechar" data-acao="fechar" aria-label="Fechar">&times;</button></div>${corpo}</div>`;
   m.hidden = false;
 }
+
 function fecharModal() { s.quarto = null; s.picker = null; $("modal").hidden = true; $("picker").hidden = true; }
 
 function renderModal() {
