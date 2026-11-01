@@ -1,5 +1,5 @@
-import { URL_SCRIPT } from "./config.js?v=15";
-import { iso, deIso, br, brl, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT, CAFES, rotuloCafe, rotuloCafeCamareira, cafeClasse } from "./regras.js?v=15";
+import { URL_SCRIPT } from "./config.js?v=16";
+import { iso, deIso, br, brl, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT, CAFES, rotuloCafe, rotuloCafeCamareira, cafeClasse } from "./regras.js?v=16";
 
 const QUARTOS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const PAGAMENTOS = ["PIX", "Dinheiro", "Cartão de débito", "Cartão de crédito"];
@@ -20,7 +20,9 @@ const s = {
   form: { ci: "", co: "", hosp: 2, valor: "", pag: "", cafe: "" },
   picker: null, py: hoje.getFullYear(), pm: hoje.getMonth(),
   salvando: false,
-  calAberto: false
+  calAberto: false,
+  aba: "quartos", // camareira: quartos | relatorio
+  atualizadoEm: ""
 };
 
 // ---------- conexão com a planilha ----------
@@ -50,6 +52,7 @@ async function carregar() {
   s.papel = r.papel || "admin";
   localStorage.setItem(CHAVE_PAPEL, s.papel);
   s.regs = r.registros;
+  s.atualizadoEm = new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
   if (s.papel === "camareira") s.sel = r.hoje || iso(new Date()); // camareira só vê o dia de hoje
   aplicarPapel();
   render();
@@ -64,8 +67,13 @@ function aplicarPapel() {
   $("sub-app").textContent = cam
     ? deIso(s.sel).toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })
     : "Escolha o dia no calendário e toque em um quarto para registrar a locação.";
+  const cam2 = cam;
+  $("abas-cam").hidden = !cam2;
+  $("corpo").hidden = cam2 && s.aba === "relatorio";
+  $("relatorio-cam").hidden = !(cam2 && s.aba === "relatorio");
+  document.querySelectorAll(".aba").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.a === s.aba)));
   clearInterval(tAtualiza);
-  // a camareira não tem botão de atualizar: a tela se atualiza sozinha
+  // a camareira não tem botão de atualizar: a tela se atualiza sozinha (e vira "pronto para limpeza" às 12:00)
   if (cam) tAtualiza = setInterval(() => { if (s.token && !document.hidden) carregar().catch(() => {}); }, 60000);
 }
 document.addEventListener("visibilitychange", () => {
@@ -79,7 +87,7 @@ function mostrarApp() {
   $("tela-app").hidden = false;
 }
 function sair() {
-  s.token = ""; s.regs = []; s.papel = "admin";
+  s.token = ""; s.regs = []; s.papel = "admin"; s.aba = "quartos";
   clearInterval(tAtualiza);
   localStorage.removeItem(CHAVE_PAPEL);
   document.body.dataset.papel = "";
@@ -202,30 +210,70 @@ function renderQuartos() {
     }</tbody></table></div>`;
 }
 
-// situação do quarto para a camareira: ocupado, pronto para limpeza (check-out hoje) ou disponível
-function situacaoQuarto(q) {
-  const estadia = s.regs.find((r) => r.quarto === q && r.situacao !== "limpeza");
-  const saindo = s.regs.some((r) => r.quarto === q && r.situacao === "limpeza");
-  return { estadia, saindo };
+// Estado de um quarto para a camareira, a partir do que o servidor enviou (só hoje, sem valores)
+//  limpeza: check-out de hoje já passou do meio-dia | saindo: check-out hoje, ainda antes das 12:00
+function estadoQuarto(q) {
+  const dele = s.regs.filter((r) => r.quarto === q);
+  const estadia = dele.find((r) => r.situacao === "ocupado");
+  const saindo = dele.find((r) => r.situacao === "saindo");
+  const limpeza = dele.some((r) => r.situacao === "limpeza");
+  const noQuarto = saindo || estadia; // quem está (ou está para estar) no quarto; quem sai ainda não saiu
+  return { estadia, saindo, limpeza, ocupado: !!noQuarto, hospedes: noQuarto?.hospedes, cafe: noQuarto?.cafe, chegaHoje: !!estadia?.chegaHoje };
 }
 const hospedesTxt = (n) => `${n} ${n === 1 ? "hóspede" : "hóspedes"}`;
 
 function renderCamareira() {
   $("quartos").innerHTML = QUARTOS.map((q) => {
-    const { estadia, saindo } = situacaoQuarto(q);
+    const e = estadoQuarto(q);
     let cls = "quarto", selo = "Livre", seloCls = "selo", principal = "Disponível", sub = "Quarto não ocupado";
-    if (saindo) {
+    if (e.limpeza) {
       cls += " limpeza"; selo = "Limpeza"; seloCls += " limpeza"; principal = "Pronto para limpeza";
-      sub = estadia ? "Novo hóspede chega hoje" : "Check-out de hoje";
-    } else if (estadia) {
+      sub = e.estadia ? "Novo hóspede chega hoje" : "Check-out de hoje";
+    } else if (e.saindo) {
+      cls += " saindo"; selo = "Saída hoje"; seloCls += " saida"; principal = `Saída até ${HORA_CHECKOUT}`;
+      sub = `${hospedesTxt(e.saindo.hospedes)} · ${rotuloCafeCamareira(e.saindo.cafe)}`;
+    } else if (e.estadia) {
       cls += " ocupado"; selo = "Ocupado"; seloCls += " ocupado"; principal = "Ocupado";
-      sub = `${hospedesTxt(estadia.hospedes)} · ${rotuloCafeCamareira(estadia.cafe)}`;
+      sub = `${hospedesTxt(e.estadia.hospedes)} · ${rotuloCafeCamareira(e.estadia.cafe)}`;
     }
     return `<button class="${cls}" data-acao="quarto" data-q="${q}" aria-label="Abrir quarto ${q}, ${principal.toLowerCase()}">
       <div class="linha"><span class="nome">Quarto ${q}</span><span class="${seloCls}">${selo}</span></div>
       <div><div class="principal">${principal}</div><div class="sub">${esc(sub)}</div></div>
       <span class="cta">Ver detalhes &rarr;</span></button>`;
   }).join("");
+  renderRelatorioCamareira();
+}
+
+// Relatório da camareira: uma linha por quarto, com Sim/Não fáceis de bater o olho
+function renderRelatorioCamareira() {
+  const chip = (txt, tom) => `<span class="chip ${tom}">${esc(txt)}</span>`;
+  let ocupados = 0, comCafe = 0, semCafe = 0, aLimpar = 0;
+  const linhas = QUARTOS.map((q) => {
+    const e = estadoQuarto(q);
+    if (e.ocupado) { ocupados++; if (e.cafe === "Com café") comCafe++; else if (e.cafe === "Sem café") semCafe++; }
+    if (e.limpeza) aLimpar++;
+    const ocup = e.ocupado ? chip("Sim", "verm") : chip("Não", "ok");
+    const detalhe = e.ocupado ? `${hospedesTxt(e.hospedes)}${e.chegaHoje && !e.saindo ? " · chega hoje" : ""}` : "";
+    const cafe = e.ocupado ? chip(rotuloCafeCamareira(e.cafe), cafeClasse(e.cafe)) : '<span class="traco" aria-label="sem hóspede">—</span>';
+    const limp = e.limpeza ? chip("Sim", "azul") : e.saindo ? chip(`Às ${HORA_CHECKOUT}`, "ambar") : chip("Não", "neutro");
+    return `<div class="rel-linha" role="row">
+      <div class="rel-q" role="cell">Quarto ${q}</div>
+      <div role="cell">${ocup}<small>${esc(detalhe)}</small></div>
+      <div role="cell">${cafe}</div>
+      <div role="cell">${limp}${e.limpeza && e.estadia ? "<small>novo hóspede chega hoje</small>" : ""}</div>
+    </div>`;
+  }).join("");
+  const resumo = [
+    ["Ocupados", ocupados, "verm"], ["Livres", QUARTOS.length - ocupados, "ok"],
+    ["Com café", comCafe, "com"], ["Sem café", semCafe, "sem"], ["Para limpar", aLimpar, "azul"]
+  ].map(([nome, n, tom]) => `<div class="rel-num ${tom}"><strong>${n}</strong><span>${nome}</span></div>`).join("");
+  $("relatorio-cam").innerHTML = `
+    <div class="rel-topo"><h2>Relatório de hoje</h2><span class="muda">Atualizado às ${esc(s.atualizadoEm)}</span></div>
+    <div class="rel-resumo">${resumo}</div>
+    <div class="rel-tabela" role="table" aria-label="Situação de cada quarto">
+      <div class="rel-linha rel-cab" role="row"><div role="columnheader">Quarto</div><div role="columnheader">Ocupado?</div><div role="columnheader">Café?</div><div role="columnheader">Pronto para limpeza?</div></div>
+      ${linhas}
+    </div>`;
 }
 
 function render() { if (s.papel === "camareira") renderCamareira(); else { renderCalendario(); renderQuartos(); } }
@@ -241,16 +289,21 @@ function abrirQuarto(q) {
 // Camareira: só diz se o quarto está livre ou ocupado, quantos hóspedes e se tem café
 function renderModalCamareira() {
   const q = s.quarto;
-  const { estadia, saindo } = situacaoQuarto(q);
-  const cafeSelo = (e) => `<span class="cafe-selo ${cafeClasse(e.cafe)}">${esc(rotuloCafeCamareira(e.cafe))}</span>${cafeClasse(e.cafe) === "nd" ? '<span class="muda">Confirme com a recepção.</span>' : ""}`;
+  const e = estadoQuarto(q);
+  const cafeSelo = (x) => `<span class="cafe-selo ${cafeClasse(x.cafe)}">${esc(rotuloCafeCamareira(x.cafe))}</span>${cafeClasse(x.cafe) === "nd" ? '<span class="muda">Confirme com a recepção.</span>' : ""}`;
+  const chegada = e.estadia && (e.limpeza || e.saindo)
+    ? `<div class="ocupado-caixa"><span class="etq">Novo hóspede chega hoje</span><strong>${hospedesTxt(e.estadia.hospedes)}</strong>${cafeSelo(e.estadia)}</div>` : "";
   let corpo;
-  if (saindo) {
+  if (e.limpeza) {
     corpo = `<div class="limpeza-caixa"><span class="etq">Pronto para limpeza</span><strong>Check-out de hoje</strong>
-      <span class="muda">Quarto liberado.</span></div>
-      ${estadia ? `<div class="ocupado-caixa"><span class="etq">Novo hóspede chega hoje</span><strong>${hospedesTxt(estadia.hospedes)}</strong>${cafeSelo(estadia)}</div>` : ""}`;
-  } else if (estadia) {
+      <span class="muda">Quarto liberado.</span></div>${chegada}`;
+  } else if (e.saindo) {
+    corpo = `<div class="saindo-caixa"><span class="etq">Saída hoje até ${HORA_CHECKOUT}</span>
+        <strong>${hospedesTxt(e.saindo.hospedes)}</strong>${cafeSelo(e.saindo)}
+        <span class="muda">Ainda não está liberado para limpeza.</span></div>${chegada}`;
+  } else if (e.estadia) {
     corpo = `<div class="ocupado-caixa"><span class="etq">Quarto ocupado</span>
-        <strong>${hospedesTxt(estadia.hospedes)}</strong>${cafeSelo(estadia)}</div>`;
+        <strong>${hospedesTxt(e.estadia.hospedes)}</strong>${cafeSelo(e.estadia)}</div>`;
   } else {
     corpo = `<div class="livre-caixa"><span class="etq">Quarto disponível</span><strong>Quarto não ocupado</strong></div>`;
   }
@@ -439,6 +492,7 @@ document.addEventListener("click", (e) => {
     case "hosp": s.form.hosp = Math.min(99, Math.max(1, s.form.hosp + Number(d.d))); atualizarForm(); break;
     case "pag": s.form.pag = d.p; atualizarForm(); break;
     case "cafe": s.form.cafe = d.c; atualizarForm(); break;
+    case "aba": s.aba = d.a; aplicarPapel(); break;
     case "salvar": salvar(); break;
     case "encerrar": encerrar(); break;
   }

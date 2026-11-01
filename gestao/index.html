@@ -17,7 +17,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@600;700&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="gestao.css?v=15">
+  <link rel="stylesheet" href="gestao.css?v=16">
 </head>
 <body>
 
@@ -60,7 +60,14 @@
 
     <p id="aviso" class="aviso" role="status" hidden></p>
 
-    <div class="corpo">
+    <nav id="abas-cam" class="abas" role="tablist" aria-label="Seções" hidden>
+      <button type="button" class="aba" role="tab" data-acao="aba" data-a="quartos" aria-selected="true">Quartos</button>
+      <button type="button" class="aba" role="tab" data-acao="aba" data-a="relatorio" aria-selected="false">Relatório</button>
+    </nav>
+
+    <section id="relatorio-cam" class="relatorio" role="tabpanel" aria-label="Relatório dos quartos" hidden></section>
+
+    <div class="corpo" id="corpo">
       <section class="cal" id="cal" aria-label="Calendário"></section>
       <div class="quartos" id="quartos"></div>
     </div>
@@ -77,6 +84,6 @@
 <div id="modal" class="fundo" hidden></div>
 <div id="picker" class="fundo fundo-2" hidden></div>
 
-<script type="module" src="gestao.js?v=15"></script>
+<script type="module" src="gestao.js?v=16"></script>
 </body>
 </html>

@@ -50,3 +50,5 @@ Google "Hóspedes e Pagamentos".
   todos nas Propriedades do script. A camareira só vê, de hoje, quarto livre/ocupado, hóspedes e café. O filtro é feito no
   `apps-script/Codigo.gs` (a resposta dela não traz valor, pagamento nem datas) e ela não consegue lançar nem alterar nada.
 - Planilha, coluna H "Café" (Com café / Sem café), preenchida no cadastro da locação.
+- Camareira: abas Quartos e Relatório. No dia do check-out o quarto aparece como "Saída até 12:00" e, a partir das 12:00
+  (hora do servidor, não do celular), como "Pronto para limpeza". A tela se atualiza sozinha a cada minuto.

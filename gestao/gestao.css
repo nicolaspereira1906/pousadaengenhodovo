@@ -209,3 +209,56 @@ body[data-papel="camareira"] .resumo .resumo-acoes { width: 100%; }
 .limpeza-caixa { background: var(--azul-claro); border: 2px solid var(--azul); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 6px; }
 .limpeza-caixa .etq { font-size: 14px; font-weight: 800; color: var(--azul); text-transform: uppercase; letter-spacing: .05em; }
 .limpeza-caixa strong { font-size: 20px; }
+
+/* saída hoje (antes das 12:00): ainda tem hóspede */
+.quarto.saindo { background: #fff6e3; border: 2px solid var(--rapadura); }
+.quarto.saindo .cta { color: #7a4710; }
+.saindo-caixa { background: #fff6e3; border: 2px solid var(--rapadura); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 6px; }
+.saindo-caixa .etq { font-size: 14px; font-weight: 800; color: #7a4710; text-transform: uppercase; letter-spacing: .05em; }
+.saindo-caixa strong { font-size: 20px; }
+
+/* abas da camareira */
+.abas { display: none; gap: 8px; }
+body[data-papel="camareira"] .abas { display: flex; }
+.aba { flex: 1; height: 52px; border-radius: 8px; border: 1.5px solid var(--cana); background: #fff; color: var(--cana); font-weight: 800; font-size: 17px; }
+.aba[aria-selected="true"] { background: var(--cana); color: #fff; }
+
+/* relatório da camareira */
+.relatorio { background: #fff; border: 1px solid var(--creme-2); border-radius: 8px; padding: 18px; display: flex; flex-direction: column; gap: 16px; }
+.rel-topo { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px; }
+.rel-topo h2 { font-size: 22px; }
+.rel-resumo { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.rel-num { border-radius: 8px; padding: 10px 6px; text-align: center; display: flex; flex-direction: column; gap: 2px; border: 1.5px solid var(--creme-2); }
+.rel-num strong { font-size: 26px; line-height: 1; }
+.rel-num span { font-size: 12px; font-weight: 800; }
+.rel-num.verm { background: var(--verm-claro); border-color: var(--verm); color: var(--verm-escuro); }
+.rel-num.ok { background: var(--cana-claro); border-color: var(--cana); color: #1f3d23; }
+.rel-num.com { background: var(--cana); border-color: var(--cana); color: #fff; }
+.rel-num.sem { background: #fce9c8; border-color: var(--rapadura); color: #5c3b00; }
+.rel-num.azul { background: var(--azul-claro); border-color: var(--azul); color: var(--azul); }
+.rel-tabela { display: flex; flex-direction: column; }
+.rel-linha { display: grid; grid-template-columns: 1fr 1.25fr 1.2fr 1.5fr; gap: 8px; align-items: center; padding: 11px 4px; border-bottom: 1px solid #efe9db; }
+.rel-linha small { display: block; font-size: 12px; color: var(--tinta-2); margin-top: 3px; }
+.rel-cab { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; color: var(--tinta-2); border-bottom: 2px solid var(--creme-2); }
+.rel-q { font-family: var(--titulo); font-size: 18px; font-weight: 700; }
+.chip { display: inline-block; padding: 5px 12px; border-radius: 999px; font-size: 14px; font-weight: 800; line-height: 1.2; }
+.chip.verm { background: var(--verm); color: #fff; }
+.chip.ok { background: var(--cana-claro); color: #1f3d23; }
+.chip.com { background: var(--cana); color: #fff; }
+.chip.sem { background: #fce9c8; color: #5c3b00; }
+.chip.nd { background: #ece9e1; color: #3c4743; border: 1.5px dashed #8a7f6d; }
+.chip.azul { background: var(--azul); color: #fff; }
+.chip.ambar { background: #fce9c8; color: #5c3b00; border: 1.5px solid var(--rapadura); }
+.chip.neutro { background: #ece9e1; color: #3c4743; }
+.traco { color: var(--tinta-2); font-weight: 800; padding-left: 10px; }
+@media (max-width: 720px) {
+  .relatorio { padding: 14px 10px; }
+  .rel-resumo { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px; }
+  .rel-num { padding: 8px 2px; }
+  .rel-num strong { font-size: 22px; }
+  .rel-num span { font-size: 10.5px; }
+  .rel-linha { grid-template-columns: .95fr 1.15fr 1.2fr 1.1fr; gap: 6px; }
+  .rel-cab { font-size: 10.5px; letter-spacing: 0; }
+  .rel-q { font-size: 15px; }
+  .chip { padding: 4px 8px; font-size: 13px; }
+}

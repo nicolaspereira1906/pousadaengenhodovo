@@ -11,7 +11,7 @@
 const ABA = 'Registros';
 const FUSO = 'America/Sao_Paulo';
 const HORA_CHECKOUT = '12:00'; // check-out sempre ao meio-dia
-const VERSAO = 'v6-pronto-para-limpeza';
+const VERSAO = 'v7-relatorio-e-saida-ate-meio-dia';
 const SESSAO_SEGUNDOS = 6 * 60 * 60; // 6 horas (máximo do CacheService)
 const MAX_ERROS = 5;                 // erros de login antes de bloquear
 const BLOQUEIO_SEGUNDOS = 15 * 60;
@@ -27,11 +27,13 @@ function doPost(e) {
     const papel = papelDaSessao(d.token);
     if (!papel) return saida({ ok: false, erro: 'sessao' });
     const aba = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(ABA);
-    const hoje = Utilities.formatDate(new Date(), FUSO, 'yyyy-MM-dd');
+    const agora = new Date();
+    const hoje = Utilities.formatDate(agora, FUSO, 'yyyy-MM-dd');
+    const hora = Utilities.formatDate(agora, FUSO, 'HH:mm'); // hora do servidor: o relógio do celular não manda
 
     if (d.acao === 'listar') {
       // A camareira NUNCA recebe valor, forma de pagamento ou datas de outros dias: o filtro é aqui, no servidor.
-      const registros = papel === 'admin' ? listar(aba) : listarCamareira(aba, hoje);
+      const registros = papel === 'admin' ? listar(aba) : listarCamareira(aba, hoje, hora);
       return saida({ ok: true, papel: papel, hoje: hoje, registros: registros });
     }
 
@@ -139,14 +141,16 @@ function listar(aba) {
 
 // Camareira: só o que importa HOJE, sem valor, pagamento nem datas.
 //  - situacao "ocupado": hóspede no quarto (hospedes e café); chegaHoje = o check-in é hoje
-//  - situacao "limpeza": check-out é hoje, quarto liberado e pronto para limpeza
-function listarCamareira(aba, hoje) {
+//  - situacao "saindo": check-out é hoje e ainda não deu meio-dia (hóspede ainda no quarto: hospedes e café)
+//  - situacao "limpeza": check-out é hoje e já passou do meio-dia: quarto liberado, pronto para limpeza
+function listarCamareira(aba, hoje, hora) {
   const saida = [];
   listar(aba).forEach((r) => {
     if (r.checkIn <= hoje && hoje < r.checkOut) {
       saida.push({ quarto: r.quarto, situacao: 'ocupado', hospedes: r.hospedes, cafe: r.cafe, chegaHoje: r.checkIn === hoje });
     } else if (r.checkOut === hoje && r.checkIn < r.checkOut) {
-      saida.push({ quarto: r.quarto, situacao: 'limpeza' });
+      if (hora >= HORA_CHECKOUT) saida.push({ quarto: r.quarto, situacao: 'limpeza' });
+      else saida.push({ quarto: r.quarto, situacao: 'saindo', hospedes: r.hospedes, cafe: r.cafe });
     }
   });
   return saida;
