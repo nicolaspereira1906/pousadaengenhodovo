@@ -52,3 +52,6 @@ Google "Hóspedes e Pagamentos".
 - Planilha, coluna H "Café" (Com café / Sem café), preenchida no cadastro da locação.
 - Camareira: abas Quartos e Relatório. No dia do check-out o quarto aparece como "Saída até 12:00" e, a partir das 12:00
   (hora do servidor, não do celular), como "Pronto para limpeza". A tela se atualiza sozinha a cada minuto.
+- Café da manhã (relatório da camareira): conta no café de hoje quem dormiu aqui na noite anterior ou fez check-in até as 06:00
+  (`HORA_LIMITE_CAFE` em `apps-script/Codigo.gs`). Check-in depois disso só conta a partir do dia seguinte. O relatório mostra
+  as pessoas em destaque, o café de hoje e o de amanhã.

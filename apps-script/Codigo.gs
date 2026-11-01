@@ -11,7 +11,10 @@
 const ABA = 'Registros';
 const FUSO = 'America/Sao_Paulo';
 const HORA_CHECKOUT = '12:00'; // check-out sempre ao meio-dia
-const VERSAO = 'v7-relatorio-e-saida-ate-meio-dia';
+const VERSAO = 'v8-cafe-por-horario-de-checkin';
+// Café da manhã: quem faz check-in HOJE só entra na conta de hoje se o check-in foi até este horário (madrugada).
+// Depois disso, o café só conta a partir do dia seguinte. Quem chegou em dias anteriores conta sempre.
+const HORA_LIMITE_CAFE = '06:00';
 const SESSAO_SEGUNDOS = 6 * 60 * 60; // 6 horas (máximo do CacheService)
 const MAX_ERROS = 5;                 // erros de login antes de bloquear
 const BLOQUEIO_SEGUNDOS = 15 * 60;
@@ -146,11 +149,13 @@ function listar(aba) {
 function listarCamareira(aba, hoje, hora) {
   const saida = [];
   listar(aba).forEach((r) => {
+    // conta no café de hoje: dormiu aqui na noite anterior ou chegou na madrugada (até HORA_LIMITE_CAFE)
+    const cafeHoje = r.cafe === 'Com café' && (r.checkIn < hoje || (r.checkInHora || '99:99') <= HORA_LIMITE_CAFE);
     if (r.checkIn <= hoje && hoje < r.checkOut) {
-      saida.push({ quarto: r.quarto, situacao: 'ocupado', hospedes: r.hospedes, cafe: r.cafe, chegaHoje: r.checkIn === hoje });
+      saida.push({ quarto: r.quarto, situacao: 'ocupado', hospedes: r.hospedes, cafe: r.cafe, chegaHoje: r.checkIn === hoje, cafeHoje: cafeHoje });
     } else if (r.checkOut === hoje && r.checkIn < r.checkOut) {
       if (hora >= HORA_CHECKOUT) saida.push({ quarto: r.quarto, situacao: 'limpeza' });
-      else saida.push({ quarto: r.quarto, situacao: 'saindo', hospedes: r.hospedes, cafe: r.cafe });
+      else saida.push({ quarto: r.quarto, situacao: 'saindo', hospedes: r.hospedes, cafe: r.cafe, cafeHoje: cafeHoje });
     }
   });
   return saida;

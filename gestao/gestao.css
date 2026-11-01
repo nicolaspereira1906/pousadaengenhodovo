@@ -262,3 +262,31 @@ body[data-papel="camareira"] .abas { display: flex; }
   .rel-q { font-size: 15px; }
   .chip { padding: 4px 8px; font-size: 13px; }
 }
+
+/* relatório da camareira: café e pessoas em destaque */
+.rel-cafe { display: grid; grid-template-columns: 1.5fr 1fr; gap: 10px; }
+.rel-cafe > div { border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 2px; }
+.rel-cafe span { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; }
+.rel-cafe strong { font-size: 48px; line-height: 1; font-weight: 800; }
+.rel-cafe em { font-style: normal; font-size: 14px; font-weight: 700; }
+.rel-cafe-hoje { background: var(--cana); color: #fff; }
+.rel-cafe-amanha { background: var(--azul-claro); color: var(--azul); border: 2px solid var(--azul); }
+.rel-aviso { padding: 10px 12px; border-radius: 6px; background: #ece9e1; border: 1.5px dashed #8a7f6d; color: #3c4743; font-weight: 700; font-size: 14px; }
+.rel-resumo { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.pessoas { display: flex; align-items: baseline; gap: 5px; }
+.pessoas strong { font-size: 32px; line-height: 1; font-weight: 800; }
+.pessoas small { margin: 0; font-size: 12px; font-weight: 800; color: var(--tinta-2); }
+.rel-q .chip { margin-top: 5px; }
+.rel-regra { margin: 0; font-size: 13px; }
+.rel-linha { grid-template-columns: 1.1fr .9fr 1.15fr 1.1fr; }
+@media (max-width: 720px) {
+  .rel-cafe { grid-template-columns: 1.35fr 1fr; gap: 8px; }
+  .rel-cafe > div { padding: 12px 12px; }
+  .rel-cafe strong { font-size: 40px; }
+  .rel-cafe span { font-size: 11px; letter-spacing: .02em; }
+  .rel-cafe em { font-size: 12px; }
+  .rel-resumo { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .rel-linha { grid-template-columns: 1.05fr .85fr 1.15fr 1fr; }
+  .pessoas strong { font-size: 28px; }
+  .pessoas small { font-size: 11px; }
+}
