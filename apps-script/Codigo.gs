@@ -14,7 +14,7 @@
 const ABA = 'Registros';
 const FUSO = 'America/Sao_Paulo';
 const HORA_CHECKOUT = '12:00'; // check-out sempre ao meio-dia
-const VERSAO = 'v11-encerrar-estadia';
+const VERSAO = 'v12-estado-do-quarto';
 // Café da manhã: check-in de 00:00 até este horário conta o café no MESMO dia (chegou cedo ou de madrugada).
 // Check-in depois disso (ex.: de 12:00 a 00:00) conta o quarto como ocupado no dia, mas o café só a partir do dia seguinte,
 // e continua até o check-out. Quem chegou em dias anteriores conta sempre.
@@ -92,7 +92,9 @@ function doPost(e) {
         if (encerrada || limpeza.indexOf('Limpo') === 0 || ci > hoje || co < hoje) continue;
         if (precisaLimpeza(limpeza, ci, co, hoje, hora, false)) continue;
         if (co > hoje) aba.getRange(i + 1, 7).setValue(paraData(hoje, HORA_CHECKOUT)).setNumberFormat('dd/mm/yyyy hh:mm'); // check-out passa a ser hoje
-        aba.getRange(i + 1, 9).setValue('Pendente'); // inclusive linhas antigas passam a ter controle de limpeza
+        // d.limpo: o admin escolheu "Livre" direto (quarto já está limpo); senão fica "Pendente" = pronto para limpeza
+        // (inclusive linhas antigas passam a ter controle de limpeza)
+        aba.getRange(i + 1, 9).setValue(d.limpo ? 'Limpo em ' + Utilities.formatDate(agora, FUSO, 'dd/MM/yyyy HH:mm') + ' (administração)' : 'Pendente');
         aba.getRange(i + 1, 10).setValue('Encerrada em ' + Utilities.formatDate(agora, FUSO, 'dd/MM/yyyy HH:mm') + ' (administração)');
         return saida({ ok: true });
       }

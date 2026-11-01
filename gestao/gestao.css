@@ -295,10 +295,19 @@ body[data-papel="camareira"] .abas { display: flex; }
 .btn-limpar.confirmar { background: var(--azul); }
 .btn-limpar:disabled { background: #9bb0cf; color: #fff; }
 
-/* encerrar estadia (admin) */
-.btn-encerrar { margin-top: 8px; width: 100%; min-height: 58px; border: 2px solid var(--verm); border-radius: 8px; background: #fff; color: var(--verm-escuro); font-weight: 800; font-size: 18px; }
-.btn-encerrar.confirmar { background: var(--verm); color: #fff; }
-.btn-encerrar:disabled { background: #e8b9b5; color: #fff; border-color: #e8b9b5; }
+/* admin: seletor da situação do quarto (um toque, sem confirmação) */
+.estado-quarto { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+.estado-quarto .rotulo { font-size: 13px; font-weight: 800; color: var(--tinta-2); }
+.estado-opcoes { display: grid; gap: 8px; }
+.estado-opcoes.n3 { grid-template-columns: 1fr 1.25fr 1fr; }
+.estado-opcoes.n2 { grid-template-columns: 1fr 1fr; }
+.estado-op { min-height: 64px; padding: 6px 8px; border-radius: 8px; border: 2px solid; background: #fff; font-weight: 800; font-size: 15px; line-height: 1.2; }
+.estado-op.ocupado { border-color: var(--verm); color: var(--verm-escuro); }
+.estado-op.limpeza { border-color: var(--azul); color: var(--azul); }
+.estado-op.livre { border-color: var(--cana); color: #1f3d23; }
+.estado-op.atual { color: #fff; }
+.estado-op.ocupado.atual { background: var(--verm); }
+.estado-op.limpeza.atual { background: var(--azul); }
+.estado-op.livre.atual { background: var(--cana); }
+.estado-op:disabled:not(.atual) { opacity: .55; }
 .btn-limpar:disabled { background: #9bb0cf; }
-.ocupado-caixa .btn-encerrar, .saindo-caixa .btn-encerrar { background: #fff; }
-.ocupado-caixa .btn-encerrar.confirmar, .saindo-caixa .btn-encerrar.confirmar { background: var(--verm); }

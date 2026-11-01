@@ -1,5 +1,5 @@
-import { URL_SCRIPT } from "./config.js?v=22";
-import { iso, deIso, br, brl, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT, CAFES, rotuloCafe, rotuloCafeCamareira, cafeClasse, precisaLimpeza } from "./regras.js?v=22";
+import { URL_SCRIPT } from "./config.js?v=23";
+import { iso, deIso, br, brl, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT, CAFES, rotuloCafe, rotuloCafeCamareira, cafeClasse, precisaLimpeza } from "./regras.js?v=23";
 
 const QUARTOS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const PAGAMENTOS = ["PIX", "Dinheiro", "Cartão de débito", "Cartão de crédito"];
@@ -181,7 +181,7 @@ function renderCalendario() {
 }
 
 // Admin: o quarto aparece "pronto para limpeza" quando se olha para hoje e há locação pendente com check-out passado
-const limpezaPendenteAdmin = (q) => s.sel === s.hoje && s.regs.some((r) => r.quarto === q && precisaLimpeza(r.limpeza, r.checkIn, r.checkOut, s.hoje, s.hora));
+const limpezaPendenteAdmin = (q) => s.sel === s.hoje && s.regs.some((r) => r.quarto === q && precisaLimpeza(r.limpeza, r.checkIn, r.checkOut, s.hoje, s.hora, r.encerrado));
 
 function renderQuartos() {
   let ocupados = 0, hospedados = 0;
@@ -308,7 +308,6 @@ function botaoConf(tipo, q, ci, normal, confirma, cls) {
   return `<button class="${cls}" data-acao="conf" data-tipo="${tipo}" data-quarto="${q}" data-ci="${ci || ""}" data-normal="${esc(normal)}" data-confirma="${esc(confirma)}">${esc(normal)}</button>`;
 }
 const botaoLimpo = (q) => botaoConf("limpar", q, "", "Marcar como limpo", `Confirmar: quarto ${q} está limpo`, "btn-limpar");
-const botaoEncerrar = (q, ci) => botaoConf("encerrar", q, ci, "Encerrar estadia agora", `Confirmar: encerrar quarto ${q} agora`, "btn-encerrar");
 let tConf;
 function zerarConf() {
   clearTimeout(tConf); s.conf = null;
@@ -324,7 +323,7 @@ function pedirConf(el) {
     return;
   }
   clearTimeout(tConf); s.conf = null;
-  if (tipo === "limpar") marcarLimpo(q); else encerrarEstadia(q, ci);
+  marcarLimpo(q);
 }
 function travarBotoes() { document.querySelectorAll('[data-acao="conf"]').forEach((b) => { b.disabled = true; b.textContent = "Salvando..."; }); }
 async function marcarLimpo(q) {
@@ -336,15 +335,28 @@ async function marcarLimpo(q) {
     avisar(`Quarto ${q} marcado como limpo. Agora está livre.`);
   } catch (e) { avisar(e.message, true); zerarConf(); }
 }
-// admin: encerra a diária na hora (check-out antecipado ou do dia); o quarto vira "pronto para limpeza" para os dois perfis
-async function encerrarEstadia(q, ci) {
-  travarBotoes();
+// Admin: troca a situação do quarto com um toque, sem confirmação.
+//   ocupado -> pronto para limpeza (encerra a estadia na hora) | ocupado -> livre (encerra e já marca limpo) | pronto para limpeza -> livre
+function seletorEstado(q, atual, ci) {
+  const defs = [["ocupado", "Ocupado"], ["limpeza", "Pronto para limpeza"], ["livre", "Livre"]]
+    .filter(([id]) => !(atual === "limpeza" && id === "ocupado")); // voltar a "ocupado" seria uma nova locação (formulário)
+  const botoes = defs.map(([id, rotulo]) => {
+    const eAtual = id === atual;
+    const dados = eAtual ? "" : `data-acao="estado" data-quarto="${q}" data-ci="${ci}" data-de="${atual}" data-novo="${id}"`;
+    return `<button class="estado-op ${id}${eAtual ? " atual" : ""}" aria-pressed="${eAtual}" ${dados} ${eAtual ? "disabled" : ""}>${rotulo}</button>`;
+  }).join("");
+  return `<div class="estado-quarto" role="group" aria-label="Situação do quarto"><span class="rotulo">Situação do quarto: toque para mudar</span><div class="estado-opcoes n${defs.length}">${botoes}</div></div>`;
+}
+async function mudarEstado({ quarto, ci, de, novo }) {
+  const q = Number(quarto);
+  document.querySelectorAll(".estado-op").forEach((b) => { b.disabled = true; });
   try {
-    await api("encerrar", { quarto: q, checkIn: ci });
+    if (de === "limpeza") await api("limpar", { quarto: q });
+    else await api("encerrar", { quarto: q, checkIn: ci, limpo: novo === "livre" });
     await carregar();
     fecharModal();
-    avisar(`Estadia do quarto ${q} encerrada. Agora está pronto para limpeza.`);
-  } catch (e) { avisar(e.message, true); zerarConf(); }
+    avisar(novo === "livre" ? `Quarto ${q} agora está livre.` : `Quarto ${q} agora está pronto para limpeza.`);
+  } catch (e) { avisar(e.message, true); renderModal(); }
 }
 
 // ---------- janela do quarto ----------
@@ -397,17 +409,17 @@ function renderModal() {
   const saindoBox = saindoHoje
     ? `<div class="saindo-caixa"><span class="etq">Saída hoje até ${HORA_CHECKOUT}</span>
         <strong>${hospedesTxt(saindoHoje.hospedes)} · ${esc(rotuloCafe(saindoHoje.cafe))}</strong>
-        <span class="muda">Se já saiu, encerre agora: o quarto vira pronto para limpeza.</span>${botaoEncerrar(q, saindoHoje.checkIn)}</div>` : "";
+        ${seletorEstado(q, "ocupado", saindoHoje.checkIn)}</div>` : "";
   const limpezaBox = limpezaPendenteAdmin(q)
     ? `<div class="limpeza-caixa"><span class="etq">Pronto para limpeza</span><strong>Check-out concluído</strong>
-        <span class="muda">Depois de limpar, marque abaixo. O quarto passa a livre.</span>${botaoLimpo(q)}</div>` : "";
+        ${seletorEstado(q, "limpeza", "")}</div>` : "";
   let corpo;
   if (est) {
     corpo = `<div class="ocupado-caixa"><span class="etq">Quarto ocupado</span><strong>${esc(fmtCheckIn(est))} até ${esc(fmtCheckOut(est))}</strong>
       <span>${est.hospedes} ${est.hospedes === 1 ? "hóspede" : "hóspedes"} · ${brl(est.valor)} · ${esc(est.pagamento)}</span>
       <span>${esc(rotuloCafe(est.cafe))}</span>
       <span class="muda">Libera automaticamente às ${HORA_CHECKOUT} do dia do check-out.</span></div>
-      ${s.sel === s.hoje ? `<span class="muda">Quando o hóspede sair, encerre a estadia: o quarto vira pronto para limpeza.</span>${botaoEncerrar(q, est.checkIn)}` : ""}`;
+      ${s.sel === s.hoje ? seletorEstado(q, "ocupado", est.checkIn) : ""}`;
   } else {
     corpo = `
       <div class="datas">
@@ -565,6 +577,7 @@ document.addEventListener("click", (e) => {
     case "cafe": s.form.cafe = d.c; atualizarForm(); break;
     case "aba": s.aba = d.a; aplicarPapel(); break;
     case "conf": pedirConf(el); break;
+    case "estado": mudarEstado(el.dataset); break;
     case "salvar": salvar(); break;
   }
 });

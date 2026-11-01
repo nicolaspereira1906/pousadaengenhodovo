@@ -89,3 +89,9 @@ test("pronto para limpeza: só locação pendente com check-out passado, e conti
   assert.equal(precisaLimpeza("Limpo em 03/11/2026 14:00 (camareira)", "2026-11-01", "2026-11-03", "2026-11-04", "09:00"), false);
   assert.equal(precisaLimpeza("", "2026-11-01", "2026-11-03", "2026-11-04", "09:00"), false);          // linha antiga: ignorada
 });
+
+test("estadia encerrada pelo admin fica pronta para limpeza na hora, antes do meio-dia", () => {
+  assert.equal(precisaLimpeza("Pendente", "2026-11-01", "2026-11-01", "2026-11-01", "09:00", true), true);
+  assert.equal(precisaLimpeza("Pendente", "2026-11-01", "2026-11-03", "2026-11-01", "09:00", false), false);
+  assert.equal(precisaLimpeza("Limpo em 01/11/2026 09:30 (administração)", "2026-11-01", "2026-11-01", "2026-11-01", "10:00", true), false);
+});
