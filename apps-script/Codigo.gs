@@ -8,6 +8,7 @@
 const ABA = 'Registros';
 const FUSO = 'America/Sao_Paulo';
 const HORA_CHECKOUT = '12:00'; // check-out sempre ao meio-dia
+const VERSAO = 'v3-checkin-com-horario';
 const SESSAO_SEGUNDOS = 6 * 60 * 60; // 6 horas (máximo do CacheService)
 const MAX_ERROS = 5;                 // erros de login antes de bloquear
 const BLOQUEIO_SEGUNDOS = 15 * 60;
@@ -54,7 +55,7 @@ function doPost(e) {
 }
 
 function doGet() {
-  return saida({ ok: true, mensagem: 'Área privada da pousada. Use o site para entrar.' });
+  return saida({ ok: true, versao: VERSAO, mensagem: 'Área privada da pousada. Use o site para entrar.' });
 }
 
 function entrar(d) {
