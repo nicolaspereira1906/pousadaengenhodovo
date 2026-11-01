@@ -12,27 +12,26 @@
   <link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
   <meta name="robots" content="noindex, nofollow">
   <title>Acesso privado · Pousada Engenho do Vô</title>
-  <link rel="icon" href="../assets/logo/favicon.png">
+  <link rel="icon" href="icones/icone-192.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@600;700&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="gestao.css?v=8">
+  <link rel="stylesheet" href="gestao.css?v=9">
 </head>
 <body>
 
 <section id="tela-login" class="login">
-  <form id="form-login" class="login-caixa" autocomplete="on">
+  <form id="form-login" class="login-caixa" method="post" action="#" autocomplete="on">
     <img src="../assets/logo/logo-escuro.webp" alt="Pousada Engenho do Vô" width="120" height="120">
     <h1>Acesso privado</h1>
     <p class="muda">Área de gestão da pousada.</p>
     <label for="usuario">Usuário</label>
-    <input id="usuario" name="usuario" type="text" autocomplete="username" required>
+    <input id="usuario" name="username" type="text" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" required>
     <label for="senha">Senha</label>
-    <input id="senha" name="senha" type="password" autocomplete="current-password" required>
+    <input id="senha" name="password" type="password" autocomplete="current-password" required>
     <p id="erro-login" class="erro" role="alert" hidden></p>
     <button class="btn" type="submit" id="btn-entrar">Entrar</button>
     <div class="login-extras">
-      <button class="btn-sec" type="button" data-acao="compartilhar">Compartilhar link</button>
       <button class="btn-sec" type="button" data-acao="instalar" data-instalar>Adicionar à tela inicial</button>
     </div>
     <p id="dica" class="dica" role="status" hidden></p>
@@ -52,7 +51,6 @@
         <div><span>Quartos ocupados</span><strong id="r-ocupados" class="verm">0 de 9</strong></div>
         <div><span>Hospedados</span><strong id="r-hospedados">0</strong></div>
         <div class="resumo-acoes">
-          <button class="btn-sec" type="button" data-acao="compartilhar">Compartilhar</button>
           <button class="btn-sec" type="button" data-acao="instalar" data-instalar>Instalar app</button>
           <button class="btn-sec" id="btn-sair" type="button">Sair</button>
         </div>
@@ -79,6 +77,6 @@
 <div id="modal" class="fundo" hidden></div>
 <div id="picker" class="fundo fundo-2" hidden></div>
 
-<script type="module" src="gestao.js?v=8"></script>
+<script type="module" src="gestao.js?v=9"></script>
 </body>
 </html>

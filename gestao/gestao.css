@@ -131,7 +131,7 @@ td { padding: 12px; border-bottom: 1px solid #efe9db; }
   .resumo { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 10px; padding: 12px; }
   .resumo strong { font-size: 18px; }
   .resumo span { font-size: 10.5px; letter-spacing: .03em; }
-  .resumo .resumo-acoes { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .resumo .resumo-acoes { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .resumo-acoes .btn-sec { padding: 0 6px; font-size: 14px; }
   .corpo { gap: 14px; }
 

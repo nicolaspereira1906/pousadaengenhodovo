@@ -1,5 +1,5 @@
-import { URL_SCRIPT } from "./config.js?v=8";
-import { iso, deIso, br, brl, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT } from "./regras.js?v=8";
+import { URL_SCRIPT } from "./config.js?v=9";
+import { iso, deIso, br, brl, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT } from "./regras.js?v=9";
 
 const QUARTOS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const PAGAMENTOS = ["PIX", "Dinheiro", "Cartão de débito", "Cartão de crédito"];
@@ -56,6 +56,9 @@ function mostrarApp() {
 }
 function sair() {
   s.token = ""; s.regs = [];
+  $("senha").value = "";
+  // sair de propósito: o aparelho não deve entrar sozinho de novo até a próxima vez que tocar em Entrar
+  if (navigator.credentials?.preventSilentAccess) navigator.credentials.preventSilentAccess().catch(() => {});
   localStorage.removeItem(CHAVE_SESSAO);
   $("tela-app").hidden = true;
   $("tela-login").hidden = false;
@@ -71,7 +74,7 @@ $("form-login").addEventListener("submit", async (e) => {
     const r = await api("login", { usuario: $("usuario").value, senha: $("senha").value });
     s.token = r.token;
     localStorage.setItem(CHAVE_SESSAO, r.token);
-    $("senha").value = "";
+    await guardarSenha($("usuario").value, $("senha").value);
     mostrarApp();
     await carregar();
   } catch (err) {
@@ -81,6 +84,22 @@ $("form-login").addEventListener("submit", async (e) => {
   }
 });
 $("btn-sair").addEventListener("click", sair);
+
+// Gerenciador de senhas do celular/computador (Chrome, Android, Safari/iCloud): oferece salvar e preencher.
+async function guardarSenha(id, senha) {
+  if (!window.PasswordCredential || !navigator.credentials?.store) return;
+  try { await navigator.credentials.store(new PasswordCredential({ id, password: senha, name: id })); } catch (e) { /* o navegador decide */ }
+}
+async function entrarComSalva() {
+  if (s.token || !window.PasswordCredential || !navigator.credentials?.get) return;
+  try {
+    const c = await navigator.credentials.get({ password: true, mediation: "silent" });
+    if (c && c.password) {
+      $("usuario").value = c.id; $("senha").value = c.password;
+      $("form-login").requestSubmit();
+    }
+  } catch (e) { /* sem credencial salva: o preenchimento automático do navegador cuida */ }
+}
 $("btn-atualizar").addEventListener("click", async () => {
   try { await carregar(); avisar("Dados atualizados da planilha."); } catch (e) { avisar(e.message, true); }
 });
@@ -336,7 +355,7 @@ document.addEventListener("keydown", (e) => {
   if (s.picker) fecharPicker(); else if (s.quarto) fecharModal();
 });
 
-// ---------- compartilhar e instalar como aplicativo ----------
+// ---------- instalar como aplicativo ----------
 const URL_PAGINA = new URL("./", location.href).href;
 const modoApp = () => matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
 const ehIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
@@ -348,14 +367,6 @@ if (modoApp()) document.querySelectorAll("[data-instalar]").forEach((b) => { b.h
 function recado(msg) {
   if (!$("tela-app").hidden) return avisar(msg);
   const d = $("dica"); d.textContent = msg; d.hidden = false;
-}
-async function compartilhar() {
-  const dados = { title: "Gestão · Pousada Engenho do Vô", text: "Acesso privado da pousada", url: URL_PAGINA };
-  if (navigator.share) {
-    try { await navigator.share(dados); return; } catch (e) { if (e.name === "AbortError") return; }
-  }
-  try { await navigator.clipboard.writeText(URL_PAGINA); recado("Link copiado: " + URL_PAGINA); }
-  catch (e) { recado("Copie o link: " + URL_PAGINA); }
 }
 async function instalar() {
   if (modoApp()) return recado("O aplicativo já está instalado neste aparelho.");
@@ -371,12 +382,12 @@ async function instalar() {
 }
 document.addEventListener("click", (e) => {
   const a = e.target.closest("[data-acao]")?.dataset.acao;
-  if (a === "compartilhar") compartilhar();
-  else if (a === "instalar") instalar();
+  if (a === "instalar") instalar();
 });
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js", { scope: "./" }).catch(() => {});
 
 // ---------- início ----------
+entrarComSalva();
 if (s.token) {
   mostrarApp();
   carregar().catch((e) => { if (s.token) avisar(e.message, true); });
