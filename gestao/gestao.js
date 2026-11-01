@@ -2,7 +2,7 @@ import { URL_SCRIPT } from "./config.js";
 import { iso, deIso, br, brl, parseValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT } from "./regras.js";
 
 const QUARTOS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-const PAGAMENTOS = ["PIX", "Cartão de débito", "Cartão de crédito"];
+const PAGAMENTOS = ["PIX", "Dinheiro", "Cartão de débito", "Cartão de crédito"];
 const CHAVE_SESSAO = "pousada_sessao";
 
 const $ = (id) => document.getElementById(id);
@@ -262,12 +262,17 @@ function abrirPicker() {
 }
 function renderPicker() {
   const f = s.form;
+  // a próxima reserva do quarto (depois do check-in) limita até onde o check-out pode ir
+  const proxima = s.regs.filter((r) => r.quarto === s.quarto && r.checkIn > f.ci).map((r) => r.checkIn).sort()[0];
   const dias = grade(s.py, s.pm).map((c) => {
     if (!c) return "<span></span>";
     const sel = c.chave === f.co;
     const faixa = f.co && c.chave > f.ci && c.chave < f.co;
-    const bloqueado = c.chave <= f.ci;
-    return `<button class="dia${sel ? " sel" : ""}${faixa ? " faixa" : ""}" data-acao="escolher" data-chave="${c.chave}" ${bloqueado ? "disabled" : ""} aria-pressed="${sel}" aria-label="${c.n} de ${esc(mesNome(s.py, s.pm).split(" ")[0])}${bloqueado ? ", indisponível" : ""}">${c.n}</button>`;
+    const antes = c.chave <= f.ci;
+    const ocupado = !antes && proxima && c.chave > proxima;
+    const bloqueado = antes || ocupado;
+    const motivo = antes ? ", indisponível, antes ou no check-in" : ocupado ? ", indisponível, quarto reservado" : "";
+    return `<button class="dia${sel ? " sel" : ""}${faixa ? " faixa" : ""}${bloqueado ? " indisp" : ""}" data-acao="escolher" data-chave="${c.chave}" ${bloqueado ? "disabled" : ""} aria-pressed="${sel}" aria-label="${c.n} de ${esc(mesNome(s.py, s.pm).split(" ")[0])}${motivo}">${c.n}</button>`;
   }).join("");
   const titulo = "Escolha o check-out (às " + HORA_CHECKOUT + ")";
   const p = $("picker");
@@ -275,7 +280,8 @@ function renderPicker() {
     <div class="janela-topo"><h2 style="font-size:22px">${titulo}</h2><button class="fechar" data-acao="fechar-picker" aria-label="Fechar calendário">&times;</button></div>
     <div class="mes-barra"><button class="seta" data-acao="pmes" data-d="-1" aria-label="Mês anterior">&#8249;</button><strong>${esc(mesNome(s.py, s.pm))}</strong><button class="seta" data-acao="pmes" data-d="1" aria-label="Próximo mês">&#8250;</button></div>
     <div class="sem"><span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span></div>
-    <div class="dias">${dias}</div></div>`;
+    <div class="dias">${dias}</div>
+    <p class="legenda"><span class="amostra">12</span> Data indisponível para check-out</p></div>`;
   p.hidden = false;
 }
 function fecharPicker() { s.picker = null; $("picker").hidden = true; }
