@@ -1,5 +1,5 @@
 import { URL_SCRIPT } from "./config.js";
-import { iso, deIso, br, brl, parseValor, noites, estadiaEm, saidaEm, conflito, grade } from "./regras.js";
+import { iso, deIso, br, brl, parseValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT } from "./regras.js";
 
 const QUARTOS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const PAGAMENTOS = ["PIX", "Cartão de débito", "Cartão de crédito"];
@@ -133,12 +133,12 @@ function renderQuartos() {
     if (est) {
       ocupados++; hospedados += est.hospedes;
       cls += " ocupado"; selo = "Ocupado"; seloCls += " ocupado";
-      principal = "Até " + br(est.checkOut).slice(0, 5);
+      principal = "Até " + br(est.checkOut).slice(0, 5) + " " + HORA_CHECKOUT;
       sub = `${est.hospedes} ${est.hospedes === 1 ? "hóspede" : "hóspedes"} · ${brl(est.valor)}`;
       cta = "Ver estadia";
     } else if (sai) {
       selo = "Saída hoje"; seloCls += " saida";
-      sub = `Check-out de ${sai.hospedes} ${sai.hospedes === 1 ? "hóspede" : "hóspedes"}`;
+      sub = `Check-out até ${HORA_CHECKOUT} · ${sai.hospedes} ${sai.hospedes === 1 ? "hóspede" : "hóspedes"}`;
     }
     return `<button class="${cls}" data-acao="quarto" data-q="${q}" aria-label="Abrir quarto ${q}, ${selo.toLowerCase()}">
       <div class="linha"><span class="nome">Quarto ${q}</span><span class="${seloCls}">${selo}</span></div>
@@ -155,7 +155,7 @@ function renderQuartos() {
   $("reg-corpo").innerHTML = doDia.length === 0
     ? '<p class="muda">Nenhum registro neste dia. Clique em um quarto para começar.</p>'
     : `<div class="tabela-caixa"><table><thead><tr><th>Quarto</th><th>Check-in</th><th>Check-out</th><th>Hóspedes</th><th>Valor total</th><th>Pagamento</th></tr></thead><tbody>${
-      doDia.slice().reverse().map((r) => `<tr><td data-l="Quarto"><strong>Quarto ${r.quarto}</strong></td><td data-l="Check-in">${br(r.checkIn)}</td><td data-l="Check-out">${br(r.checkOut)}</td><td data-l="Hóspedes">${r.hospedes}</td><td data-l="Valor total"><strong>${brl(r.valor)}</strong></td><td data-l="Pagamento">${esc(r.pagamento)}</td></tr>`).join("")
+      doDia.slice().reverse().map((r) => `<tr><td data-l="Quarto"><strong>Quarto ${r.quarto}</strong></td><td data-l="Check-in">${esc(fmtCheckIn(r))}</td><td data-l="Check-out">${esc(fmtCheckOut(r))}</td><td data-l="Hóspedes">${r.hospedes}</td><td data-l="Valor total"><strong>${brl(r.valor)}</strong></td><td data-l="Pagamento">${esc(r.pagamento)}</td></tr>`).join("")
     }</tbody></table></div>`;
 }
 
@@ -176,15 +176,15 @@ function renderModal() {
   const topo = `<div class="janela-topo"><div><h2>Quarto ${q}</h2><p class="muda">${esc(deIso(s.sel).toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long", year: "numeric" }))}</p></div><button class="fechar" data-acao="fechar" aria-label="Fechar">&times;</button></div>`;
   let corpo;
   if (est) {
-    corpo = `<div class="ocupado-caixa"><span class="etq">Quarto ocupado</span><strong>${br(est.checkIn)} até ${br(est.checkOut)}</strong>
+    corpo = `<div class="ocupado-caixa"><span class="etq">Quarto ocupado</span><strong>${esc(fmtCheckIn(est))} até ${esc(fmtCheckOut(est))}</strong>
       <span>${est.hospedes} ${est.hospedes === 1 ? "hóspede" : "hóspedes"} · ${brl(est.valor)} · ${esc(est.pagamento)}</span>
-      <span class="muda">Libera automaticamente no dia do check-out.</span></div>
-      ${s.sel > est.checkIn ? `<button class="btn-perigo" data-acao="encerrar">Fazer check-out em ${br(s.sel)}</button>` : ""}`;
+      <span class="muda">Libera automaticamente às ${HORA_CHECKOUT} do dia do check-out.</span></div>
+      ${s.sel > est.checkIn ? `<button class="btn-perigo" data-acao="encerrar">Fazer check-out em ${br(s.sel)} às ${HORA_CHECKOUT}</button>` : ""}`;
   } else {
     corpo = `
       <div class="datas">
-        <div class="campo"><span class="rotulo">Check-in</span><button class="data-btn" data-acao="pick" data-k="in" id="b-ci"></button></div>
-        <div class="campo"><span class="rotulo">Check-out</span><button class="data-btn" data-acao="pick" data-k="out" id="b-co"></button></div>
+        <div class="campo"><span class="rotulo">Check-in</span><div class="data-btn fixo" id="b-ci"></div></div>
+        <div class="campo"><span class="rotulo">Check-out</span><button class="data-btn" data-acao="pick" id="b-co"></button></div>
       </div>
       <p class="noites" id="m-noites" hidden></p>
       <p class="erro" id="m-conflito" role="alert" hidden></p>
@@ -209,8 +209,8 @@ function atualizarForm() {
   const f = s.form;
   const temSaida = f.co !== "" && f.co > f.ci;
   const bCi = $("b-ci"), bCo = $("b-co");
-  bCi.textContent = br(f.ci);
-  bCo.textContent = f.co ? br(f.co) : "Escolher data";
+  bCi.innerHTML = `${esc(br(f.ci))}<small>horário registrado ao salvar</small>`;
+  bCo.innerHTML = f.co ? `${esc(br(f.co))}<small>às ${HORA_CHECKOUT}</small>` : "Escolher data";
   bCo.classList.toggle("vazio", !temSaida);
   const n = $("m-noites");
   n.hidden = !temSaida;
@@ -226,14 +226,14 @@ function atualizarForm() {
 
 async function salvar() {
   const f = s.form;
-  const reg = { data: s.sel, quarto: s.quarto, hospedes: f.hosp, valor: parseValor(f.valor), pagamento: f.pag, checkIn: f.ci, checkOut: f.co };
+  const reg = { data: s.sel, quarto: s.quarto, hospedes: f.hosp, valor: parseValor(f.valor), pagamento: f.pag, checkIn: f.ci, checkInHora: agora(), checkOut: f.co };
   s.salvando = true; atualizarForm();
   $("m-salvar").textContent = "Salvando na planilha...";
   try {
     await api("salvar", reg);
     s.regs.push(reg);
     fecharModal(); render();
-    avisar(`Locação salva na planilha: quarto ${reg.quarto}, ${br(reg.checkIn)} a ${br(reg.checkOut)}.`);
+    avisar(`Locação salva na planilha: quarto ${reg.quarto}, check-in ${fmtCheckIn(reg)}, check-out ${fmtCheckOut(reg)}.`);
   } catch (e) {
     s.salvando = false;
     $("m-salvar").textContent = "Salvar";
@@ -249,27 +249,27 @@ async function encerrar() {
     await api("checkout", { quarto: est.quarto, checkIn: est.checkIn, checkOut: s.sel });
     est.checkOut = s.sel;
     fecharModal(); render();
-    avisar(`Check-out do quarto ${est.quarto} feito em ${br(s.sel)}.`);
+    avisar(`Check-out do quarto ${est.quarto} feito em ${br(s.sel)} (${HORA_CHECKOUT}).`);
   } catch (e) { avisar(e.message, true); }
 }
 
 // ---------- calendário em pop-up (check-in e check-out) ----------
-function abrirPicker(k) {
-  s.picker = k;
-  const base = deIso(k === "out" ? (s.form.co || s.form.ci) : s.form.ci);
+function abrirPicker() {
+  s.picker = "out";
+  const base = deIso(s.form.co || s.form.ci);
   s.py = base.getFullYear(); s.pm = base.getMonth();
   renderPicker();
 }
 function renderPicker() {
-  const f = s.form, k = s.picker;
+  const f = s.form;
   const dias = grade(s.py, s.pm).map((c) => {
     if (!c) return "<span></span>";
-    const sel = k === "in" ? c.chave === f.ci : c.chave === f.co;
-    const faixa = k === "out" && f.co && c.chave > f.ci && c.chave < f.co;
-    const bloqueado = k === "out" && c.chave <= f.ci;
+    const sel = c.chave === f.co;
+    const faixa = f.co && c.chave > f.ci && c.chave < f.co;
+    const bloqueado = c.chave <= f.ci;
     return `<button class="dia${sel ? " sel" : ""}${faixa ? " faixa" : ""}" data-acao="escolher" data-chave="${c.chave}" ${bloqueado ? "disabled" : ""} aria-pressed="${sel}" aria-label="${c.n} de ${esc(mesNome(s.py, s.pm).split(" ")[0])}${bloqueado ? ", indisponível" : ""}">${c.n}</button>`;
   }).join("");
-  const titulo = k === "in" ? "Escolha o check-in" : "Escolha o check-out";
+  const titulo = "Escolha o check-out (às " + HORA_CHECKOUT + ")";
   const p = $("picker");
   p.innerHTML = `<div class="janela pequena" role="dialog" aria-modal="true" aria-label="${titulo}">
     <div class="janela-topo"><h2 style="font-size:22px">${titulo}</h2><button class="fechar" data-acao="fechar-picker" aria-label="Fechar calendário">&times;</button></div>
@@ -296,12 +296,11 @@ document.addEventListener("click", (e) => {
     case "mes": { const x = new Date(s.vy, s.vm + Number(d.d), 1); s.vy = x.getFullYear(); s.vm = x.getMonth(); renderCalendario(); break; }
     case "quarto": abrirQuarto(Number(d.q)); break;
     case "fechar": fecharModal(); break;
-    case "pick": abrirPicker(d.k); break;
+    case "pick": abrirPicker(); break;
     case "fechar-picker": fecharPicker(); break;
     case "pmes": { const x = new Date(s.py, s.pm + Number(d.d), 1); s.py = x.getFullYear(); s.pm = x.getMonth(); renderPicker(); break; }
     case "escolher":
-      if (s.picker === "in") { s.form.ci = d.chave; if (s.form.co && s.form.co <= d.chave) s.form.co = ""; }
-      else s.form.co = d.chave;
+      s.form.co = d.chave;
       fecharPicker(); atualizarForm(); break;
     case "hosp": s.form.hosp = Math.min(99, Math.max(1, s.form.hosp + Number(d.d))); atualizarForm(); break;
     case "pag": s.form.pag = d.p; atualizarForm(); break;

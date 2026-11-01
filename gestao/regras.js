@@ -36,3 +36,9 @@ export function grade(ano, mes) {
   for (let n = 1; n <= total; n++) celulas.push({ n, chave: `${ano}-${dois(mes + 1)}-${dois(n)}` });
   return celulas;
 }
+
+// Check-in: horário real do registro. Check-out: sempre meio-dia.
+export const HORA_CHECKOUT = "12:00";
+export const agora = (d = new Date()) => `${dois(d.getHours())}:${dois(d.getMinutes())}`;
+export const fmtCheckIn = (r) => br(r.checkIn) + (r.checkInHora ? ` ${r.checkInHora}` : "");
+export const fmtCheckOut = (r) => `${br(r.checkOut)} ${HORA_CHECKOUT}`;

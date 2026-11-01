@@ -97,6 +97,8 @@ td { padding: 12px; border-bottom: 1px solid #efe9db; }
 .campo > label, .campo > .rotulo { font-size: 14px; font-weight: 800; }
 .datas { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
 .data-btn { min-height: 54px; border-radius: 6px; border: 1.5px solid #8a7f6d; background: #fff; color: var(--tinta); font-size: 18px; font-weight: 700; text-align: left; padding: 0 16px; }
+.data-btn small { display: block; font-size: 12px; font-weight: 600; color: var(--tinta-2); }
+.data-btn.fixo { display: flex; flex-direction: column; justify-content: center; background: #f4efe4; border-color: var(--creme-2); }
 .data-btn.vazio { border-color: var(--cana); color: var(--cana); }
 .noites { margin: -6px 0 0; color: var(--cana); font-weight: 800; font-size: 14px; }
 .passo { display: flex; align-items: center; gap: 12px; }
