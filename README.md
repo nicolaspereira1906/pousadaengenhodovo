@@ -54,4 +54,4 @@ Google "Hóspedes e Pagamentos".
   (hora do servidor, não do celular), como "Pronto para limpeza". A tela se atualiza sozinha a cada minuto.
 - Café da manhã (relatório da camareira): conta no café de hoje quem dormiu aqui na noite anterior ou fez check-in até as 09:00
   (`HORA_LIMITE_CAFE` em `apps-script/Codigo.gs`). Check-in depois disso só conta a partir do dia seguinte. O relatório mostra
-  as pessoas em destaque, o café de hoje e o de amanhã.
+  só o que ela precisa: ocupado/livre, pessoas, cafés a preparar hoje e quartos para limpar.

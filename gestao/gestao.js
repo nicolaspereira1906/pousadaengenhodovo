@@ -1,5 +1,5 @@
-import { URL_SCRIPT } from "./config.js?v=18";
-import { iso, deIso, br, brl, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT, CAFES, rotuloCafe, rotuloCafeCamareira, cafeClasse, HORA_LIMITE_CAFE } from "./regras.js?v=18";
+import { URL_SCRIPT } from "./config.js?v=19";
+import { iso, deIso, br, brl, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT, CAFES, rotuloCafe, rotuloCafeCamareira, cafeClasse } from "./regras.js?v=19";
 
 const QUARTOS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const PAGAMENTOS = ["PIX", "Dinheiro", "Cartão de débito", "Cartão de crédito"];
@@ -220,8 +220,8 @@ function estadoQuarto(q) {
   const noQuarto = saindo || estadia; // quem está (ou está para estar) no quarto; quem sai ainda não saiu
   return { estadia, saindo, limpeza, ocupado: !!noQuarto, hospedes: noQuarto?.hospedes, cafe: noQuarto?.cafe, cafeHoje: !!noQuarto?.cafeHoje, chegaHoje: !!estadia?.chegaHoje };
 }
-// "Com café" só vale para o café de hoje se dormiu aqui ou chegou na madrugada; senão, só a partir de amanhã
-const cafeTexto = (r) => (r.cafe === "Com café" && !r.cafeHoje ? "Com café a partir de amanhã" : rotuloCafeCamareira(r.cafe));
+// Para a camareira só existe o café de hoje: tem que preparar, não tem, ou falta confirmar (a regra de horário é do servidor)
+const cafeTexto = (r) => (r.cafeHoje ? "Café hoje" : cafeClasse(r.cafe) === "nd" ? "Café a confirmar" : "Sem café hoje");
 const hospedesTxt = (n) => `${n} ${n === 1 ? "hóspede" : "hóspedes"}`;
 
 function renderCamareira() {
@@ -246,27 +246,25 @@ function renderCamareira() {
   renderRelatorioCamareira();
 }
 
-// Relatório da camareira: pessoas em destaque, café de hoje e pronto para limpeza
+// Relatório da camareira: ocupado/livre, pessoas, café a preparar hoje e limpeza
 function renderRelatorioCamareira() {
   const chip = (txt, tom) => `<span class="chip ${tom}">${esc(txt)}</span>`;
-  let ocupados = 0, aLimpar = 0, pessoasHoje = 0, quartosCafe = 0, pessoasAmanha = 0, aConfirmar = 0;
+  let ocupados = 0, aLimpar = 0, pessoasCafe = 0, quartosCafe = 0, aConfirmar = 0;
   const linhas = QUARTOS.map((q) => {
     const e = estadoQuarto(q);
     if (e.ocupado) ocupados++;
     if (e.limpeza) aLimpar++;
     if (e.ocupado && cafeClasse(e.cafe) === "nd") aConfirmar++;
-    if (e.ocupado && e.cafe === "Com café" && e.cafeHoje) { pessoasHoje += e.hospedes; quartosCafe++; }
-    if (e.estadia && e.estadia.cafe === "Com café") pessoasAmanha += e.estadia.hospedes; // dorme hoje: café de amanhã
+    if (e.ocupado && e.cafeHoje) { pessoasCafe += e.hospedes; quartosCafe++; }
     const pessoas = e.ocupado ? `<span class="pessoas"><strong>${e.hospedes}</strong><small>${e.hospedes === 1 ? "pessoa" : "pessoas"}</small></span>` : '<span class="traco" aria-label="sem hóspede">—</span>';
     let cafe;
     if (!e.ocupado) cafe = '<span class="traco" aria-label="sem hóspede">—</span>';
-    else if (e.cafe === "Com café" && e.cafeHoje) cafe = chip("Preparar", "com");
-    else if (e.cafe === "Com café") cafe = `${chip("Só amanhã", "azul")}<small>chegou depois das ${HORA_LIMITE_CAFE}</small>`;
-    else cafe = chip(rotuloCafeCamareira(e.cafe), cafeClasse(e.cafe));
+    else if (e.cafeHoje) cafe = chip("Preparar", "com");
+    else if (cafeClasse(e.cafe) === "nd") cafe = chip("A confirmar", "nd");
+    else cafe = chip("Não", "neutro");
     const limp = e.limpeza ? chip("Sim", "azul") : e.saindo ? chip(`Às ${HORA_CHECKOUT}`, "ambar") : chip("Não", "neutro");
-    const obs = e.limpeza && e.estadia ? "novo hóspede chega hoje" : (e.chegaHoje && !e.saindo ? "chega hoje" : "");
     return `<div class="rel-linha" role="row">
-      <div class="rel-q" role="cell">Quarto ${q}<br>${e.ocupado ? chip("Ocupado", "verm") : chip("Livre", "ok")}${obs ? `<small>${esc(obs)}</small>` : ""}</div>
+      <div class="rel-q" role="cell">Quarto ${q}<br>${e.ocupado ? chip("Ocupado", "verm") : chip("Livre", "ok")}</div>
       <div role="cell">${pessoas}</div>
       <div role="cell">${cafe}</div>
       <div role="cell">${limp}</div>
@@ -275,10 +273,7 @@ function renderRelatorioCamareira() {
   const nota = aConfirmar ? `<span class="rel-aviso">${aConfirmar} ${aConfirmar === 1 ? "quarto com café a confirmar" : "quartos com café a confirmar"} na recepção</span>` : "";
   $("relatorio-cam").innerHTML = `
     <div class="rel-topo"><h2>Relatório de hoje</h2><span class="muda">Atualizado às ${esc(s.atualizadoEm)}</span></div>
-    <div class="rel-cafe">
-      <div class="rel-cafe-hoje"><span>Café de hoje</span><strong>${pessoasHoje}</strong><em>${pessoasHoje === 1 ? "pessoa" : "pessoas"} em ${quartosCafe} ${quartosCafe === 1 ? "quarto" : "quartos"}</em></div>
-      <div class="rel-cafe-amanha"><span>Café de amanhã</span><strong>${pessoasAmanha}</strong><em>${pessoasAmanha === 1 ? "pessoa" : "pessoas"} já hospedadas</em></div>
-    </div>
+    <div class="rel-cafe"><div class="rel-cafe-hoje"><span>Cafés para preparar hoje</span><strong>${pessoasCafe}</strong><em>${pessoasCafe === 1 ? "pessoa" : "pessoas"} em ${quartosCafe} ${quartosCafe === 1 ? "quarto" : "quartos"}</em></div></div>
     ${nota}
     <div class="rel-resumo">
       <div class="rel-num verm"><strong>${ocupados}</strong><span>Ocupados</span></div>
@@ -286,10 +281,9 @@ function renderRelatorioCamareira() {
       <div class="rel-num azul"><strong>${aLimpar}</strong><span>Para limpar</span></div>
     </div>
     <div class="rel-tabela" role="table" aria-label="Situação de cada quarto">
-      <div class="rel-linha rel-cab" role="row"><div role="columnheader">Quarto</div><div role="columnheader">Pessoas</div><div role="columnheader">Café de hoje?</div><div role="columnheader">Pronto para limpeza?</div></div>
+      <div class="rel-linha rel-cab" role="row"><div role="columnheader">Quarto</div><div role="columnheader">Pessoas</div><div role="columnheader">Café hoje?</div><div role="columnheader">Pronto para limpeza?</div></div>
       ${linhas}
-    </div>
-    <p class="muda rel-regra">Café de hoje: quem dormiu aqui ou fez check-in até as ${HORA_LIMITE_CAFE}. Quem chega depois conta a partir de amanhã.</p>`;
+    </div>`;
 }
 
 function render() { if (s.papel === "camareira") renderCamareira(); else { renderCalendario(); renderQuartos(); } }
@@ -306,9 +300,11 @@ function abrirQuarto(q) {
 function renderModalCamareira() {
   const q = s.quarto;
   const e = estadoQuarto(q);
-  const cafeSelo = (x) => `<span class="cafe-selo ${cafeClasse(x.cafe)}">${esc(rotuloCafeCamareira(x.cafe))}</span>${
-    cafeClasse(x.cafe) === "nd" ? '<span class="muda">Confirme com a recepção.</span>'
-    : x.cafe === "Com café" ? (x.cafeHoje ? '<span class="muda">Preparar café hoje.</span>' : `<span class="muda">Chegou depois das ${HORA_LIMITE_CAFE}: o café começa amanhã.</span>`) : ""}`;
+  const cafeSelo = (x) => x.cafeHoje
+    ? '<span class="cafe-selo com">Preparar café hoje</span>'
+    : cafeClasse(x.cafe) === "nd"
+      ? '<span class="cafe-selo nd">Café a confirmar</span><span class="muda">Confirme com a recepção.</span>'
+      : '<span class="cafe-selo sem">Sem café hoje</span>';
   const chegada = e.estadia && (e.limpeza || e.saindo)
     ? `<div class="ocupado-caixa"><span class="etq">Novo hóspede chega hoje</span><strong>${hospedesTxt(e.estadia.hospedes)}</strong>${cafeSelo(e.estadia)}</div>` : "";
   let corpo;

@@ -61,6 +61,3 @@ export const rotuloCafe = (c) => (CAFES.includes(c) ? c : "Café não informado"
 // Para a camareira: "não informado" soa como erro; o que ela precisa é confirmar com a recepção
 export const rotuloCafeCamareira = (c) => (CAFES.includes(c) ? c : "Café a confirmar");
 export const cafeClasse = (c) => (c === "Com café" ? "com" : c === "Sem café" ? "sem" : "nd");
-
-// Só para exibir nos textos: o corte de verdade fica no servidor (HORA_LIMITE_CAFE em apps-script/Codigo.gs)
-export const HORA_LIMITE_CAFE = "09:00";
