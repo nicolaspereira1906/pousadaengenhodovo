@@ -21,7 +21,7 @@ Para pagar com cartão, o link do Booking.com já vai com as datas e hóspedes p
 python build.py            # atualiza notícias e gera index.html
 python build.py --midia    # também refaz fotos e logos a partir dos originais (precisa de Pillow)
 python -m http.server 8080 # ver em http://localhost:8080
-python tests/test_build.py && node --test tests/reserva.test.mjs
+python tests/test_build.py && node --test tests/reserva.test.mjs tests/gestao.test.mjs
 ```
 
 Para trocar ou incluir uma foto: coloque o original na pasta de fotos editadas, adicione uma linha em `FOTOS`
@@ -30,3 +30,16 @@ no `build.py` e rode `python build.py --midia`.
 O GitHub Actions (`.github/workflows/noticias.yml`) atualiza as notícias toda segunda-feira.
 
 Fotos da região: Wikimedia Commons, com autor e licença no próprio site.
+
+## Acesso privado (gestão de quartos)
+
+Link "Acesso privado" no rodapé, abre `gestao/`: login e senha, depois o painel dos 9 quartos
+(calendário, check-in/check-out, valor total e forma de pagamento). Tudo é gravado na planilha
+Google "Hóspedes e Pagamentos".
+
+- `gestao/`: a página (`index.html`, `gestao.css`, `gestao.js`), regras em `regras.js` (testadas em `tests/gestao.test.mjs`).
+- `gestao/config.js`: endereço do Apps Script (termina em `/exec`).
+- `apps-script/Codigo.gs`: código que roda na planilha. Valida usuário e senha e só então lê ou grava.
+  O usuário e a senha ficam nas Propriedades do script (`USUARIO` e `SENHA`), nunca neste repositório.
+- A página é pública, mas sem login ela não mostra nada: os dados só saem do Apps Script com sessão válida
+  (6 horas, bloqueio de 15 min após 5 erros).

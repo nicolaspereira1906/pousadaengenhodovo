@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /gestao/
 
 Sitemap: https://www.pousadaengenhodovo.com.br/sitemap.xml
