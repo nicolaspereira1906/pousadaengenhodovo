@@ -43,3 +43,6 @@ Google "Hóspedes e Pagamentos".
   O usuário e a senha ficam nas Propriedades do script (`USUARIO` e `SENHA`), nunca neste repositório.
 - A página é pública, mas sem login ela não mostra nada: os dados só saem do Apps Script com sessão válida
   (6 horas, bloqueio de 15 min após 5 erros).
+- Instalável como aplicativo: `gestao/manifest.webmanifest`, `gestao/sw.js` e `gestao/icones/`. Ao adicionar
+  `/gestao/` à tela inicial do celular, o ícone abre direto no painel. Botões "Compartilhar" e "Adicionar à tela inicial".
+  Ao mudar `gestao.js`, `gestao.css` ou `regras.js`, troque o número `?v=` em `gestao/index.html` e nos `import` de `gestao.js`.

@@ -1,9 +1,9 @@
-import { URL_SCRIPT } from "./config.js?v=7";
-import { iso, deIso, br, brl, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT } from "./regras.js?v=7";
+import { URL_SCRIPT } from "./config.js?v=8";
+import { iso, deIso, br, brl, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT } from "./regras.js?v=8";
 
 const QUARTOS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const PAGAMENTOS = ["PIX", "Dinheiro", "Cartão de débito", "Cartão de crédito"];
-const CHAVE_SESSAO = "pousada_sessao";
+const CHAVE_SESSAO = "pousada_sessao"; // vale 6 h; o servidor derruba a sessão depois disso
 
 const $ = (id) => document.getElementById(id);
 const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -11,7 +11,7 @@ const mesNome = (a, m) => new Date(a, m, 1).toLocaleDateString("pt-BR", { month:
 
 const hoje = new Date();
 const s = {
-  token: sessionStorage.getItem(CHAVE_SESSAO) || "",
+  token: localStorage.getItem(CHAVE_SESSAO) || "",
   regs: [],
   sel: iso(hoje), vy: hoje.getFullYear(), vm: hoje.getMonth(),
   quarto: null,
@@ -56,7 +56,7 @@ function mostrarApp() {
 }
 function sair() {
   s.token = ""; s.regs = [];
-  sessionStorage.removeItem(CHAVE_SESSAO);
+  localStorage.removeItem(CHAVE_SESSAO);
   $("tela-app").hidden = true;
   $("tela-login").hidden = false;
   fecharModal();
@@ -70,7 +70,7 @@ $("form-login").addEventListener("submit", async (e) => {
     s.token = "";
     const r = await api("login", { usuario: $("usuario").value, senha: $("senha").value });
     s.token = r.token;
-    sessionStorage.setItem(CHAVE_SESSAO, r.token);
+    localStorage.setItem(CHAVE_SESSAO, r.token);
     $("senha").value = "";
     mostrarApp();
     await carregar();
@@ -335,6 +335,46 @@ document.addEventListener("keydown", (e) => {
   if (e.key !== "Escape") return;
   if (s.picker) fecharPicker(); else if (s.quarto) fecharModal();
 });
+
+// ---------- compartilhar e instalar como aplicativo ----------
+const URL_PAGINA = new URL("./", location.href).href;
+const modoApp = () => matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+const ehIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
+let convite = null;
+window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); convite = e; });
+window.addEventListener("appinstalled", () => { convite = null; document.querySelectorAll("[data-instalar]").forEach((b) => { b.hidden = true; }); });
+if (modoApp()) document.querySelectorAll("[data-instalar]").forEach((b) => { b.hidden = true; });
+
+function recado(msg) {
+  if (!$("tela-app").hidden) return avisar(msg);
+  const d = $("dica"); d.textContent = msg; d.hidden = false;
+}
+async function compartilhar() {
+  const dados = { title: "Gestão · Pousada Engenho do Vô", text: "Acesso privado da pousada", url: URL_PAGINA };
+  if (navigator.share) {
+    try { await navigator.share(dados); return; } catch (e) { if (e.name === "AbortError") return; }
+  }
+  try { await navigator.clipboard.writeText(URL_PAGINA); recado("Link copiado: " + URL_PAGINA); }
+  catch (e) { recado("Copie o link: " + URL_PAGINA); }
+}
+async function instalar() {
+  if (modoApp()) return recado("O aplicativo já está instalado neste aparelho.");
+  if (convite) {
+    convite.prompt();
+    try { await convite.userChoice; } catch (e) { /* ignora */ }
+    convite = null;
+    return;
+  }
+  recado(ehIos
+    ? "No iPhone: toque em Compartilhar (quadrado com seta) e depois em Adicionar à Tela de Início."
+    : "No navegador: abra o menu (três pontinhos) e toque em Instalar app ou Adicionar à tela inicial.");
+}
+document.addEventListener("click", (e) => {
+  const a = e.target.closest("[data-acao]")?.dataset.acao;
+  if (a === "compartilhar") compartilhar();
+  else if (a === "instalar") instalar();
+});
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js", { scope: "./" }).catch(() => {});
 
 // ---------- início ----------
 if (s.token) {
