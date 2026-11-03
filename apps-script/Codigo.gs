@@ -1,9 +1,10 @@
 // Pousada Engenho do Vô: back-end da área privada (/gestao).
 // Fica na planilha "Hóspedes e Pagamentos" (Extensões > Apps Script).
 // Colunas da aba "Registros":
-//   A Data | B Quarto | C Hóspedes | D Valor (R$) | E Forma de pagamento | F Check-in (data e hora) | G Check-out (12:00) | H Café | I Limpeza | J Encerrada em
+//   A Data | B Quarto | C Hóspedes | D Valor (R$) | E Forma de pagamento | F Check-in (data e hora) | G Check-out (12:00) | H Café | I Limpeza | J Encerrada em | K Recebido
 //   Coluna I: "Pendente" ao cadastrar a locação; ao marcar o quarto como limpo vira "Limpo em dd/mm/aaaa hh:mm (quem)".
 //   Linhas antigas, com a coluna I vazia, são ignoradas (não geram limpeza pendente).
+//   Coluna K: "Sim" ou "Não" (já recebido). A camareira só recebe uma indicação de pago ou não, nunca valores.
 //   Coluna J: preenchida quando o admin encerra a estadia ANTES do meio-dia (o quarto vira "pronto para limpeza" na hora).
 //
 // Dois acessos, definidos em Configurações do projeto > Propriedades do script:
@@ -14,7 +15,7 @@
 const ABA = 'Registros';
 const FUSO = 'America/Sao_Paulo';
 const HORA_CHECKOUT = '12:00'; // check-out sempre ao meio-dia
-const VERSAO = 'v12-estado-do-quarto';
+const VERSAO = 'v13-recebido';
 // Café da manhã: check-in de 00:00 até este horário conta o café no MESMO dia (chegou cedo ou de madrugada).
 // Check-in depois disso (ex.: de 12:00 a 00:00) conta o quarto como ocupado no dia, mas o café só a partir do dia seguinte,
 // e continua até o check-out. Quem chegou em dias anteriores conta sempre.
@@ -67,7 +68,9 @@ function doPost(e) {
         soData(d.data), Number(d.quarto), Number(d.hospedes), Number(d.valor),
         String(d.pagamento), paraData(d.checkIn, d.checkInHora), paraData(d.checkOut, HORA_CHECKOUT),
         d.cafe === 'Com café' ? 'Com café' : 'Sem café',
-        'Pendente' // limpeza: vira "Limpo em ..." quando o quarto for marcado como limpo depois do check-out
+        'Pendente', // limpeza: vira "Limpo em ..." quando o quarto for marcado como limpo depois do check-out
+        '', // J: Encerrada em (preenchida só se o admin encerrar antes do meio-dia)
+        d.recebido === 'Sim' ? 'Sim' : 'Não' // K: já recebido
       ]);
       // formatos explícitos: o Sheets sozinho trocaria a coluna Data para data e hora
       const linha = aba.getLastRow();
@@ -75,6 +78,20 @@ function doPost(e) {
       aba.getRange(linha, 4).setNumberFormat('"R$" #,##0.00');
       aba.getRange(linha, 6, 1, 2).setNumberFormat('dd/mm/yyyy hh:mm');
       return saida({ ok: true });
+    }
+
+    // Admin marca se a estadia já foi recebida (Sim) ou ainda não (Não). A tela indica qual estadia pelo check-in.
+    if (d.acao === 'recebido') {
+      if (!d.checkIn) return saida({ ok: false, erro: 'Estadia não informada.' });
+      const valores = aba.getDataRange().getValues();
+      for (let i = valores.length - 1; i >= 1; i--) {
+        const l = valores[i];
+        if (Number(l[1]) !== Number(d.quarto)) continue;
+        if (Utilities.formatDate(new Date(l[5]), FUSO, 'yyyy-MM-dd') !== d.checkIn) continue;
+        aba.getRange(i + 1, 11).setValue(d.recebido === 'Sim' || d.recebido === true ? 'Sim' : 'Não');
+        return saida({ ok: true });
+      }
+      return saida({ ok: false, erro: 'Estadia não encontrada' });
     }
 
     // Encerrar a estadia agora (check-out antecipado ou na hora): o quarto vira "pronto para limpeza" para admin e camareira.
@@ -185,7 +202,8 @@ function listar(aba) {
     checkOut: Utilities.formatDate(new Date(l[6]), FUSO, 'yyyy-MM-dd'),
     cafe: String(l[7] || ''),
     limpeza: String(l[8] || ''),
-    encerrado: String(l[9] || '') !== ''
+    encerrado: String(l[9] || '') !== '',
+    recebido: String(l[10] || '')
   }));
 }
 
@@ -198,6 +216,11 @@ function precisaLimpeza(limpeza, checkIn, checkOut, hoje, hora, encerrada) {
   return checkIn < checkOut && (checkOut < hoje || (checkOut === hoje && hora >= HORA_CHECKOUT));
 }
 
+// Para a camareira: só se está pago ('sim'), não pago ('nao') ou sem informação ('nd'). Nunca valor nem forma de pagamento.
+function pagoDe(r) {
+  return r.recebido === 'Sim' ? 'sim' : r.recebido === 'Não' ? 'nao' : 'nd';
+}
+
 // Camareira: só o que importa HOJE, sem valor, pagamento nem datas.
 //  - situacao "ocupado": hóspede no quarto (hospedes e café); chegaHoje = o check-in é hoje
 //  - situacao "saindo": check-out é hoje e ainda não deu meio-dia (hóspede ainda no quarto: hospedes e café)
@@ -208,9 +231,9 @@ function listarCamareira(aba, hoje, hora) {
     // conta no café de hoje: dormiu aqui na noite anterior ou chegou na madrugada (até HORA_LIMITE_CAFE)
     const cafeHoje = r.cafe === 'Com café' && (r.checkIn < hoje || (r.checkInHora || '99:99') <= HORA_LIMITE_CAFE);
     if (!r.encerrado && r.checkIn <= hoje && hoje < r.checkOut) {
-      saida.push({ quarto: r.quarto, situacao: 'ocupado', hospedes: r.hospedes, cafe: r.cafe, chegaHoje: r.checkIn === hoje, cafeHoje: cafeHoje });
+      saida.push({ quarto: r.quarto, situacao: 'ocupado', hospedes: r.hospedes, cafe: r.cafe, chegaHoje: r.checkIn === hoje, cafeHoje: cafeHoje, pago: pagoDe(r) });
     } else if (!r.encerrado && r.checkOut === hoje && r.checkIn < r.checkOut && hora < HORA_CHECKOUT) {
-      saida.push({ quarto: r.quarto, situacao: 'saindo', hospedes: r.hospedes, cafe: r.cafe, cafeHoje: cafeHoje });
+      saida.push({ quarto: r.quarto, situacao: 'saindo', hospedes: r.hospedes, cafe: r.cafe, cafeHoje: cafeHoje, pago: pagoDe(r) });
     } else if (precisaLimpeza(r.limpeza, r.checkIn, r.checkOut, hoje, hora, r.encerrado) && !jaLimpeza[r.quarto]) {
       jaLimpeza[r.quarto] = true; // uma linha por quarto, mesmo que várias locações tenham ficado sem limpar
       saida.push({ quarto: r.quarto, situacao: 'limpeza' });

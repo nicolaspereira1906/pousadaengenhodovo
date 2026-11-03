@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { iso, br, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, rotuloCafe, rotuloCafeCamareira, cafeClasse, precisaLimpeza } from "../gestao/regras.js";
+import { iso, br, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, rotuloCafe, rotuloCafeCamareira, cafeClasse, precisaLimpeza, rotuloRecebido, rotuloPago, pagoClasse } from "../gestao/regras.js";
 
 const regs = [{ quarto: 3, checkIn: "2026-11-10", checkOut: "2026-11-13", hospedes: 2, valor: 900 }];
 
@@ -94,4 +94,16 @@ test("estadia encerrada pelo admin fica pronta para limpeza na hora, antes do me
   assert.equal(precisaLimpeza("Pendente", "2026-11-01", "2026-11-01", "2026-11-01", "09:00", true), true);
   assert.equal(precisaLimpeza("Pendente", "2026-11-01", "2026-11-03", "2026-11-01", "09:00", false), false);
   assert.equal(precisaLimpeza("Limpo em 01/11/2026 09:30 (administração)", "2026-11-01", "2026-11-01", "2026-11-01", "10:00", true), false);
+});
+
+test("recebimento: admin vê Recebido/A receber, camareira vê só Pago/Não pago", () => {
+  assert.equal(rotuloRecebido("Sim"), "Recebido");
+  assert.equal(rotuloRecebido("Não"), "A receber");
+  assert.equal(rotuloRecebido(""), "Não informado");
+  assert.equal(rotuloPago("sim"), "Pago");
+  assert.equal(rotuloPago("nao"), "Não pago");
+  assert.equal(rotuloPago("nd"), "Pagamento a confirmar");
+  assert.equal(rotuloPago(undefined), "Pagamento a confirmar");
+  assert.equal(pagoClasse("sim"), "ok");
+  assert.equal(pagoClasse("nao"), "ambar");
 });

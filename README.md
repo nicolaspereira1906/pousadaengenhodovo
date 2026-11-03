@@ -61,3 +61,5 @@ Google "Hóspedes e Pagamentos".
 - Situação do quarto (admin): seletor Ocupado / Pronto para limpeza / Livre, com um toque e sem confirmação, no quarto ocupado ou que sai hoje antes das 12:00.
   O check-out passa a ser hoje, a coluna J registra "Encerrada em ..." e a coluna I vira "Pendente" (inclusive em linhas antigas).
   O quarto vira "Pronto para limpeza" na hora, para admin e camareira, até alguém marcar como limpo.
+- Já recebido? (admin): campo Sim/Não no cadastro da locação (coluna K "Recebido") e botões no quarto ocupado para mudar depois,
+  com um toque. A camareira só vê Pago / Não pago / a confirmar, nunca valores nem forma de pagamento.

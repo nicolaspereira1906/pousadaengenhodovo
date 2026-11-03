@@ -66,3 +66,10 @@ export const cafeClasse = (c) => (c === "Com café" ? "com" : c === "Sem café" 
 // das 12:00), ou que foi encerrada pelo admin (aí vale na hora). Espelha a regra do servidor; hoje e hora vêm do servidor.
 export const precisaLimpeza = (limpeza, checkIn, checkOut, hoje, hora, encerrada = false) =>
   limpeza === "Pendente" && (encerrada || (checkIn < checkOut && (checkOut < hoje || (checkOut === hoje && hora >= HORA_CHECKOUT))));
+
+// Recebimento da estadia. Admin: "Sim" / "Não" / vazio (registro antigo). Camareira: só "sim" / "nao" / "nd", sem valores.
+export const RECEBIDOS = ["Sim", "Não"];
+export const rotuloRecebido = (r) => (r === "Sim" ? "Recebido" : r === "Não" ? "A receber" : "Não informado");
+export const recebidoClasse = (r) => (r === "Sim" ? "ok" : r === "Não" ? "ambar" : "nd");
+export const rotuloPago = (p) => (p === "sim" ? "Pago" : p === "nao" ? "Não pago" : "Pagamento a confirmar");
+export const pagoClasse = (p) => (p === "sim" ? "ok" : p === "nao" ? "ambar" : "nd");
