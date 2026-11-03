@@ -1,5 +1,5 @@
-import { URL_SCRIPT } from "./config.js?v=27";
-import { iso, deIso, br, brl, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT, CAFES, rotuloCafe, rotuloCafeCamareira, cafeClasse, precisaLimpeza, RECEBIDOS, rotuloRecebido, recebidoClasse, rotuloPago, pagoClasse } from "./regras.js?v=27";
+import { URL_SCRIPT } from "./config.js?v=28";
+import { iso, deIso, br, brl, parseValor, mascaraValor, noites, estadiaEm, saidaEm, conflito, grade, agora, fmtCheckIn, fmtCheckOut, HORA_CHECKOUT, CAFES, rotuloCafe, rotuloCafeCamareira, cafeClasse, precisaLimpeza, RECEBIDOS, rotuloRecebido, recebidoClasse, rotuloPago, pagoClasse } from "./regras.js?v=28";
 
 const QUARTOS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const PAGAMENTOS = ["PIX", "Dinheiro", "Cartão de débito", "Cartão de crédito"];
