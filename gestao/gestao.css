@@ -330,6 +330,9 @@ body::before { content: ""; position: fixed; top: 0; left: 0; right: 0; height: 
 
 /* admin: Já recebido? */
 .estado-op.rec-sim { border-color: var(--cana); color: #1f3d23; }
-.estado-op.rec-nao { border-color: var(--rapadura); color: #5c3b00; }
+.estado-op.rec-nao { border-color: var(--verm); color: var(--verm-escuro); }
 .estado-op.rec-sim.atual { background: var(--cana); color: #fff; }
-.estado-op.rec-nao.atual { background: var(--rapadura); color: #fff; }
+.estado-op.rec-nao.atual { background: var(--verm); color: #fff; }
+
+/* "Sem café" e "Não, a receber" selecionados ficam vermelhos (os demais continuam verdes) */
+.cafe-op[data-c="Sem café"][aria-pressed="true"], .rec-op[data-r="Não"][aria-pressed="true"] { background: var(--verm); border-color: var(--verm); color: #fff; }
